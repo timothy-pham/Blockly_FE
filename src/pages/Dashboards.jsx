@@ -1,3 +1,3 @@
-export const Layout = () => {
-  return <div>dwdw</div>;
+export const Dashboard = () => {
+  return <div>dashboard</div>;
 };

@@ -1,16 +1,16 @@
 import "./App.css";
-import { Layout } from "./pages/Dashboards";
 import { BlocklyLayout } from "./pages/Blockly";
+import { Layout } from "./components/Layout";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Dashboard } from "./pages/Dashboards";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />} />
-        <Route path="/blockly" index element={<BlocklyLayout />} />
-        {/* <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="*" element={<NoPage />} /> */}
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="/blockly" element={<BlocklyLayout />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
