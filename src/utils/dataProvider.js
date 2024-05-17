@@ -1,13 +1,15 @@
-export async function fetchData(resource) {
+export async function fetchData(resource, headers) {
   //   const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
       {
-        headers: {
-          // Authorization: "Bearer " + JSON.parse(currentUser).token,
-          "Content-Type": "application/json",
-        },
+        headers: !headers
+          ? {
+              // Authorization: "Bearer " + JSON.parse(currentUser).token,
+              "Content-Type": "application/json",
+            }
+          : headers,
       }
     );
     if (!response.ok) {

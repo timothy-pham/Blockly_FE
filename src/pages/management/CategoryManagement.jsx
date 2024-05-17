@@ -231,7 +231,7 @@ export const CategoryManagement = () => {
         <Box
           className="flex flex-col items-center"
           component="form"
-          defaultValue={data}
+          // defaultValue={data}
           onSubmit={handleSubmit}
           sx={{ mt: 1 }}
         >

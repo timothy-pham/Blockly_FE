@@ -17,12 +17,10 @@ import {
   Autocomplete,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
@@ -35,19 +33,22 @@ export const BlockManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [openPopup, setOpenPopup] = useState(false);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
-  const [collection, setCollection] = useState([]);
-  const [collectionValue, setCollectionValue] = useState();
   const [data, setData] = useState({ name: "", description: "" });
+  const [dataImport, setDataImport] = useState();
 
   const [refresh, setRefresh] = React.useState(false);
+
+  const fileInputRef = useRef(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
 
   const fetchBlocks = async () => {
     try {
       const res = await fetchData("blocks");
-      console.log("res", res);
       if (res) {
         setRows(res);
       }
@@ -71,12 +72,39 @@ export const BlockManagement = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData("groups", data.collection_id);
+      await deleteData("blocks", data.block_id);
     } catch (err) {
       console.log("can not delete collection");
     } finally {
       setRefresh(!refresh);
       setOpen(false);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          await handleImport(JSON.parse(e.target.result));
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleImport = async (file) => {
+    try {
+      await createData("blocks/import", file);
+    } catch (err) {
+      console.log("can not create block");
+    } finally {
+      setRefresh(!refresh);
     }
   };
 
@@ -86,16 +114,47 @@ export const BlockManagement = () => {
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
             <Typography variant="h6">Blocks Management</Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              component="a"
-              startIcon={<AddIcon />}
-              onClick={() => navigate("/blockManagement/create")}
-            >
-              Create
-            </Button>
+            <div>
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  onClick={handleButtonClick}
+                  sx={{ marginRight: 2 }}
+                >
+                  Import JSON
+                </Button>
+              </>
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                component="a"
+                href="
+                http://192.168.1.246:8000/blocks/export"
+                target="_blank"
+                sx={{ marginRight: 2 }}
+              >
+                Export Json
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                component="a"
+                startIcon={<AddIcon />}
+                onClick={() => navigate("/blockManagement/create")}
+              >
+                Create
+              </Button>
+            </div>
           </div>
           <Table aria-label="simple table">
             <TableHead>
@@ -171,6 +230,30 @@ export const BlockManagement = () => {
           </Table>
         </TableContainer>
       </div>
+
+      <Dialog
+        sx={{
+          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: 435 },
+        }}
+        // maxWidth="md"
+        open={open}
+        onClose={() => {
+          setData({});
+          setOpen(false);
+        }}
+      >
+        <span>
+          Xác nhận để xóa Block{" "}
+          <span style={{ color: "red" }}>{data.name}</span>
+        </span>
+        <Button
+          onClick={handleDelete}
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Xác nhận
+        </Button>
+      </Dialog>
     </>
   );
 };

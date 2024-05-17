@@ -5,23 +5,21 @@ import {
   fetchData,
   createData,
   fetchDataDetail,
+  updateData,
 } from "../../../utils/dataProvider";
 import { useLocation } from "react-router-dom";
+import { transformCodeBlockly } from "../../../utils/transform";
 
 export const EditBlock = () => {
   const location = useLocation();
   const id = location?.pathname?.split("/")[2];
   const [category, setCategory] = useState([]);
-  const [categoryValue, setCategoryValue] = useState("");
-  const [dataBlock, setDataBlocks] = useState({
-    name: "",
-    question: "",
-    level: "",
-    group_id: "",
-    data: {},
-    answers: "",
-  });
+  const [categoryValue, setCategoryValue] = useState();
+  const [dataBlock, setDataBlocks] = useState();
+  const [blockDetail, setBlockDetail] = useState();
 
+  const [answers, setAnswers] = useState("");
+  const [showAnswers, setShowAnswers] = useState(false);
   const fetchCategory = async () => {
     try {
       const res = await fetchData("groups");
@@ -37,29 +35,44 @@ export const EditBlock = () => {
     try {
       const res = await fetchDataDetail("blocks", id);
       if (res) {
-        setDataBlocks(res);
+        setBlockDetail(res);
       }
     } catch (e) {
       console.log("can not fetch groups");
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     fetchCategory();
-    fetchBlockData();
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      fetchBlockData();
+    }
+  }, [id]);
+
+  const handlePreviewClick = (e) => {
+    e.preventDefault();
+    setShowAnswers(true);
+    setAnswers(dataBlock?.code); // Set answers based on Blockly data
+  };
+
+  const handleAnswersChange = (e) => {
+    setAnswers(e.target.value); // Update answers when edited
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const dataForm = new FormData(event.currentTarget);
     try {
-      await createData("blocks", {
+      await updateData("blocks", id, {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
         group_id: categoryValue,
         data: dataBlock.data,
-        answers: dataBlock.code,
+        answers: answers,
         meta_data: {
           description: dataForm.get("description"),
         },
@@ -73,64 +86,93 @@ export const EditBlock = () => {
   return (
     <>
       Edit Block
-      <Box
-        className="flex flex-col items-center"
-        component="form"
-        defaultValue={dataBlock}
-        onSubmit={handleSubmit}
-        sx={{ mt: 1, width: "100%" }}
-      >
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="Name"
-          defaultValue={dataBlock.name}
-          label="Tên"
-          name="name"
-          autoFocus
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          defaultValue={dataBlock.question}
-          id="Question"
-          label="Câu hỏi"
-          name="question"
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          defaultValue={dataBlock.level}
-          id="Level"
-          type="number"
-          label="Cấp độ"
-          name="level"
-        />
-        <Autocomplete
-          disablePortal
-          id="category"
-          fullWidth
-          options={category}
-          value={
-            category.find((option) => option.group_id === dataBlock.group_id) ||
-            null
-          }
-          getOptionLabel={(option) => option.name}
-          renderInput={(params) => (
-            <TextField {...params} label="Danh Mục" id="id" />
-          )}
-          onChange={(e, val) => setCategoryValue(val?.group_id)}
-        />
-        <div>
-          <BlocklyLayout setDataBlocks={setDataBlocks} data={dataBlock.data} />
-        </div>
-        <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-          Submit
-        </Button>
-      </Box>
+      {blockDetail && (
+        <Box
+          className="flex flex-col items-center"
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ mt: 1, width: "100%" }}
+        >
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="Name"
+            defaultValue={blockDetail?.name}
+            label="Tên"
+            name="name"
+            autoFocus
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            defaultValue={blockDetail?.question}
+            id="Question"
+            label="Câu hỏi"
+            name="question"
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            defaultValue={blockDetail?.level}
+            id="Level"
+            type="number"
+            label="Cấp độ"
+            name="level"
+          />
+          <Autocomplete
+            disablePortal
+            id="collections"
+            fullWidth
+            options={category}
+            defaultValue={category.find(
+              (option) => option.group_id == blockDetail?.group_id
+            )}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField {...params} label="Danh Mục" id="group_id" />
+            )}
+            onChange={(e, val) => setCategoryValue(val?.group_id)}
+            renderOption={(props, option) => (
+              <div {...props}>
+                <h3>{option?.name}</h3>
+              </div>
+            )}
+          />
+          <div>
+            <BlocklyLayout
+              setDataBlocks={setDataBlocks}
+              data={blockDetail.data}
+            />
+          </div>
+          <>
+            <Button
+              onClick={handlePreviewClick}
+              variant="outlined"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Preview
+            </Button>
+            {showAnswers && (
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={transformCodeBlockly(answers)[0]}
+                onChange={handleAnswersChange}
+                id="Answers"
+                label="Đáp án"
+                name="answers"
+              />
+            )}
+          </>
+          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+            Submit
+          </Button>
+        </Box>
+      )}
     </>
   );
 };
