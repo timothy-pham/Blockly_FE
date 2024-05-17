@@ -7,10 +7,9 @@ import { toolbox } from "./blockly/toolbox";
 import * as BlocklyCore from "blockly/core";
 import { isEmpty } from "lodash";
 
-export const BlocklyLayout = () => {
-  const [dataBlocks, setDataBlocks] = useState();
-  let codeDiv = document.getElementById("generatedCode")?.firstChild;
-  let outputDiv = document.getElementById("output");
+export const BlocklyLayout = ({ data, setDataBlocks }) => {
+  let codeDiv;
+  let outputDiv;
   let ws;
   let blocklyDiv;
 
@@ -37,7 +36,9 @@ export const BlocklyLayout = () => {
       // const zoomToFit = new ZoomToFitControl(ws);
       // zoomToFit.init();
       //TODO load bai` tap khi get ve` tu database
-      // BlocklyCore.serialization.workspaces.load({}, ws, undefined);
+      if (data) {
+        BlocklyCore.serialization.workspaces.load(data, ws, undefined);
+      }
       ws.addChangeListener((e) => {
         if (
           e.isUiEvent ||
@@ -47,16 +48,14 @@ export const BlocklyLayout = () => {
           return;
         }
         var category = ws.getToolbox();
-        console.log("toool box ", category);
         const data = BlocklyCore.serialization.workspaces.save(ws);
-        console.log("blockly core ====", BlocklyCore.serialization.workspaces);
-        setDataBlocks(data);
+        var code = javascriptGenerator.workspaceToCode(ws);
+
+        setDataBlocks({ code, data });
         showText();
       });
     }
   }, []);
-
-  const createWorkspace = () => {};
 
   useEffect(() => {
     Blockly.common.defineBlocks(blocks);
@@ -71,13 +70,8 @@ export const BlocklyLayout = () => {
     if (outputDiv) outputDiv.innerHTML = "";
   };
 
-  function submitBlock() {
-    var code = javascriptGenerator.workspaceToCode(ws);
-
-    console.log("dataBlocks", code, dataBlocks);
-  }
-
-  function runCode() {
+  function runCode(e) {
+    e.preventDefault();
     var code = javascriptGenerator.workspaceToCode(ws);
     console.log("code", code);
     try {
@@ -90,9 +84,8 @@ export const BlocklyLayout = () => {
 
   return (
     <>
-      <button onClick={createWorkspace}>Create workspace</button>
-      <button onClick={runCode}>Run code</button>
-      <button onClick={submitBlock}>Submit block</button>
+      {/* <button onClick={runCode}>Run code</button>
+      <button onClick={submitBlock}>Submit block</button> */}
 
       <div
         id="pageContainer"
@@ -104,6 +97,13 @@ export const BlocklyLayout = () => {
         }}
       >
         <div
+          id="blocklyDiv"
+          style={{
+            flexBasis: " 100%",
+            minWidth: "600px",
+          }}
+        ></div>
+        <div
           id="outputPane"
           style={{
             display: "flex",
@@ -112,6 +112,7 @@ export const BlocklyLayout = () => {
             flex: "0 0 400px",
             overflow: "auto",
             margin: "1rem",
+            backgroundColor: "#f0e5b1",
           }}
         >
           <pre id="generatedCode" style={{ height: "50%" }}>
@@ -119,13 +120,6 @@ export const BlocklyLayout = () => {
           </pre>
           <div id="output" style={{ height: "50%" }}></div>
         </div>
-        <div
-          id="blocklyDiv"
-          style={{
-            flexBasis: " 100%",
-            minWidth: "600px",
-          }}
-        ></div>
       </div>
     </>
   );

@@ -1,2 +1,2 @@
-export * from './Blockly'
+export * from './LessionManagement'
 export * from './Dashboard'
