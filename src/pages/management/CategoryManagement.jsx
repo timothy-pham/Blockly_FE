@@ -128,7 +128,7 @@ export const CategoryManagement = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">Collection Management</Typography>
+            <Typography variant="h6">Category Management</Typography>
             <Button
               color="primary"
               variant="contained"
@@ -162,13 +162,7 @@ export const CategoryManagement = () => {
                     {row?.name}
                   </TableCell>
                   <TableCell>{row?.meta_data?.description}</TableCell>
-                  <TableCell>
-                    {
-                      collection?.find(
-                        (v) => v?.collection_id == row?.collection_id
-                      )?.name
-                    }
-                  </TableCell>
+                  <TableCell>{row?.collection?.name}</TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => {
@@ -227,7 +221,7 @@ export const CategoryManagement = () => {
           setOpenPopup(false);
         }}
       >
-        Tạo Collection
+        Tạo Category
         <Box
           className="flex flex-col items-center"
           component="form"

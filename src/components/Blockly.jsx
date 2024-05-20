@@ -33,9 +33,6 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
           },
           trashcan: true,
         });
-      // const zoomToFit = new ZoomToFitControl(ws);
-      // zoomToFit.init();
-      //TODO load bai` tap khi get ve` tu database
       if (data) {
         BlocklyCore.serialization.workspaces.load(data, ws, undefined);
       }

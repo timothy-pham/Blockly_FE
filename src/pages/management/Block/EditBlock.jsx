@@ -59,6 +59,7 @@ export const EditBlock = () => {
   };
 
   const handleAnswersChange = (e) => {
+    console.log(e.target.value);
     setAnswers(e.target.value); // Update answers when edited
   };
 
@@ -70,9 +71,10 @@ export const EditBlock = () => {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
+        type: dataForm.get("type"),
         group_id: categoryValue,
         data: dataBlock.data,
-        answers: answers,
+        answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
         },
@@ -80,7 +82,6 @@ export const EditBlock = () => {
     } catch (err) {
       console.log("can not create block");
     }
-    console.log("submit");
   };
 
   return (
@@ -123,12 +124,34 @@ export const EditBlock = () => {
             name="level"
           />
           <Autocomplete
-            disablePortal
+            id="type"
+            fullWidth
+            defaultValue={[{ id: "all" }, { id: "include" }].find(
+              (option) => option.id == blockDetail?.type
+            )}
+            options={[{ id: "all" }, { id: "include" }]}
+            getOptionLabel={(option) => option.id}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Loại câu hỏi"
+                name="type"
+                id="type"
+              />
+            )}
+            renderOption={(props, option) => (
+              <div {...props}>
+                <h3>{option?.id}</h3>
+              </div>
+            )}
+          />
+          <Autocomplete
+            sx={{ marginTop: 1 }}
             id="collections"
             fullWidth
             options={category}
             defaultValue={category.find(
-              (option) => option.group_id == blockDetail?.group_id
+              (option) => option.group_id == blockDetail.group.group_id
             )}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
@@ -141,6 +164,7 @@ export const EditBlock = () => {
               </div>
             )}
           />
+
           <div>
             <BlocklyLayout
               setDataBlocks={setDataBlocks}
@@ -160,11 +184,12 @@ export const EditBlock = () => {
                 margin="normal"
                 required
                 fullWidth
-                value={transformCodeBlockly(answers)[0]}
+                defaultValue={transformCodeBlockly(answers)[0]}
                 onChange={handleAnswersChange}
                 id="Answers"
                 label="Đáp án"
                 name="answers"
+                multiline
               />
             )}
           </>

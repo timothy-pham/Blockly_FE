@@ -49,6 +49,7 @@ export const CreateBlock = () => {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
+        type: dataForm.get("type"),
         data: dataBlock.data,
         answers: answers,
         meta_data: {
@@ -57,8 +58,9 @@ export const CreateBlock = () => {
       });
     } catch (err) {
       console.log("can not create block");
-    } 
+    }
   };
+  
   return (
     <>
       Tạo Block
@@ -86,6 +88,23 @@ export const CreateBlock = () => {
           name="question"
           autoFocus
         />
+
+        <Autocomplete
+          disablePortal
+          id="type"
+          fullWidth
+          options={[{ id: "all" }, { id: "include" }]}
+          getOptionLabel={(option) => option.id}
+          renderInput={(params) => (
+            <TextField {...params} label="Loại câu hỏi" name="type" id="type" />
+          )}
+          renderOption={(props, option) => (
+            <div {...props}>
+              <h3>{option?.id}</h3>
+            </div>
+          )}
+        />
+
         <TextField
           margin="normal"
           required

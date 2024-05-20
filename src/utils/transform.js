@@ -12,7 +12,9 @@ export const transformCodeBlockly = (input) => {
   // Lọc các dòng chứa toán tử so sánh và bỏ các dòng trống
   const output = lines
     ?.filter((line) => containsOperator(line))
-    .map((line) => line.trim().replace(";", ""))
+    .map((line) => line.trim().replace(";", ""));
+
+  console.log("lines===", output);
 
   return output;
 };
