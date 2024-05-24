@@ -10,6 +10,8 @@ import { CreateBlock } from "./pages/management/Block/CreateBlock";
 import { EditBlock } from "./pages/management/Block/EditBlock";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import { Lessons } from "./pages/lessons/Lesson";
+import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -48,6 +50,14 @@ function App() {
           <Route
             path="/blockManagement/:id/edit"
             element={<PrivateRoute element={EditBlock} />}
+          />
+          <Route
+            path="/collections/:id"
+            element={<PrivateRoute element={Lessons} />}
+          />
+          <Route
+            path="/groups/:id"
+            element={<PrivateRoute element={LessonsDetail} />}
           />
         </Route>
       </Routes>

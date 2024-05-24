@@ -137,8 +137,7 @@ export const BlockManagement = () => {
                 variant="contained"
                 size="small"
                 component="a"
-                href="
-                http://192.168.1.246:8000/blocks/export"
+                href={`${process.env.REACT_APP_API_URL}/blocks/export`}
                 target="_blank"
                 sx={{ marginRight: 2 }}
               >

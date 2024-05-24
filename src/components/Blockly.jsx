@@ -7,7 +7,7 @@ import { toolbox } from "./blockly/toolbox";
 import * as BlocklyCore from "blockly/core";
 import { isEmpty } from "lodash";
 
-export const BlocklyLayout = ({ data, setDataBlocks }) => {
+export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
   let codeDiv;
   let outputDiv;
   let ws;
@@ -21,7 +21,7 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
       ws =
         blocklyDiv &&
         Blockly.inject(blocklyDiv, {
-          toolbox,
+          toolbox: isEdit ? toolbox : null,
           zoom: {
             controls: true,
             wheel: true,
@@ -31,7 +31,7 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
             scaleSpeed: 1.2,
             pinch: true,
           },
-          trashcan: true,
+          trashcan: isEdit,
         });
       if (data) {
         BlocklyCore.serialization.workspaces.load(data, ws, undefined);
@@ -44,7 +44,6 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
         ) {
           return;
         }
-        var category = ws.getToolbox();
         const data = BlocklyCore.serialization.workspaces.save(ws);
         var code = javascriptGenerator.workspaceToCode(ws);
 
@@ -61,7 +60,6 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
 
   const showText = () => {
     const code = javascriptGenerator.workspaceToCode(ws);
-    console.log("code ==========I", code);
     if (codeDiv) codeDiv.textContent = code;
 
     if (outputDiv) outputDiv.innerHTML = "";
@@ -100,23 +98,25 @@ export const BlocklyLayout = ({ data, setDataBlocks }) => {
             minWidth: "600px",
           }}
         ></div>
-        <div
-          id="outputPane"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "400px",
-            flex: "0 0 400px",
-            overflow: "auto",
-            margin: "1rem",
-            backgroundColor: "#f0e5b1",
-          }}
-        >
-          <pre id="generatedCode" style={{ height: "50%" }}>
-            <code></code>
-          </pre>
-          <div id="output" style={{ height: "50%" }}></div>
-        </div>
+        {isEdit && (
+          <div
+            id="outputPane"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              width: "400px",
+              flex: "0 0 400px",
+              overflow: "auto",
+              margin: "1rem",
+              backgroundColor: "#f0e5b1",
+            }}
+          >
+            <pre id="generatedCode" style={{ height: "50%" }}>
+              <code></code>
+            </pre>
+            <div id="output" style={{ height: "50%" }}></div>
+          </div>
+        )}
       </div>
     </>
   );

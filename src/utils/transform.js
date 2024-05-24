@@ -18,3 +18,11 @@ export const transformCodeBlockly = (input) => {
 
   return output;
 };
+
+
+export function truncateText(text, maxLength = 200) {
+  if (text.length > maxLength) {
+      return text.slice(0, maxLength) + '...';
+  }
+  return text;
+}

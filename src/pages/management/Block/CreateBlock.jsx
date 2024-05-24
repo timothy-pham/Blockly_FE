@@ -51,7 +51,7 @@ export const CreateBlock = () => {
         level: dataForm.get("level"),
         type: dataForm.get("type"),
         data: dataBlock.data,
-        answers: answers,
+        answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
         },
@@ -60,7 +60,7 @@ export const CreateBlock = () => {
       console.log("can not create block");
     }
   };
-  
+
   return (
     <>
       Tạo Block
