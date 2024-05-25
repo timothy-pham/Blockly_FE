@@ -1,12 +1,15 @@
-export async function fetchData(resource, headers) {
+const getToken = () => {
   const currentUser = localStorage.getItem("authToken");
+  return JSON.parse(currentUser)?.token ? "Bearer " + JSON.parse(currentUser).token : "";
+}
+export async function fetchData(resource, headers) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
       {
         headers: !headers
           ? {
-            Authorization: currentUser && JSON.parse(currentUser)?.token ? "Bearer " + JSON.parse(currentUser).token : "",
+            Authorization: getToken(),
             "Content-Type": "application/json",
           }
           : headers,
@@ -24,13 +27,12 @@ export async function fetchData(resource, headers) {
 }
 
 export async function fetchDataDetail(resource, id) {
-  const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
       {
         headers: {
-          Authorization: currentUser && currentUser?.token ? "Bearer " + JSON.parse(currentUser).token : "",
+          Authorization: getToken(),
           "Content-Type": "application/json",
         },
       }
@@ -47,14 +49,13 @@ export async function fetchDataDetail(resource, id) {
 }
 
 export async function deleteData(resource, id) {
-  const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
       {
         method: "DELETE",
         headers: {
-          Authorization: currentUser && currentUser?.token ? "Bearer " + JSON.parse(currentUser).token : "",
+          Authorization: getToken(),
           "Content-Type": "application/json",
         },
       }
@@ -71,7 +72,6 @@ export async function deleteData(resource, id) {
 }
 
 export async function updateData(resource, id, data) {
-  const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
@@ -79,7 +79,7 @@ export async function updateData(resource, id, data) {
         method: "PATCH",
         body: JSON.stringify(data),
         headers: {
-          Authorization: currentUser && currentUser?.token ? "Bearer " + JSON.parse(currentUser).token : "",
+          Authorization: getToken(),
           "Content-Type": "application/json",
         },
       }
@@ -96,7 +96,6 @@ export async function updateData(resource, id, data) {
 }
 
 export async function createData(resource, data) {
-  const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
@@ -104,7 +103,7 @@ export async function createData(resource, data) {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          Authorization: currentUser && currentUser?.token ? "Bearer " + JSON.parse(currentUser).token : "",
+          Authorization: getToken(),
           "Content-Type": "application/json",
         },
       }
