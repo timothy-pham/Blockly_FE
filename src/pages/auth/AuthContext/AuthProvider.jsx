@@ -21,6 +21,7 @@ const AuthProvider = ({ children }) => {
           JSON.stringify({
             token: response.token,
             refreshToken: response.refreshToken,
+            users: response.user,
           })
         );
         return response;

@@ -248,6 +248,7 @@ export const CollectionManagement = () => {
           />
           <Select
             native
+            fullWidth
             value={data?.type}
             onChange={(e) => setData({ type: e.target.value })}
             inputProps={{

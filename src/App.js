@@ -14,6 +14,7 @@ import { Lessons } from "./pages/lessons/Lesson";
 import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
+import { Play } from "./pages/rooms/Play";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -29,10 +30,7 @@ function App() {
 
         <Route path="/" element={<Layout />}>
           <Route index element={<PrivateRoute element={Dashboard} />} />
-          <Route
-            path="/history"
-            element={<PrivateRoute element={History} />}
-          />
+          <Route path="/history" element={<PrivateRoute element={History} />} />
           <Route
             path="/groupManagement"
             element={<PrivateRoute element={GroupManagement} />}
@@ -61,10 +59,8 @@ function App() {
             path="/collections/:collection_id/groups/:group_id"
             element={<PrivateRoute element={LessonsDetail} />}
           />
-          <Route
-            path="/rooms"
-            element={<PrivateRoute element={Rooms} />}
-          />
+          <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
+          <Route path="/rooms/:id" element={<PrivateRoute element={Play} />} />
         </Route>
       </Routes>
     </BrowserRouter>
