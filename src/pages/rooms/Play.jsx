@@ -14,10 +14,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-
-let socket;
-
-const CONNECTION_PORT = process.env.REACT_APP_API_URL;
+import { socket } from "../../socket";
 export const Play = () => {
   const { id } = useParams();
   const info = localStorage.getItem("authToken");
@@ -33,26 +30,65 @@ export const Play = () => {
 
   useEffect(() => {
     if (!hasFetched.current) {
-      console.log("join room ============>");
-      socket = io(CONNECTION_PORT);
-      connectToRoom();
-      hasFetched.current = true; // Ensure it only runs once
-    }
 
-    // return () => {
-    //   socket.disconnect();
-    // };
-  }, []);
+      connectToRoom();
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from server");
+      });
+
+      hasFetched.current = true; // Ensure it only runs once
+
+    }
+  });
 
   useEffect(() => {
-    console.log("user Joinnnnnnnnnnnn =====>");
-    socket?.on("user_joined", (data) => {
-      console.log("data", data);
-      let temp = userList;
-      temp.push(data);
-      setUserList(temp);
+    socket.on("user_joined", (data) => {
+      console.log("User join:", data);
+      userJoin(data);
     });
-  });
+
+    socket.on("user_ready", (data) => {
+      console.log("User ready:", data);
+      userReady(data);
+    })
+
+    socket.on("user_left", (data) => {
+      userLeft(data);
+    });
+
+    return () => {
+      socket.off("user_joined");
+      socket.off("user_ready");
+      socket.off("user_left");
+    }
+  }, [])
+
+  const userLeft = (data) => {
+    console.log("User left:", data);
+    const userIndex = userList.findIndex((user) => user.user_id === data);
+    if (userIndex > -1) {
+      console.log("User left:", data);
+      userList.splice(userIndex, 1);
+      setUserList([...userList]);
+    }
+  }
+
+  const userJoin = (data) => {
+    console.log("User joined:", data);
+    // check if user already in the list
+    const user = userList.find((user) => user.user_id === data.user_id);
+    if (!user) {
+      setUserList((prev) => [...prev, data])
+    }
+  }
+  const userReady = (data) => {
+    const user = userList.find((user) => user.user_id === data.user_id);
+    if (user) {
+      user.is_ready = data.is_ready;
+      setUserList([...userList]);
+    }
+  }
 
   const connectToRoom = () => {
     setLoggedIn(true);
@@ -65,7 +101,6 @@ export const Play = () => {
     setReady(!ready);
   };
 
-  console.log("userList ====>", userList);
   return (
     <>
       <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
@@ -87,7 +122,9 @@ export const Play = () => {
                   <TableCell component="th" scope="row">
                     {row?.user_id}
                   </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>
+                    {row?.is_ready}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
