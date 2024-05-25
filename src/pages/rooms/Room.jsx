@@ -11,7 +11,19 @@ export const Rooms = () => {
     const [dialogCreateRoom, setDialogCreateRoom] = useState(false);
     const [collections, setCollections] = useState([]);
     const [groups, setGroups] = useState([]);
+    const [rooms, setRooms] = useState([]);
     const [createRoom, setCreateRoom] = useState({});
+
+    const fetchRoom = async () => {
+        try {
+            const res = await fetchData("rooms");
+            if (res) {
+                setRooms(res);
+            }
+        } catch (e) {
+            console.log("can not fetch room");
+        }
+    }
 
     const fetchCollection = async () => {
         try {
@@ -36,6 +48,7 @@ export const Rooms = () => {
     }
 
     useEffect(() => {
+        fetchRoom();
         fetchCollection();
     }, []);
 
@@ -74,7 +87,7 @@ export const Rooms = () => {
                         variant="contained"
                         color="primary"
                         onClick={() => {
-                            // refresh page
+                            fetchRoom();
                         }}
                     >
                         Làm mới
@@ -103,23 +116,27 @@ export const Rooms = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="border px-4 py-2">Phòng 1</td>
-                            <td className="border px-4 py-2">Mô tả phòng 1</td>
-                            <td className="border px-4 py-2">Loại 1</td>
-                            <td className="border px-4 py-2">Chủ đề 1</td>
-                            <td className="border px-4 py-2">
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => {
-                                        navigate("/rooms/1/edit");
-                                    }}
-                                >
-                                    Sửa
-                                </Button>
-                            </td>
-                        </tr>
+                        {rooms.map((room) => {
+                            return (
+                                <tr key={room.room_id}>
+                                    <td className="border px-4 py-2">{room.name}</td>
+                                    <td className="border px-4 py-2">{room.meta_data.description}</td>
+                                    <td className="border px-4 py-2">{room.type}</td>
+                                    <td className="border px-4 py-2">{room.meta_data.collection_id}</td>
+                                    <td className="border px-4 py-2">
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => {
+                                                navigate("/rooms/" + room.room_id);
+                                            }}
+                                        >
+                                            Tham gia
+                                        </Button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
