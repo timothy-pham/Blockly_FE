@@ -38,7 +38,6 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const authToken = JSON.parse(localStorage.getItem("authToken"));
     if (authToken) {
-      console.log("authTonken", authToken);
       setIsAuthenticated(true);
     } else {
       console.log("fasle");

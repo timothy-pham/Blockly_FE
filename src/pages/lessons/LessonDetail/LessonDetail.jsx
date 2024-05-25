@@ -1,40 +1,115 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Chip, Typography } from "@mui/material";
-import { transformCodeBlockly, truncateText } from "../../../utils/transform";
-import {
-  createData,
-  fetchData,
-  fetchDataDetail,
-} from "../../../utils/dataProvider";
+import { transformCodeBlockly } from "../../../utils/transform";
+import { createData, fetchData, updateData } from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
+import moment from "moment";
 
 export const LessonsDetail = () => {
+  const { collection_id, group_id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const id = location?.pathname?.split("/")[2];
   const [rows, setRows] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [blockDetail, setBlockDetail] = useState();
   const [dataBlock, setDataBlocks] = useState();
+  const [history, setHistory] = useState();
+  const hasFetched = useRef(false);
+
+  const createHistory = async (initialBlockDetail) => {
+    try {
+      const res = await createData(`histories`, {
+        type: "normal",
+        user_id: 1,
+        group_id: Number(group_id),
+        collection_id: Number(collection_id),
+        result: [
+          {
+            block_id: initialBlockDetail.block_id,
+            block_state: initialBlockDetail.data,
+            start_time: moment().toISOString(),
+            correct: false,
+          },
+        ],
+        start_time: moment().toISOString(),
+      });
+      if (res) {
+        setHistory(res);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData(`blocks/search?group_id=${id}`);
+      const res = await fetchData(`blocks/search?group_id=${group_id}`);
       if (res) {
-        setRows(res);
+        const data = res.map((item) => ({
+          ...item,
+          answered: false,
+        }));
+        setRows(data);
+        if (data.length > 0) {
+          const initialBlockDetail = data[0];
+          setBlockDetail(initialBlockDetail);
+          createHistory(initialBlockDetail);
+        }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
-    fetchCollection();
+    if (!hasFetched.current) {
+      fetchCollection();
+      hasFetched.current = true; // Ensure it only runs once
+    }
   }, []);
 
+  const handleNextQuestion = () => {
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < rows.length) {
+      setCurrentQuestionIndex(nextIndex);
+      setBlockDetail(rows[nextIndex]);
+    }
+  };
+
+  const updateHistory = async (blockDetail) => {
+    try {
+      const res = await updateData(
+        `histories/add-result`,
+        history?.histories_id,
+        {
+          block_id: blockDetail.block_id,
+          block_state: blockDetail.data,
+          start_time: history.created_at,
+          end_time: moment().toISOString(),
+          correct: true,
+        }
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const handleSubmitAnswer = async () => {
-    await createData("blocks/check-answer", {
+    const res = await createData("blocks/check-answer", {
       id: blockDetail.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
+    if (res && res.correct) {
+      const answeredQuestion = rows.map((v, index) => {
+        if (index === currentQuestionIndex) {
+          updateHistory(v);
+          return { ...v, data: dataBlock.data, answered: true };
+        }
+        return v;
+      });
+      setRows(answeredQuestion);
+      handleNextQuestion();
+    }
   };
 
   return (
@@ -45,33 +120,30 @@ export const LessonsDetail = () => {
           Câu hỏi
         </Typography>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 ">
-          {rows.map((val, index) => {
-            return (
-              <div
-                className={`relative group cursor-pointer`}
-                key={index}
-                onClick={() => {
-                  // console.log(val);
-                  setBlockDetail(val);
-                  // fetchBlockData(val.block_id);
-                }}
-              >
-                <div className="w-36 flex flex-col items-center p-[5px] bg-slate-700 rounded-[25px]  lg:group-hover:scale-105  transition-all duration-300">
-                  <div className="text-black py-2 flex flex-wrap justify-between items-center ">
-                    <span className="text-white">{val.name}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        <div className="flex gap-3 ">
+          {rows.map((val, index) => (
+            <Button
+              variant="contained"
+              disabled={index > 0 && !rows[index - 1].answered}
+              className={` ${
+                index === currentQuestionIndex ? "bg-slate-200" : ""
+              }`}
+              key={index}
+              onClick={() => {
+                setCurrentQuestionIndex(index);
+                setBlockDetail(val);
+              }}
+            >
+              <span className="">{val.name}</span>
+            </Button>
+          ))}
         </div>
       </div>
       {blockDetail && (
         <Box>
           <div>
             <Typography component="span">Đề bài: </Typography>
-            <span className="font-semibold">{blockDetail?.question}</span>
+            <span className="font-semibold">{blockDetail.question}</span>
           </div>
           <div>
             <Typography component="span">Mức độ: </Typography>
@@ -101,13 +173,16 @@ export const LessonsDetail = () => {
               isEdit={false}
             />
           </div>
-          <Button
-            onClick={handleSubmitAnswer}
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Kiểm tra
-          </Button>
+          {currentQuestionIndex ===
+            rows.findIndex((row) => row.block_id === blockDetail.block_id) && (
+            <Button
+              onClick={handleSubmitAnswer}
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Kiểm tra
+            </Button>
+          )}
         </Box>
       )}
     </>

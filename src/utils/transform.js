@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const transformCodeBlockly = (input) => {
   const lines = input?.split("\n");
 
@@ -19,10 +21,14 @@ export const transformCodeBlockly = (input) => {
   return output;
 };
 
-
 export function truncateText(text, maxLength = 200) {
   if (text.length > maxLength) {
-      return text.slice(0, maxLength) + '...';
+    return text.slice(0, maxLength) + "...";
   }
   return text;
 }
+
+export const formatDateTime = (value, formatString = "DD/MM/YYYY HH:mm:ss") => {
+  if (!value) return "";
+  return moment(value).format(formatString);
+};
