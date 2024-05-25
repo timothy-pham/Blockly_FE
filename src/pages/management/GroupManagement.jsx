@@ -31,7 +31,7 @@ import {
   deleteData,
 } from "../../utils/dataProvider";
 
-export const CategoryManagement = () => {
+export const GroupManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -128,7 +128,7 @@ export const CategoryManagement = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">Category Management</Typography>
+            <Typography variant="h6">Groups Management</Typography>
             <Button
               color="primary"
               variant="contained"
@@ -221,7 +221,7 @@ export const CategoryManagement = () => {
           setOpenPopup(false);
         }}
       >
-        Tạo Category
+        Tạo Groups
         <Box
           className="flex flex-col items-center"
           component="form"
@@ -288,7 +288,7 @@ export const CategoryManagement = () => {
         }}
       >
         <span>
-          Xác nhận để xóa Category{" "}
+          Xác nhận để xóa Groups{" "}
           <span style={{ color: "red" }}>{data.name}</span>
         </span>
         <Button

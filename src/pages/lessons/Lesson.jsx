@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { fetchData } from "../../utils/dataProvider";
 import { truncateText } from "../../utils/transform";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
 
 export const Lessons = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-  const id = location?.pathname?.split("/")[2];
   const [rows, setRows] = useState([]);
-
   const fetchCollection = async () => {
     try {
       const res = await fetchData(`groups/search?collection_id=${id}`);
@@ -33,7 +31,7 @@ export const Lessons = () => {
                 className={`relative group cursor-pointer`}
                 key={val}
                 onClick={() => {
-                  navigate(`/groups/${val.group_id}`);
+                  navigate(`/collections/${id}/groups/${val.group_id}`);
                 }}
               >
                 <div className="max-w-full flex flex-col items-center p-[25px] bg-slate-700 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105  transition-all duration-300">

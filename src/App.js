@@ -3,7 +3,7 @@ import { BlocklyLayout } from "./components/Blockly";
 import { Layout } from "./layouts/Layout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboards";
-import { CategoryManagement } from "./pages/management/CategoryManagement";
+import { GroupManagement } from "./pages/management/GroupManagement";
 import { BlockManagement } from "./pages/management/BlockManagement";
 import { CollectionManagement } from "./pages/management/CollectionManagement";
 import { CreateBlock } from "./pages/management/Block/CreateBlock";
@@ -13,6 +13,7 @@ import Login from "./pages/auth/Login";
 import { Lessons } from "./pages/lessons/Lesson";
 import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 import { Rooms } from "./pages/rooms/Room";
+import { History } from "./pages/History";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -29,12 +30,12 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<PrivateRoute element={Dashboard} />} />
           <Route
-            path="/blockly"
-            element={<PrivateRoute element={BlocklyLayout} />}
+            path="/history"
+            element={<PrivateRoute element={History} />}
           />
           <Route
-            path="/categoryManagement"
-            element={<PrivateRoute element={CategoryManagement} />}
+            path="/groupManagement"
+            element={<PrivateRoute element={GroupManagement} />}
           />
           <Route
             path="/blockManagement"
@@ -57,7 +58,7 @@ function App() {
             element={<PrivateRoute element={Lessons} />}
           />
           <Route
-            path="/groups/:id"
+            path="/collections/:collection_id/groups/:group_id"
             element={<PrivateRoute element={LessonsDetail} />}
           />
           <Route

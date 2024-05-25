@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import * as Blockly from "blockly";
 import { blocks } from "./blockly/text";
 import { forBlock } from "./blockly/javascript";
@@ -8,80 +8,82 @@ import * as BlocklyCore from "blockly/core";
 import { isEmpty } from "lodash";
 
 export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
-  let codeDiv;
-  let outputDiv;
-  let ws;
-  let blocklyDiv;
+  const codeDivRef = useRef(null);
+  const outputDivRef = useRef(null);
+  const blocklyDivRef = useRef(null);
+  const workspaceRef = useRef(null);
 
   useLayoutEffect(() => {
-    if (isEmpty(blocklyDiv)) {
-      codeDiv = document.getElementById("generatedCode")?.firstChild;
-      outputDiv = document.getElementById("output");
-      blocklyDiv = document.getElementById("blocklyDiv");
-      ws =
-        blocklyDiv &&
-        Blockly.inject(blocklyDiv, {
-          toolbox: isEdit ? toolbox : null,
-          zoom: {
-            controls: true,
-            wheel: true,
-            startScale: 1.0,
-            maxScale: 3,
-            minScale: 0.3,
-            scaleSpeed: 1.2,
-            pinch: true,
-          },
-          trashcan: isEdit,
-        });
+    Blockly.common.defineBlocks(blocks);
+    Object.assign(javascriptGenerator.forBlock, forBlock);
+
+    if (blocklyDivRef.current) {
+      workspaceRef.current = Blockly.inject(blocklyDivRef.current, {
+        toolbox: isEdit ? toolbox : null,
+        zoom: {
+          controls: true,
+          wheel: true,
+          startScale: 1.0,
+          maxScale: 3,
+          minScale: 0.3,
+          scaleSpeed: 1.2,
+          pinch: true,
+        },
+        trashcan: isEdit,
+      });
+
       if (data) {
-        BlocklyCore.serialization.workspaces.load(data, ws, undefined);
+        BlocklyCore.serialization.workspaces.load(data, workspaceRef.current, undefined);
       }
-      ws.addChangeListener((e) => {
-        if (
-          e.isUiEvent ||
-          e.type == Blockly.Events.FINISHED_LOADING ||
-          ws.isDragging()
-        ) {
+
+      workspaceRef.current.addChangeListener((e) => {
+        if (e.isUiEvent || e.type === Blockly.Events.FINISHED_LOADING || workspaceRef.current.isDragging()) {
           return;
         }
-        const data = BlocklyCore.serialization.workspaces.save(ws);
-        var code = javascriptGenerator.workspaceToCode(ws);
-
-        setDataBlocks({ code, data });
+        const workspaceData = BlocklyCore.serialization.workspaces.save(workspaceRef.current);
+        const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
+        setDataBlocks({ code, data: workspaceData });
         showText();
       });
     }
+
+    return () => {
+      if (workspaceRef.current) {
+        workspaceRef.current.dispose();
+        workspaceRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
-    Blockly.common.defineBlocks(blocks);
-    Object.assign(javascriptGenerator.forBlock, forBlock);
-  }, []);
+    if (data && workspaceRef.current) {
+      BlocklyCore.serialization.workspaces.load(data, workspaceRef.current, undefined);
+    }
+  }, [data]);
 
   const showText = () => {
-    const code = javascriptGenerator.workspaceToCode(ws);
-    if (codeDiv) codeDiv.textContent = code;
-
-    if (outputDiv) outputDiv.innerHTML = "";
+    if (workspaceRef.current) {
+      const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
+      if (codeDivRef.current) codeDivRef.current.textContent = code;
+      if (outputDivRef.current) outputDivRef.current.innerHTML = "";
+    }
   };
 
-  function runCode(e) {
+  const runCode = (e) => {
     e.preventDefault();
-    var code = javascriptGenerator.workspaceToCode(ws);
-    console.log("code", code);
-    try {
-      const a = eval(code);
-    } catch (e) {
-      console.log("erorr", e);
-      //   alert(e);
+    if (workspaceRef.current) {
+      const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
+      console.log("code", code);
+      try {
+        const a = eval(code);
+      } catch (error) {
+        console.log("error", error);
+      }
     }
-  }
+  };
 
   return (
     <>
-      {/* <button onClick={runCode}>Run code</button>
-      <button onClick={submitBlock}>Submit block</button> */}
-
       <div
         id="pageContainer"
         style={{
@@ -93,8 +95,9 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
       >
         <div
           id="blocklyDiv"
+          ref={blocklyDivRef}
           style={{
-            flexBasis: " 100%",
+            flexBasis: "100%",
             minWidth: "600px",
           }}
         ></div>
@@ -112,9 +115,9 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
             }}
           >
             <pre id="generatedCode" style={{ height: "50%" }}>
-              <code></code>
+              <code ref={codeDivRef}></code>
             </pre>
-            <div id="output" style={{ height: "50%" }}></div>
+            <div id="output" style={{ height: "50%" }} ref={outputDivRef}></div>
           </div>
         )}
       </div>

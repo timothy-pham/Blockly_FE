@@ -160,6 +160,7 @@ export const BlockManagement = () => {
               <TableRow className="[&>*]:font-bold">
                 <TableCell>Name</TableCell>
                 <TableCell>Question</TableCell>
+                <TableCell>Group</TableCell>
                 <TableCell>Level</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
@@ -177,6 +178,7 @@ export const BlockManagement = () => {
                     {row?.name}
                   </TableCell>
                   <TableCell>{row?.question}</TableCell>
+                  <TableCell>{row?.group.name}</TableCell>
                   <TableCell>
                     {row.level}
                     {/* {
