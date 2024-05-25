@@ -1,6 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import io from "socket.io-client";
+import {
+  Paper,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+} from "@mui/material";
 
 let socket;
 
@@ -12,20 +25,32 @@ export const Play = () => {
   // Before Login
   const [loggedIn, setLoggedIn] = useState(false);
   const [room, setRoom] = useState("");
-  const [userName, setUserName] = useState("");
+  const [ready, setReady] = useState(false);
+  const hasFetched = useRef(false);
 
   // After Login
-  const [message, setMessage] = useState("");
-  const [messageList, setMessageList] = useState([]);
+  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
-    socket = io(CONNECTION_PORT);
-    connectToRoom();
+    if (!hasFetched.current) {
+      console.log("join room ============>");
+      socket = io(CONNECTION_PORT);
+      connectToRoom();
+      hasFetched.current = true; // Ensure it only runs once
+    }
+
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, []);
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessageList([...messageList, data]);
+    console.log("user Joinnnnnnnnnnnn =====>");
+    socket?.on("user_joined", (data) => {
+      console.log("data", data);
+      let temp = userList;
+      temp.push(data);
+      setUserList(temp);
     });
   });
 
@@ -34,71 +59,41 @@ export const Play = () => {
     socket.emit("join_room", { room_id: id, user_id: users.user_id });
   };
 
-  const sendMessage = async () => {
-    let messageContent = {
-      room: room,
-      content: {
-        author: userName,
-        message: message,
-      },
-    };
-
-    await socket.emit("send_message", messageContent);
-    setMessageList([...messageList, messageContent.content]);
-    setMessage("");
+  const handleReady = () => {
+    console.log("readyyyy");
+    socket?.emit("user_ready", !ready);
+    setReady(!ready);
   };
 
+  console.log("userList ====>", userList);
   return (
-    <div className="App">
-      {!loggedIn ? (
-        <div className="logIn">
-          <div className="inputs">
-            <input
-              type="text"
-              placeholder="Name..."
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-            />
-            <input
-              type="text"
-              placeholder="Room..."
-              onChange={(e) => {
-                setRoom(e.target.value);
-              }}
-            />
-          </div>
-          <button onClick={connectToRoom}>Enter Chat</button>
-        </div>
-      ) : (
-        <div className="chatContainer">
-          <div className="messages">
-            {messageList.map((val, key) => {
-              return (
-                <div
-                  className="messageContainer"
-                  id={val.author == userName ? "You" : "Other"}
-                >
-                  <div className="messageIndividual">
-                    {val.author}: {val.message}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+    <>
+      <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
+        {ready ? "ready" : "not ready"}
+      </Button>
 
-          <div className="messageInputs">
-            <input
-              type="text"
-              placeholder="Message..."
-              onChange={(e) => {
-                setMessage(e.target.value);
-              }}
-            />
-            <button onClick={sendMessage}>Send</button>
-          </div>
-        </div>
-      )}
-    </div>
+      <div className="w-fullflex flex-col justify-center">
+        <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow className="[&>*]:font-bold">
+                <TableCell>User</TableCell>
+                <TableCell>Ready</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {userList.map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row?.user_id}
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+    </>
   );
 };
