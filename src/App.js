@@ -12,6 +12,7 @@ import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import { Lessons } from "./pages/lessons/Lesson";
 import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
+import { Rooms } from "./pages/rooms/Room";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -58,6 +59,10 @@ function App() {
           <Route
             path="/groups/:id"
             element={<PrivateRoute element={LessonsDetail} />}
+          />
+          <Route
+            path="/rooms"
+            element={<PrivateRoute element={Rooms} />}
           />
         </Route>
       </Routes>

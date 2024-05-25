@@ -14,6 +14,7 @@ import {
   Typography,
   Box,
   TextField,
+  Select,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState } from "react";
@@ -29,6 +30,12 @@ import {
   updateData,
   deleteData,
 } from "../../utils/dataProvider";
+
+const types = [
+  { value: "solo", label: "Thi đấu trực tuyến" },
+  { value: "normal", label: "Luyện tập" },
+  { value: "multiplayer", label: "Nhiều người chơi" },
+]
 
 export const CollectionManagement = () => {
   const navigate = useNavigate();
@@ -72,6 +79,7 @@ export const CollectionManagement = () => {
     try {
       if (!data?.collection_id) {
         await createData("collections", {
+          type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
@@ -133,9 +141,9 @@ export const CollectionManagement = () => {
             <TableBody>
               {(rowsPerPage > 0
                 ? rows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
                 : rows
               ).map((row, index) => (
                 <TableRow key={index}>
@@ -238,6 +246,20 @@ export const CollectionManagement = () => {
             multiline
             rows={4}
           />
+          <Select
+            native
+            value={data?.type}
+            onChange={(e) => setData({ type: e.target.value })}
+            inputProps={{
+              name: "type",
+              id: "type",
+            }}
+            defaultValue={data.type || "normal"}
+          >
+            {types.map((row) => (
+              <option value={row.value}>{row.label}</option>
+            ))}
+          </Select>
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
             Submit
           </Button>

@@ -13,7 +13,7 @@ export const Dashboard = () => {
       if (res) {
         setRows(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useEffect(() => {
     fetchCollection();
@@ -30,7 +30,11 @@ export const Dashboard = () => {
                 className={`relative group cursor-pointer`}
                 key={val}
                 onClick={() => {
-                  navigate(`/collections/${val.collection_id}`);
+                  if (val.type == 'normal') {
+                    navigate(`/collections/${val.collection_id}`);
+                  } else {
+                    navigate(`/rooms?type=${val.type}&collection_id=${val.collection_id}`);
+                  }
                 }}
               >
                 <div className="max-w-full flex flex-col items-center p-[25px] bg-slate-700 rounded-[25px] h-[100%] max-h-[500px]">

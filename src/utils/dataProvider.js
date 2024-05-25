@@ -6,9 +6,9 @@ export async function fetchData(resource, headers) {
       {
         headers: !headers
           ? {
-              // Authorization: "Bearer " + JSON.parse(currentUser).token,
-              "Content-Type": "application/json",
-            }
+            // Authorization: "Bearer " + JSON.parse(currentUser).token,
+            "Content-Type": "application/json",
+          }
           : headers,
       }
     );
@@ -96,7 +96,7 @@ export async function updateData(resource, id, data) {
 }
 
 export async function createData(resource, data) {
-  //   const currentUser = localStorage.getItem("authToken");
+  const currentUser = localStorage.getItem("authToken");
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
@@ -104,12 +104,15 @@ export async function createData(resource, data) {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          // Authorization: "Bearer " + JSON.parse(currentUser).token,
+          Authorization: "Bearer " + JSON.parse(currentUser).token,
           "Content-Type": "application/json",
         },
       }
     );
     if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    if (response.status > 400) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const result = await response.json();
