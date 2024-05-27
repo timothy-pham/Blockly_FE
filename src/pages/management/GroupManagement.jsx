@@ -15,6 +15,7 @@ import {
   Box,
   TextField,
   Autocomplete,
+  Select,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState } from "react";
@@ -96,7 +97,7 @@ export const GroupManagement = () => {
       } else {
         await updateData("groups", data.group_id, {
           name: dataForm.get("name"),
-          collection_id: collectionValue,
+          collection_id: dataForm.get("collection_id"),
           meta_data: {
             description: dataForm.get("description"),
           },
@@ -109,8 +110,6 @@ export const GroupManagement = () => {
       setOpenPopup(false);
     }
   };
-
-  console.log("data", data);
 
   const handleDelete = async () => {
     try {
@@ -240,25 +239,46 @@ export const GroupManagement = () => {
             autoFocus
           />
           {data?.group_id && (
-            <Autocomplete
-              disablePortal
-              id="collections"
+            <Select
+              native
               fullWidth
-              options={collection}
-              defaultValue={collection.find(
-                (option) => option.collection_id === data?.collection_id
-              )}
-              getOptionLabel={(option) => option.name}
-              renderInput={(params) => (
-                <TextField {...params} label="Danh Mục" id="id" />
-              )}
-              onChange={(e, val) => setCollectionValue(val?.collection_id)}
-              renderOption={(props, option) => (
-                <div {...props}>
-                  <h3>{option?.name}</h3>
-                </div>
-              )}
-            />
+              value={data?.type}
+              onChange={(e) => setData({ type: e.target.value })}
+              inputProps={{
+                name: "collection_id",
+                id: "collection_id",
+              }}
+              defaultValue={data?.collection?.collection_id}
+            >
+              {collection.map((row) => (
+                <option value={row.collection_id}>{row.name}</option>
+              ))}
+            </Select>
+            // <Autocomplete
+            //   disablePortal
+            //   id="collections"
+            //   fullWidth
+            //   options={collection}
+            //   defaultValue={collection.find(
+            //     (option) =>
+            //       option.collection_id === data?.collection.collection_id
+            //   )}
+            //   getOptionLabel={(option) => option.name}
+            //   renderInput={(params) => (
+            //     <TextField
+            //       {...params}
+            //       label="Danh Mục"
+            //       id="id"
+            //       name="collection_id"
+            //     />
+            //   )}
+            //   onChange={(e, val) => setCollectionValue(val?.collection_id)}
+            //   renderOption={(props, option) => (
+            //     <div {...props}>
+            //       <h3>{option?.name}</h3>
+            //     </div>
+            //   )}
+            // />
           )}
           <TextField
             margin="normal"

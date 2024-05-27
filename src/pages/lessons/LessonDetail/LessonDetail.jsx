@@ -1,6 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Button, Chip, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  Paper,
+  TableCell,
+  TableContainer,
+  TableFooter,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Box,
+  Button,
+  Chip,
+  Typography,
+} from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { createData, fetchData, updateData } from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
@@ -108,6 +122,7 @@ export const LessonsDetail = () => {
         return v;
       });
       setRows(answeredQuestion);
+      alert("Chúc mừng bạn đã làm đúng");
       handleNextQuestion();
     }
   };
@@ -139,52 +154,92 @@ export const LessonsDetail = () => {
           ))}
         </div>
       </div>
-      {blockDetail && (
-        <Box>
-          <div>
-            <Typography component="span">Đề bài: </Typography>
-            <span className="font-semibold">{blockDetail.question}</span>
-          </div>
-          <div>
-            <Typography component="span">Mức độ: </Typography>
-            <Chip
-              color={
-                blockDetail.level === 1
-                  ? "success"
-                  : blockDetail.level === 2
-                  ? "warning"
-                  : "error"
-              }
-              label={
-                blockDetail.level === 1
-                  ? "Dễ"
-                  : blockDetail.level === 2
-                  ? "Bình thường"
-                  : "Khó"
-              }
-              sx={{ width: "fit-content" }}
-            />
-          </div>
+      <div className="flex">
+        <div className="flex-1">
+          {blockDetail && (
+            <Box>
+              <div>
+                <Typography component="span">Đề bài: </Typography>
+                <span className="font-semibold">{blockDetail.question}</span>
+              </div>
+              <div>
+                <Typography component="span">Mức độ: </Typography>
+                <Chip
+                  color={
+                    blockDetail.level === 1
+                      ? "success"
+                      : blockDetail.level === 2
+                      ? "warning"
+                      : "error"
+                  }
+                  label={
+                    blockDetail.level === 1
+                      ? "Dễ"
+                      : blockDetail.level === 2
+                      ? "Bình thường"
+                      : "Khó"
+                  }
+                  sx={{ width: "fit-content" }}
+                />
+              </div>
 
-          <div className="my-2">
-            <BlocklyLayout
-              setDataBlocks={setDataBlocks}
-              data={blockDetail.data}
-              isEdit={false}
-            />
-          </div>
-          {currentQuestionIndex ===
-            rows.findIndex((row) => row.block_id === blockDetail.block_id) && (
-            <Button
-              onClick={handleSubmitAnswer}
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Kiểm tra
-            </Button>
+              <div className="my-2">
+                <BlocklyLayout
+                  setDataBlocks={setDataBlocks}
+                  data={blockDetail.data}
+                  isEdit={false}
+                />
+              </div>
+              {currentQuestionIndex ===
+                rows.findIndex(
+                  (row) => row.block_id === blockDetail.block_id
+                ) && (
+                <Button
+                  onClick={handleSubmitAnswer}
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
+            </Box>
           )}
-        </Box>
-      )}
+        </div>
+        <div className="flex-1">
+          <Typography variant="h3">
+            Bảng xếp hạng
+          </Typography>
+          <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow className="[&>*]:font-bold">
+                  <TableCell>Top</TableCell>
+                  <TableCell>User</TableCell>
+                  <TableCell>Score</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {/* {userList.map((row, index) => ( */}
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    1
+                  </TableCell>
+                  <TableCell>Dat</TableCell>
+                  <TableCell>2/3</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell component="th" scope="row">
+                    2
+                  </TableCell>
+                  <TableCell>Son</TableCell>
+                  <TableCell>1/3</TableCell>
+                </TableRow>
+                {/* ))} */}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      </div>
     </>
   );
 };

@@ -14,7 +14,7 @@ import { Lessons } from "./pages/lessons/Lesson";
 import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
-import { Play } from "./pages/rooms/Play";
+import { Waiting } from "./pages/rooms/Waiting";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -60,7 +60,14 @@ function App() {
             element={<PrivateRoute element={LessonsDetail} />}
           />
           <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
-          <Route path="/rooms/:id" element={<PrivateRoute element={Play} />} />
+          <Route
+            path="/rooms/:id"
+            element={<PrivateRoute element={Waiting} />}
+          />
+          <Route
+            path="/play"
+            element={<PrivateRoute element={Waiting} />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
