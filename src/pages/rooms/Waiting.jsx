@@ -17,6 +17,7 @@ import {
 import { socket } from "../../socket";
 import { fetchData } from "../../utils/dataProvider";
 import { ChatBox } from "../../components/Chat/ChatBox";
+import CooldownDialog from "../../components/CooldownDialog";
 
 export const Waiting = () => {
   const navigate = useNavigate();
@@ -24,8 +25,6 @@ export const Waiting = () => {
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
   // Before Login
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [room, setRoom] = useState("");
   const [ready, setReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
@@ -33,18 +32,9 @@ export const Waiting = () => {
   // After Login
   const [userList, setUserList] = useState([]);
 
-  const [messages, setMessages] = useState([
-    // {
-    //   text: "Hi, how can I help you?",
-    //   avatar: "https://picsum.photos/50/50",
-    //   isUser: false,
-    // },
-    // {
-    //   text: "Sure, I can help with that.",
-    //   avatar: "https://picsum.photos/50/50",
-    //   isUser: true,
-    // },
-  ]);
+  const [messages, setMessages] = useState([]);
+
+  const [cooldown, setCooldown] = useState(0);
 
   const fetchRoom = async () => {
     try {
@@ -91,6 +81,10 @@ export const Waiting = () => {
       receiveMessages(data);
     });
 
+    socket.on("start_game", (data) => {
+      startGame(data);
+    });
+
     return () => {
       socket.off("user_joined");
       socket.off("user_ready");
@@ -108,11 +102,25 @@ export const Waiting = () => {
     });
   };
 
+  const startGame = (data) => {
+    if (data?.status == "playing") {
+      setCooldown(5);
+      const countdown = setInterval(() => {
+        setCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdown);
+            socket.emit("start_game", { room_id: id });
+            navigate(`/rooms/${id}/play`);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  };
+
   const receiveMessages = (data) => {
-    setMessages((oldMessages) => [
-      ...oldMessages,
-      data,
-    ]);
+    setMessages((oldMessages) => [...oldMessages, data]);
   };
 
   const userLeft = (data) => {
@@ -130,7 +138,6 @@ export const Waiting = () => {
   };
 
   const connectToRoom = () => {
-    setLoggedIn(true);
     socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
   };
 
@@ -140,6 +147,9 @@ export const Waiting = () => {
     setReady(!ready);
   };
 
+  const checkHost = (user, userList) => {
+    return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
+  };
   return (
     <>
       <div className="flex  justify-between">
@@ -148,9 +158,11 @@ export const Waiting = () => {
         </Button>
         <Button
           onClick={() => {
-            navigate();
+            socket?.emit("start_game");
           }}
-          disabled={!userList.every((v) => v.is_ready)}
+          disabled={
+            !userList.every((v) => v.is_ready) || !checkHost(user, userList)
+          }
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
@@ -191,6 +203,7 @@ export const Waiting = () => {
           />
         </div>
       </div>
+      <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
     </>
   );
 };

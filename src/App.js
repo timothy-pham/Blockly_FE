@@ -65,7 +65,7 @@ function App() {
             element={<PrivateRoute element={Waiting} />}
           />
           <Route
-            path="/play"
+            path="/rooms/:id/play"
             element={<PrivateRoute element={Play} />}
           />
         </Route>

@@ -21,7 +21,7 @@ import { BlocklyLayout } from "../../components/Blockly";
 import moment from "moment";
 
 export const Play = () => {
-  const { collection_id, group_id } = useParams();
+  const { collection_id, id } = useParams();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -30,34 +30,34 @@ export const Play = () => {
   const [history, setHistory] = useState();
   const hasFetched = useRef(false);
 
-  const createHistory = async (initialBlockDetail) => {
-    try {
-      const res = await createData(`histories`, {
-        type: "normal",
-        user_id: 1,
-        group_id: Number(group_id),
-        collection_id: Number(collection_id),
-        result: [
-          {
-            block_id: initialBlockDetail.block_id,
-            block_state: initialBlockDetail.data,
-            start_time: moment().toISOString(),
-            correct: false,
-          },
-        ],
-        start_time: moment().toISOString(),
-      });
-      if (res) {
-        setHistory(res);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const createHistory = async (initialBlockDetail) => {
+  //   try {
+  //     const res = await createData(`histories`, {
+  //       type: "normal",
+  //       user_id: 1,
+  //       group_id: Number(group_id),
+  //       collection_id: Number(collection_id),
+  //       result: [
+  //         {
+  //           block_id: initialBlockDetail.block_id,
+  //           block_state: initialBlockDetail.data,
+  //           start_time: moment().toISOString(),
+  //           correct: false,
+  //         },
+  //       ],
+  //       start_time: moment().toISOString(),
+  //     });
+  //     if (res) {
+  //       setHistory(res);
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData(`blocks/search?group_id=${group_id}`);
+      const res = await fetchData(`blocks/random?room_id=${id}`);
       if (res) {
         const data = res.map((item) => ({
           ...item,
@@ -67,7 +67,7 @@ export const Play = () => {
         if (data.length > 0) {
           const initialBlockDetail = data[0];
           setBlockDetail(initialBlockDetail);
-          createHistory(initialBlockDetail);
+          // createHistory(initialBlockDetail);
         }
       }
     } catch (e) {
@@ -90,23 +90,23 @@ export const Play = () => {
     }
   };
 
-  const updateHistory = async (blockDetail) => {
-    try {
-      const res = await updateData(
-        `histories/add-result`,
-        history?.histories_id,
-        {
-          block_id: blockDetail.block_id,
-          block_state: blockDetail.data,
-          start_time: history.created_at,
-          end_time: moment().toISOString(),
-          correct: true,
-        }
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  // const updateHistory = async (blockDetail) => {
+  //   try {
+  //     const res = await updateData(
+  //       `histories/add-result`,
+  //       history?.histories_id,
+  //       {
+  //         block_id: blockDetail.block_id,
+  //         block_state: blockDetail.data,
+  //         start_time: history.created_at,
+  //         end_time: moment().toISOString(),
+  //         correct: true,
+  //       }
+  //     );
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
 
   const handleSubmitAnswer = async () => {
     const res = await createData("blocks/check-answer", {
@@ -116,7 +116,7 @@ export const Play = () => {
     if (res && res.correct) {
       const answeredQuestion = rows.map((v, index) => {
         if (index === currentQuestionIndex) {
-          updateHistory(v);
+          // updateHistory(v);
           return { ...v, data: dataBlock.data, answered: true };
         }
         return v;
