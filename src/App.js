@@ -1,5 +1,4 @@
 import "./App.css";
-import { BlocklyLayout } from "./components/Blockly";
 import { Layout } from "./layouts/Layout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Dashboard } from "./pages/Dashboards";
@@ -15,6 +14,7 @@ import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
 import { Waiting } from "./pages/rooms/Waiting";
+import { Play } from "./pages/rooms/Play";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -66,7 +66,7 @@ function App() {
           />
           <Route
             path="/play"
-            element={<PrivateRoute element={Waiting} />}
+            element={<PrivateRoute element={Play} />}
           />
         </Route>
       </Routes>

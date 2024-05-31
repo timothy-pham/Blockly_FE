@@ -242,8 +242,8 @@ export const GroupManagement = () => {
             <Select
               native
               fullWidth
-              value={data?.type}
-              onChange={(e) => setData({ type: e.target.value })}
+              // value={data?.type}
+              // onChange={(e) => setData({ type: e.target.value })}
               inputProps={{
                 name: "collection_id",
                 id: "collection_id",

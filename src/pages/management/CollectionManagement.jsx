@@ -35,7 +35,13 @@ const types = [
   { value: "solo", label: "Thi đấu trực tuyến" },
   { value: "normal", label: "Luyện tập" },
   { value: "multiplayer", label: "Nhiều người chơi" },
-]
+];
+
+const COLLECTION_TYPE = {
+  solo: "Thi đấu trực tuyến",
+  normal: "Luyện tập",
+  multiplayer: "Nhiều người chơi",
+};
 
 export const CollectionManagement = () => {
   const navigate = useNavigate();
@@ -87,6 +93,7 @@ export const CollectionManagement = () => {
         });
       } else {
         await updateData("collections", data.collection_id, {
+          type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
@@ -112,7 +119,6 @@ export const CollectionManagement = () => {
     }
   };
 
-
   return (
     <>
       <div className="w-fullflex flex-col justify-center">
@@ -133,17 +139,18 @@ export const CollectionManagement = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className="[&>*]:font-bold">
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>Tên</TableCell>
+                <TableCell>Mô tả</TableCell>
+                <TableCell>Thể loại</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
                 ? rows.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
                 : rows
               ).map((row, index) => (
                 <TableRow key={index}>
@@ -151,6 +158,7 @@ export const CollectionManagement = () => {
                     {row?.name}
                   </TableCell>
                   <TableCell>{row?.meta_data?.description}</TableCell>
+                  <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => {
@@ -249,8 +257,6 @@ export const CollectionManagement = () => {
           <Select
             native
             fullWidth
-            value={data?.type}
-            onChange={(e) => setData({ type: e.target.value })}
             inputProps={{
               name: "type",
               id: "type",
