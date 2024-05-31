@@ -20,6 +20,7 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
     if (blocklyDivRef.current) {
       workspaceRef.current = Blockly.inject(blocklyDivRef.current, {
         toolbox: isEdit ? toolbox : null,
+        scrollbars: true,
         zoom: {
           controls: true,
           wheel: true,
@@ -33,14 +34,24 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
       });
 
       if (data) {
-        BlocklyCore.serialization.workspaces.load(data, workspaceRef.current, undefined);
+        BlocklyCore.serialization.workspaces.load(
+          data,
+          workspaceRef.current,
+          undefined
+        );
       }
 
       workspaceRef.current.addChangeListener((e) => {
-        if (e.isUiEvent || e.type === Blockly.Events.FINISHED_LOADING || workspaceRef.current.isDragging()) {
+        if (
+          e.isUiEvent ||
+          e.type === Blockly.Events.FINISHED_LOADING ||
+          workspaceRef.current.isDragging()
+        ) {
           return;
         }
-        const workspaceData = BlocklyCore.serialization.workspaces.save(workspaceRef.current);
+        const workspaceData = BlocklyCore.serialization.workspaces.save(
+          workspaceRef.current
+        );
         const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
         setDataBlocks({ code, data: workspaceData });
         showText();
@@ -57,7 +68,11 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
 
   useEffect(() => {
     if (data && workspaceRef.current) {
-      BlocklyCore.serialization.workspaces.load(data, workspaceRef.current, undefined);
+      BlocklyCore.serialization.workspaces.load(
+        data,
+        workspaceRef.current,
+        undefined
+      );
     }
   }, [data]);
 

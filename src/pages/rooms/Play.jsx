@@ -19,6 +19,8 @@ import { transformCodeBlockly } from "../../utils/transform";
 import { createData, fetchData, updateData } from "../../utils/dataProvider";
 import { BlocklyLayout } from "../../components/Blockly";
 import moment from "moment";
+import { socket } from "../../socket";
+import { ChatBox } from "../../components/Chat/ChatBox";
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -29,7 +31,11 @@ export const Play = () => {
   const [dataBlock, setDataBlocks] = useState();
   const [history, setHistory] = useState();
   const hasFetched = useRef(false);
+  const [ranks, setRanks] = useState([]);
+  const [messages, setMessages] = useState([]);
 
+  const info = localStorage.getItem("authToken");
+  const { user } = JSON.parse(info);
   // const createHistory = async (initialBlockDetail) => {
   //   try {
   //     const res = await createData(`histories`, {
@@ -108,6 +114,39 @@ export const Play = () => {
   //   }
   // };
 
+  useEffect(() => {
+    socket.on("ranking_update", (data) => {
+      rankingUpdate(data);
+    });
+
+    socket.on("receive_messages", (data) => {
+      receiveMessages(data);
+    });
+
+    return () => {
+      socket.off("ranking_update");
+      socket.off("receive_messages");
+    };
+  }, [socket]);
+
+  const receiveMessages = (data) => {
+    setMessages((oldMessages) => [...oldMessages, data]);
+  };
+
+  const handleSendMessage = (text) => {
+    socket.emit("send_message", {
+      room_id: id,
+      user_id: user.user_id,
+      message: text,
+      user,
+    });
+  };
+
+  const rankingUpdate = (data) => {
+    console.log("ranking Update", data);
+    setRanks(data?.users);
+  };
+
   const handleSubmitAnswer = async () => {
     const res = await createData("blocks/check-answer", {
       id: blockDetail.block_id,
@@ -116,13 +155,17 @@ export const Play = () => {
     if (res && res.correct) {
       const answeredQuestion = rows.map((v, index) => {
         if (index === currentQuestionIndex) {
+          socket.emit("ranking_update", {
+            block_id: blockDetail.block_id,
+            answered: true,
+          });
           // updateHistory(v);
           return { ...v, data: dataBlock.data, answered: true };
         }
         return v;
       });
       setRows(answeredQuestion);
-      alert("Chúc mừng bạn đã làm đúng");
+      // alert("Chúc mừng bạn đã làm đúng");
       handleNextQuestion();
     }
   };
@@ -197,6 +240,7 @@ export const Play = () => {
                 <Button
                   onClick={handleSubmitAnswer}
                   variant="contained"
+                  disabled={blockDetail.answered}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Kiểm tra
@@ -206,36 +250,45 @@ export const Play = () => {
           )}
         </div>
         <div className="flex-1">
-          <Typography variant="h3">Bảng xếp hạng</Typography>
-          <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow className="[&>*]:font-bold">
-                  <TableCell>Top</TableCell>
-                  <TableCell>User</TableCell>
-                  <TableCell>Score</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {/* {userList.map((row, index) => ( */}
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    1
-                  </TableCell>
-                  <TableCell>Dat</TableCell>
-                  <TableCell>2/3</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    2
-                  </TableCell>
-                  <TableCell>Son</TableCell>
-                  <TableCell>1/3</TableCell>
-                </TableRow>
-                {/* ))} */}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <div className="flex-col">
+            <div>
+              <Typography variant="h3">Bảng xếp hạng</Typography>
+              <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+                <Table aria-label="simple table">
+                  <TableHead>
+                    <TableRow className="[&>*]:font-bold">
+                      <TableCell>Top</TableCell>
+                      <TableCell>User</TableCell>
+                      <TableCell>Score</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {ranks.map((row, index) => (
+                      <TableRow>
+                        <TableCell component="th" scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell>{row?.user_data.name}</TableCell>
+                        <TableCell>
+                          {row?.score}/{rows.length}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+
+            <div className="mt-10">
+              Nhắn tin
+              <ChatBox
+                messages={messages}
+                onSendMessage={handleSendMessage}
+                userId={user?.user_id}
+                roomId={id}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

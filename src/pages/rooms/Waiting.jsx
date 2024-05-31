@@ -200,6 +200,7 @@ export const Waiting = () => {
             messages={messages}
             onSendMessage={handleSendMessage}
             userId={user?.user_id}
+            roomId={id}
           />
         </div>
       </div>
