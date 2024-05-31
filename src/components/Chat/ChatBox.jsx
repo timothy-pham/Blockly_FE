@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ChatMessage from "./ChatMessage";
 
-export const ChatBox = ({ messages, onSendMessage }) => {
+export const ChatBox = ({ messages, onSendMessage, userId }) => {
   const [newMessage, setNewMessage] = useState("");
 
   const handleSendMessage = () => {
@@ -20,7 +20,7 @@ export const ChatBox = ({ messages, onSendMessage }) => {
             <ChatMessage
               key={index}
               message={message}
-              isUser={message.isUser}
+              isUser={message.user_id == userId}
             />
           ))}
         </div>

@@ -22,7 +22,7 @@ export const Waiting = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const info = localStorage.getItem("authToken");
-  const { users } = JSON.parse(info);
+  const { user } = JSON.parse(info);
   // Before Login
   const [loggedIn, setLoggedIn] = useState(false);
   const [room, setRoom] = useState("");
@@ -34,16 +34,16 @@ export const Waiting = () => {
   const [userList, setUserList] = useState([]);
 
   const [messages, setMessages] = useState([
-    {
-      text: "Hi, how can I help you?",
-      avatar: "https://picsum.photos/50/50",
-      isUser: false,
-    },
-    {
-      text: "Sure, I can help with that.",
-      avatar: "https://picsum.photos/50/50",
-      isUser: true,
-    },
+    // {
+    //   text: "Hi, how can I help you?",
+    //   avatar: "https://picsum.photos/50/50",
+    //   isUser: false,
+    // },
+    // {
+    //   text: "Sure, I can help with that.",
+    //   avatar: "https://picsum.photos/50/50",
+    //   isUser: true,
+    // },
   ]);
 
   const fetchRoom = async () => {
@@ -102,18 +102,17 @@ export const Waiting = () => {
   const handleSendMessage = (text) => {
     socket.emit("send_message", {
       room_id: id,
-      user_id: users.user_id,
+      user_id: user.user_id,
       message: text,
+      user,
     });
-
-    // setMessages([
-    //   ...messages,
-    //   { text, avatar: "https://picsum.photos/50/50", isUser: false },
-    // ]);
   };
 
   const receiveMessages = (data) => {
-    console.log("messagessss", data);
+    setMessages((oldMessages) => [
+      ...oldMessages,
+      data,
+    ]);
   };
 
   const userLeft = (data) => {
@@ -132,8 +131,7 @@ export const Waiting = () => {
 
   const connectToRoom = () => {
     setLoggedIn(true);
-    socket.emit("join_room", { room_id: id, user_id: users.user_id });
-    socket.emit("join_chat", { room_id: id, user_id: users.user_id });
+    socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
   };
 
   const handleReady = () => {
@@ -186,7 +184,11 @@ export const Waiting = () => {
           </TableContainer>
         </div>
         <div className="flex-1 ml-5">
-          <ChatBox messages={messages} onSendMessage={handleSendMessage} />
+          <ChatBox
+            messages={messages}
+            onSendMessage={handleSendMessage}
+            userId={user?.user_id}
+          />
         </div>
       </div>
     </>
