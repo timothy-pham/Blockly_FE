@@ -3,28 +3,38 @@ import AuthContext from "./AuthContext";
 import { createData } from "../../../utils/dataProvider";
 
 const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Function to handle user login
   const login = async (credentials) => {
     try {
-      const response = await createData("auth/login", {
-        username: credentials.username,
-        password: credentials.password,
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            username: credentials.username,
+            password: credentials.password,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (response) {
+      if (response.ok) {
+        const res = await response.json();
         setIsAuthenticated(true);
         localStorage.setItem(
           "authToken",
           JSON.stringify({
-            token: response.token,
-            refreshToken: response.refreshToken,
-            user: response.user,
+            token: res.token,
+            refreshToken: res.refreshToken,
+            user: res.user,
           })
         );
-        return response;
+        return res;
+      } else if (response.status > 400) {
+        return "Sai tài khoản hoặc mật khẩu";
       }
     } catch (error) {
       console.error("Login error:", error);

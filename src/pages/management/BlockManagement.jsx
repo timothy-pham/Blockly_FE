@@ -27,7 +27,10 @@ import {
   createData,
   updateData,
   deleteData,
+  getToken,
 } from "../../utils/dataProvider";
+import { saveAs } from "file-saver";
+import { getCurrentDateTime } from "../../utils/generate";
 
 export const BlockManagement = () => {
   const navigate = useNavigate();
@@ -36,7 +39,6 @@ export const BlockManagement = () => {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
-  const [dataImport, setDataImport] = useState();
 
   const [refresh, setRefresh] = React.useState(false);
 
@@ -108,6 +110,24 @@ export const BlockManagement = () => {
     }
   };
 
+  const handleExport = async (url) => {
+    fetch(`${process.env.REACT_APP_API_URL}/blocks/export`, {
+      headers: {
+        Authorization: getToken(),
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        var _url = window.URL.createObjectURL(blob);
+        saveAs(_url, `blockData-${getCurrentDateTime()}.json`);
+        // window.open(_url, "_blank").focus(); // window.open + focus
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <div className="w-fullflex flex-col justify-center">
@@ -137,7 +157,7 @@ export const BlockManagement = () => {
                 variant="contained"
                 size="small"
                 component="a"
-                href={`${process.env.REACT_APP_API_URL}/blocks/export`}
+                onClick={handleExport}
                 target="_blank"
                 sx={{ marginRight: 2 }}
               >

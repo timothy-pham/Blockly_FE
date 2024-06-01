@@ -15,8 +15,16 @@ import {
   Chip,
   Typography,
 } from "@mui/material";
-import { transformCodeBlockly } from "../../utils/transform";
-import { createData, fetchData, updateData } from "../../utils/dataProvider";
+import {
+  milisecondToSecondMinute,
+  transformCodeBlockly,
+} from "../../utils/transform";
+import {
+  createData,
+  fetchData,
+  fetchDataDetail,
+  updateData,
+} from "../../utils/dataProvider";
 import { BlocklyLayout } from "../../components/Blockly";
 import moment from "moment";
 import { socket } from "../../socket";
@@ -29,38 +37,15 @@ export const Play = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [blockDetail, setBlockDetail] = useState();
   const [dataBlock, setDataBlocks] = useState();
-  const [history, setHistory] = useState();
+  const [roomDetail, setRoomDetail] = useState();
   const hasFetched = useRef(false);
   const [ranks, setRanks] = useState([]);
   const [messages, setMessages] = useState([]);
 
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
-  // const createHistory = async (initialBlockDetail) => {
-  //   try {
-  //     const res = await createData(`histories`, {
-  //       type: "normal",
-  //       user_id: 1,
-  //       group_id: Number(group_id),
-  //       collection_id: Number(collection_id),
-  //       result: [
-  //         {
-  //           block_id: initialBlockDetail.block_id,
-  //           block_state: initialBlockDetail.data,
-  //           start_time: moment().toISOString(),
-  //           correct: false,
-  //         },
-  //       ],
-  //       start_time: moment().toISOString(),
-  //     });
-  //     if (res) {
-  //       setHistory(res);
-  //     }
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
 
+  const [timeLeft, setTimeLeft] = useState(600);
   const fetchCollection = async () => {
     try {
       const res = await fetchData(`blocks/random?room_id=${id}`);
@@ -73,7 +58,6 @@ export const Play = () => {
         if (data.length > 0) {
           const initialBlockDetail = data[0];
           setBlockDetail(initialBlockDetail);
-          // createHistory(initialBlockDetail);
         }
       }
     } catch (e) {
@@ -81,9 +65,21 @@ export const Play = () => {
     }
   };
 
+  const fetchRoomData = async () => {
+    try {
+      const res = await fetchDataDetail("rooms", id);
+      if (res) {
+        setRoomDetail(res);
+      }
+    } catch (e) {
+      console.log("can not fetch groups");
+    }
+  };
+
   useEffect(() => {
     if (!hasFetched.current) {
       fetchCollection();
+      fetchRoomData();
       hasFetched.current = true; // Ensure it only runs once
     }
   }, []);
@@ -170,9 +166,33 @@ export const Play = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime === 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+
   return (
     <>
-      <Typography variant="h4">Bài tập 1</Typography>
+      <div className="flex justify-between">
+        <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
+        <Typography variant="h4">Còn lại {formatTime(timeLeft)}</Typography>
+      </div>
       <div className="border-b border-solid border-gray-300 pb-10 my-5">
         <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
           Câu hỏi

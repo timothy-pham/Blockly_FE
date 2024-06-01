@@ -13,7 +13,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
   };
 
   return (
-    <div className="flex flex-col flex-1 ml-5">
+    <div className="flex flex-col flex-1 ml-5 h-[300px]">
       <div className="bg-gray-200 flex-1 overflow-y-scroll">
         <div className="px-4 py-2">
           {messages.map((message, index) => (

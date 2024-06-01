@@ -1,7 +1,9 @@
-const getToken = () => {
+export const getToken = () => {
   const currentUser = localStorage.getItem("authToken");
-  return JSON.parse(currentUser)?.token ? "Bearer " + JSON.parse(currentUser).token : "";
-}
+  return JSON.parse(currentUser)?.token
+    ? "Bearer " + JSON.parse(currentUser).token
+    : "";
+};
 export async function fetchData(resource, headers) {
   try {
     const response = await fetch(
@@ -9,9 +11,9 @@ export async function fetchData(resource, headers) {
       {
         headers: !headers
           ? {
-            Authorization: getToken(),
-            "Content-Type": "application/json",
-          }
+              Authorization: getToken(),
+              "Content-Type": "application/json",
+            }
           : headers,
       }
     );

@@ -1,11 +1,14 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import AuthContext from "../pages/auth/AuthContext/AuthContext";
+import { get } from "lodash";
 
 export const Layout = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const info = localStorage.getItem("authToken");
+  const user = get(JSON.parse(info), "user", {});
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
@@ -14,6 +17,13 @@ export const Layout = () => {
   const handleLogout = () => {
     logout();
     navigate(`/login`);
+  };
+
+  const getName = (name) => {
+    if (!name) return "";
+    const names = name.split(" ");
+    const initials = names.map((n) => n.charAt(0).toUpperCase());
+    return initials.join("");
   };
   return (
     <>
@@ -30,15 +40,14 @@ export const Layout = () => {
             </div>
             <div class="flex items-center">
               <div class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
-                <button
-                  type="button"
-                  className="flex text-sm bg-gray-800 dark:bg-gray-700 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 w-8 h-8"
-                  id="user-menu-button"
+                <div
                   aria-expanded={isUserDropdownOpen}
                   onClick={toggleUserDropdown}
+                  className="w-8 h-8 rounded-full mr-2 bg-gray-300 flex items-center justify-center text-white font-bold select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-600"
                 >
-                  <span class="sr-only dark:text-white">Open user menu</span>
-                </button>
+                  {getName(user.name)}
+                </div>
+
                 <div
                   className={`z-50 ${
                     isUserDropdownOpen ? "" : "hidden"
@@ -47,10 +56,10 @@ export const Layout = () => {
                 >
                   <div class="px-4 py-3">
                     <span class="block text-sm text-gray-900 dark:text-white">
-                      admin
+                      {user.name}
                     </span>
                     <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">
-                      admin@gmail.com
+                      {user.username}
                     </span>
                   </div>
                   <ul class="py-2" aria-labelledby="user-menu-button">
@@ -200,25 +209,6 @@ export const Layout = () => {
             </li>
             <li>
               <a
-                href="/blockManagement"
-                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-              >
-                <svg
-                  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 18 20"
-                >
-                  <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z" />
-                </svg>
-                <span class="flex-1 ms-3 whitespace-nowrap">
-                  Block Management
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
                 href="/groupManagement"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
@@ -244,6 +234,25 @@ export const Layout = () => {
             </li>
             <li>
               <a
+                href="/blockManagement"
+                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <svg
+                  class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 18 20"
+                >
+                  <path d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z" />
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">
+                  Block Management
+                </span>
+              </a>
+            </li>
+            {/* <li>
+              <a
                 href="/history"
                 class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
@@ -260,7 +269,7 @@ export const Layout = () => {
                 </svg>
                 <span class="flex-1 ms-3 whitespace-nowrap">Histories</span>
               </a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>

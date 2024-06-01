@@ -13,6 +13,7 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  Chip,
 } from "@mui/material";
 import { socket } from "../../socket";
 import { fetchData } from "../../utils/dataProvider";
@@ -90,6 +91,7 @@ export const Waiting = () => {
       socket.off("user_ready");
       socket.off("user_left");
       socket.off("receive_messages");
+      socket.off("start_game");
     };
   }, [socket]);
 
@@ -103,14 +105,12 @@ export const Waiting = () => {
   };
 
   const startGame = (data) => {
-    if (data?.status == "playing") {
+    if (data?.status === "playing") {
       setCooldown(5);
       const countdown = setInterval(() => {
         setCooldown((prev) => {
-          if (prev <= 1) {
-            console.log("START GAMEMEMEM???")
+          if (prev === 1) {
             clearInterval(countdown);
-            socket.emit("start_game", { room_id: id });
             navigate(`/rooms/${id}/play`);
             return 0;
           }
@@ -155,11 +155,11 @@ export const Waiting = () => {
     <>
       <div className="flex  justify-between">
         <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {ready ? "ready" : "not ready"}
+          {ready ? "Không sẵn sàng" : "Sẵn sàng"}
         </Button>
         <Button
           onClick={() => {
-            socket?.emit("start_game");
+            socket?.emit("start_game", { room_id: id });
           }}
           disabled={
             !userList.every((v) => v.is_ready) || !checkHost(user, userList)
@@ -167,7 +167,7 @@ export const Waiting = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Play
+          Bắt đầu
         </Button>
       </div>
 
@@ -177,8 +177,8 @@ export const Waiting = () => {
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow className="[&>*]:font-bold">
-                  <TableCell>User</TableCell>
-                  <TableCell>Ready</TableCell>
+                  <TableCell>Tên</TableCell>
+                  <TableCell>Sẵn sàng</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -188,7 +188,11 @@ export const Waiting = () => {
                       {row?.user_data.name}
                     </TableCell>
                     <TableCell>
-                      {row?.is_ready ? "ready" : "not ready"}
+                      {row?.is_ready ? (
+                        <Chip label="Sẵn sàng" color="success" />
+                      ) : (
+                        <Chip label="Chưa sẵn sàng" color="error" />
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
