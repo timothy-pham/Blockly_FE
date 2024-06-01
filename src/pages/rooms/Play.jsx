@@ -25,7 +25,7 @@ import {
 import { BlocklyLayout } from "../../components/Blockly";
 import { socket } from "../../socket";
 import Ranking from "./components/Ranking";
-
+import moment from "moment";
 import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
@@ -194,8 +194,11 @@ export const Play = () => {
   };
 
   useEffect(() => {
-    const timerDuration = roomDetail?.meta_data?.timer * 60 * 1000;
-    setTimeLeft(timerDuration);
+    console.log("ROOM DETAIL", roomDetail)
+    let timefromNow = moment().diff(roomDetail?.meta_data?.started_at);
+    let timeLeft = roomDetail?.meta_data?.timer * 60 * 1000 - timefromNow;
+    timeLeft = timeLeft + 5000
+    setTimeLeft(timeLeft);
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime === 0) {
@@ -266,15 +269,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                      ? "Bình thường"
-                      : "Khó"
+                        ? "Bình thường"
+                        : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -291,15 +294,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  variant="contained"
-                  disabled={blockDetail.answered}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    variant="contained"
+                    disabled={blockDetail.answered}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Kiểm tra
+                  </Button>
+                )}
             </Box>
           )}
         </div>

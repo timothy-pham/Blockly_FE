@@ -12,7 +12,7 @@ const Ranking = ({ ranks, rows }) => {
 
 
     useEffect(() => {
-        console.log("RANKS", ranks)
+        console.log("RANKS")
         const sortedRanks = [...ranks].sort((a, b) => {
             if (a.score !== b.score) {
                 return b.score - a.score;
@@ -24,19 +24,19 @@ const Ranking = ({ ranks, rows }) => {
     }, [ranks]);
 
     const transitions = useTransition(
-        sortedData.map(rank => ({ ...rank, y: (height += 50) - 50 })),
+        sortedData.map(rank => ({ ...rank, y: (height += 75) - 75 })),
         {
             key: item => item.user_id,
             from: { height: 0, opacity: 0 },
             leave: { height: 0, opacity: 0 },
-            enter: ({ y }) => ({ y, height: 50, opacity: 1 }),
-            update: ({ y }) => ({ y, height: 50 }),
+            enter: ({ y }) => ({ y, height: 75, opacity: 1 }),
+            update: ({ y }) => ({ y, height: 75 }),
         }
     );
     return (
         <div>
             <Typography variant="h3">Bảng xếp hạng</Typography>
-            <div className={styles.list} style={{ height: sortedData.length * 50 }}>
+            <div className={styles.list} style={{ height: sortedData.length * 75 }}>
                 {transitions((style, item, t, index) => (
                     <animated.div className={styles.card} style={{ zIndex: sortedData.length - index, ...style }}>
                         <div className={styles.cell}>
