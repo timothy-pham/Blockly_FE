@@ -15,6 +15,8 @@ import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
 import { Waiting } from "./pages/rooms/Waiting";
 import { Play } from "./pages/rooms/Play";
+import { Alert } from "@mui/material";
+import { AlertProvider } from "./components/alert/AlertProvider";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -23,54 +25,57 @@ const PrivateRoute = ({ element: Component, ...rest }) => {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+    <AlertProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<Layout />}>
-          <Route index element={<PrivateRoute element={Dashboard} />} />
-          <Route path="/history" element={<PrivateRoute element={History} />} />
-          <Route
-            path="/groupManagement"
-            element={<PrivateRoute element={GroupManagement} />}
-          />
-          <Route
-            path="/blockManagement"
-            element={<PrivateRoute element={BlockManagement} />}
-          />
-          <Route
-            path="/collectionManagement"
-            element={<PrivateRoute element={CollectionManagement} />}
-          />
-          <Route
-            path="/blockManagement/create"
-            element={<PrivateRoute element={CreateBlock} />}
-          />
-          <Route
-            path="/blockManagement/:id/edit"
-            element={<PrivateRoute element={EditBlock} />}
-          />
-          <Route
-            path="/collections/:id"
-            element={<PrivateRoute element={Lessons} />}
-          />
-          <Route
-            path="/collections/:collection_id/groups/:group_id"
-            element={<PrivateRoute element={LessonsDetail} />}
-          />
-          <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
-          <Route
-            path="/rooms/:id"
-            element={<PrivateRoute element={Waiting} />}
-          />
-          <Route
-            path="/rooms/:id/play"
-            element={<PrivateRoute element={Play} />}
-          />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<PrivateRoute element={Dashboard} />} />
+            <Route path="/history" element={<PrivateRoute element={History} />} />
+            <Route
+              path="/groupManagement"
+              element={<PrivateRoute element={GroupManagement} />}
+            />
+            <Route
+              path="/blockManagement"
+              element={<PrivateRoute element={BlockManagement} />}
+            />
+            <Route
+              path="/collectionManagement"
+              element={<PrivateRoute element={CollectionManagement} />}
+            />
+            <Route
+              path="/blockManagement/create"
+              element={<PrivateRoute element={CreateBlock} />}
+            />
+            <Route
+              path="/blockManagement/:id/edit"
+              element={<PrivateRoute element={EditBlock} />}
+            />
+            <Route
+              path="/collections/:id"
+              element={<PrivateRoute element={Lessons} />}
+            />
+            <Route
+              path="/collections/:collection_id/groups/:group_id"
+              element={<PrivateRoute element={LessonsDetail} />}
+            />
+            <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
+            <Route
+              path="/rooms/:id"
+              element={<PrivateRoute element={Waiting} />}
+            />
+            <Route
+              path="/rooms/:id/play"
+              element={<PrivateRoute element={Play} />}
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AlertProvider>
+
   );
 }
 
