@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { socket } from "../../socket";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { milisecondToSecondMinute } from "../../utils/transform";
 const AlertContext = createContext({
     showAlert: false,
     type: "",
@@ -31,12 +32,15 @@ const AlertProvider = ({ children }) => {
 
     useEffect(() => {
         socket.on("receive_notification", (data) => {
-            console.log("????")
             setAlert(true, data?.type, data?.message);
         });
 
+        socket.on("new_winner", (data) => {
+            setAlert(true, "default", `🎉🎉🎉 Chúc mừng ${data?.user?.user_data?.name} \nvừa chiến thắng với ${data?.user?.score} điểm\n trong ${milisecondToSecondMinute(data?.user?.end_time)}!`);
+        });
         return () => {
             socket.off("receive_notification");
+            socket.off("new_winner");
         };
     }, [socket]);
 

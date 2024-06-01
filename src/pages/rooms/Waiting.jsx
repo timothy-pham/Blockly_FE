@@ -108,6 +108,7 @@ export const Waiting = () => {
       const countdown = setInterval(() => {
         setCooldown((prev) => {
           if (prev <= 1) {
+            console.log("START GAMEMEMEM???")
             clearInterval(countdown);
             socket.emit("start_game", { room_id: id });
             navigate(`/rooms/${id}/play`);
