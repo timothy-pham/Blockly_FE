@@ -24,6 +24,7 @@ import { BlocklyLayout } from "../../components/Blockly";
 import moment from "moment";
 import { socket } from "../../socket";
 import { ChatBox } from "../../components/Chat/ChatBox";
+import Ranking from "./components/Ranking";
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -115,8 +116,17 @@ export const Play = () => {
     });
     setRanks(sortedRanks);
   };
+  const connectToRoom = () => {
+    socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
+  };
 
   useEffect(() => {
+    connectToRoom();
+    // for reload page
+    socket.on("user_joined", (data) => {
+      rankingUpdate(data);
+    });
+
     socket.on("ranking_update", (data) => {
       rankingUpdate(data);
     });
@@ -133,6 +143,7 @@ export const Play = () => {
       socket.off("ranking_update");
       socket.off("receive_messages");
       socket.off("end_game");
+      socket.off("user_joined");
     };
   }, [socket]);
 
@@ -204,9 +215,8 @@ export const Play = () => {
             <Button
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
-              className={` ${
-                index === currentQuestionIndex ? "bg-slate-200" : ""
-              }`}
+              className={` ${index === currentQuestionIndex ? "bg-slate-200" : ""
+                }`}
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
@@ -233,15 +243,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                      ? "Bình thường"
-                      : "Khó"
+                        ? "Bình thường"
+                        : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -258,49 +268,22 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  variant="contained"
-                  disabled={blockDetail.answered}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    variant="contained"
+                    disabled={blockDetail.answered}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Kiểm tra
+                  </Button>
+                )}
             </Box>
           )}
         </div>
         <div className="flex-1">
           <div className="flex-col">
-            <div>
-              <Typography variant="h3">Bảng xếp hạng</Typography>
-              <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
-                <Table aria-label="simple table">
-                  <TableHead>
-                    <TableRow className="[&>*]:font-bold">
-                      <TableCell>Top</TableCell>
-                      <TableCell>User</TableCell>
-                      <TableCell>Score</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {ranks.map((row, index) => (
-                      <TableRow>
-                        <TableCell component="th" scope="row">
-                          {index + 1}
-                        </TableCell>
-                        <TableCell>{row?.user_data.name}</TableCell>
-                        <TableCell>
-                          {row?.score}/{rows.length}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-
-            <div className="mt-10">
+            <Ranking ranks={ranks} rows={rows} />
+            {/* <div className="mt-10">
               Nhắn tin
               <ChatBox
                 messages={messages}
@@ -308,7 +291,7 @@ export const Play = () => {
                 userId={user?.user_id}
                 roomId={id}
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
