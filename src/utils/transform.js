@@ -36,5 +36,13 @@ export const formatDateTime = (value, formatString = "DD/MM/YYYY HH:mm:ss") => {
 export const milisecondToSecondMinute = (milisecond) => {
   const seconds = Math.floor(milisecond / 1000);
   const minutes = Math.floor(seconds / 60);
-  return `${minutes} phút ${seconds % 60} giây`;
-}
+  return minutes > 0
+    ? `${minutes} phút ${seconds % 60} giây`
+    : ` ${seconds % 60} giây`;
+};
+
+export const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+};

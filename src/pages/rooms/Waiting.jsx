@@ -16,7 +16,7 @@ import {
   Chip,
 } from "@mui/material";
 import { socket } from "../../socket";
-import { fetchData } from "../../utils/dataProvider";
+import { fetchData, fetchDataDetail } from "../../utils/dataProvider";
 import { ChatBox } from "../../components/Chat/ChatBox";
 import CooldownDialog from "../../components/CooldownDialog";
 
@@ -29,6 +29,7 @@ export const Waiting = () => {
   const [ready, setReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
+  const [roomDetail, setRoomDetail] = useState();
 
   // After Login
   const [userList, setUserList] = useState([]);
@@ -36,6 +37,17 @@ export const Waiting = () => {
   const [messages, setMessages] = useState([]);
 
   const [cooldown, setCooldown] = useState(0);
+
+  const fetchRoomData = async () => {
+    try {
+      const res = await fetchDataDetail("rooms", id);
+      if (res) {
+        setRoomDetail(res);
+      }
+    } catch (e) {
+      console.log("can not fetch groups");
+    }
+  };
 
   const fetchRoom = async () => {
     try {
@@ -55,6 +67,7 @@ export const Waiting = () => {
   useEffect(() => {
     if (!hasFetched.current) {
       fetchRoom();
+      fetchRoomData();
       connectToRoom();
 
       socket.on("disconnect", () => {
@@ -153,9 +166,10 @@ export const Waiting = () => {
   };
   return (
     <>
+      <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
       <div className="flex  justify-between">
         <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {ready ? "Không sẵn sàng" : "Sẵn sàng"}
+          {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
         </Button>
         <Button
           onClick={() => {

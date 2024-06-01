@@ -33,6 +33,11 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
             placeholder="Type your message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSendMessage();
+              }
+            }}
           />
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full"

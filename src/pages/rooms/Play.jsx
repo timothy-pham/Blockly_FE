@@ -6,19 +6,14 @@ import {
   Paper,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
-  TablePagination,
   TableRow,
   Box,
   Button,
   Chip,
   Typography,
 } from "@mui/material";
-import {
-  milisecondToSecondMinute,
-  transformCodeBlockly,
-} from "../../utils/transform";
+import { formatTime, transformCodeBlockly } from "../../utils/transform";
 import {
   createData,
   fetchData,
@@ -110,6 +105,17 @@ export const Play = () => {
   //   }
   // };
 
+  const rankingUpdate = (data) => {
+    const sortedRanks = [...data.users].sort((a, b) => {
+      if (a.score !== b.score) {
+        return b.score - a.score;
+      } else {
+        return a.end_timestamp - b.end_timestamp;
+      }
+    });
+    setRanks(sortedRanks);
+  };
+
   useEffect(() => {
     socket.on("ranking_update", (data) => {
       rankingUpdate(data);
@@ -119,11 +125,20 @@ export const Play = () => {
       receiveMessages(data);
     });
 
+    socket.on("end_game", (data) => {
+      endGame(data);
+    });
+
     return () => {
       socket.off("ranking_update");
       socket.off("receive_messages");
+      socket.off("end_game");
     };
   }, [socket]);
+
+  const endGame = (data) => {
+    console.log("endgame +++>", data);
+  };
 
   const receiveMessages = (data) => {
     setMessages((oldMessages) => [...oldMessages, data]);
@@ -138,11 +153,6 @@ export const Play = () => {
     });
   };
 
-  const rankingUpdate = (data) => {
-    console.log("ranking Update", data);
-    setRanks(data?.users);
-  };
-
   const handleSubmitAnswer = async () => {
     const res = await createData("blocks/check-answer", {
       id: blockDetail.block_id,
@@ -155,13 +165,11 @@ export const Play = () => {
             block_id: blockDetail.block_id,
             answered: true,
           });
-          // updateHistory(v);
           return { ...v, data: dataBlock.data, answered: true };
         }
         return v;
       });
       setRows(answeredQuestion);
-      // alert("Chúc mừng bạn đã làm đúng");
       handleNextQuestion();
     }
   };
@@ -179,13 +187,6 @@ export const Play = () => {
 
     return () => clearInterval(timer);
   }, []);
-
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
 
   return (
     <>
