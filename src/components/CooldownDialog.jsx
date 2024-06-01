@@ -5,9 +5,9 @@ import { Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
 const CooldownDialog = ({ open, cooldown }) => {
   return (
     <Dialog open={open}>
-      <DialogTitle>Game Starting Soon</DialogTitle>
+      <DialogTitle>Trận đáu bắt đầu sớm</DialogTitle>
       <DialogContent>
-        <Typography>The game will start in {cooldown} seconds...</Typography>
+        <Typography>trong vòng {cooldown} giây...</Typography>
       </DialogContent>
     </Dialog>
   );
