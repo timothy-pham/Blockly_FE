@@ -13,7 +13,11 @@ import {
   Chip,
   Typography,
 } from "@mui/material";
-import { formatTime, transformCodeBlockly } from "../../utils/transform";
+import {
+  formatTime,
+  milisecondToSecondMinute,
+  transformCodeBlockly,
+} from "../../utils/transform";
 import {
   createData,
   fetchData,
@@ -41,7 +45,7 @@ export const Play = () => {
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
 
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [timeLeft, setTimeLeft] = useState();
   const fetchCollection = async () => {
     try {
       const res = await fetchData(`blocks/random?room_id=${id}`);
@@ -189,24 +193,29 @@ export const Play = () => {
   };
 
   useEffect(() => {
+    const timerDuration = roomDetail?.meta_data?.timer * 60 * 1000;
+    setTimeLeft(timerDuration);
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
-        if (prevTime === 1) {
+        if (prevTime === 0) {
           clearInterval(timer);
           return 0;
         }
-        return prevTime - 1;
+        return prevTime - 1000;
       });
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
-
+  }, [roomDetail]);
   return (
     <>
       <div className="flex justify-between">
         <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
-        <Typography variant="h4">Còn lại {formatTime(timeLeft)}</Typography>
+        {!isNaN(timeLeft) && (
+          <Typography variant="h4">
+            Còn lại: {milisecondToSecondMinute(timeLeft)}
+          </Typography>
+        )}
       </div>
       <div className="border-b border-solid border-gray-300 pb-10 my-5">
         <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
@@ -218,8 +227,9 @@ export const Play = () => {
             <Button
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
-              className={` ${index === currentQuestionIndex ? "bg-slate-200" : ""
-                }`}
+              className={` ${
+                index === currentQuestionIndex ? "bg-slate-200" : ""
+              }`}
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
@@ -246,15 +256,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                        ? "warning"
-                        : "error"
+                      ? "warning"
+                      : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                      ? "Bình thường"
+                      : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -271,15 +281,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    variant="contained"
-                    disabled={blockDetail.answered}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Kiểm tra
-                  </Button>
-                )}
+                <Button
+                  onClick={handleSubmitAnswer}
+                  variant="contained"
+                  disabled={blockDetail.answered}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
             </Box>
           )}
         </div>

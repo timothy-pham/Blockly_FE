@@ -272,7 +272,10 @@ export const GroupManagement = () => {
               ))}
             </Select>
           )}
-          {type === "multiplayer" && (
+          {(type === "multiplayer" ||
+            collection.find(
+              (v) => v.collection_id == data?.collection?.collection_id
+            )?.type === "multiplayer") && (
             <TextField
               margin="normal"
               type="number"
