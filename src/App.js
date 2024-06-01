@@ -17,6 +17,7 @@ import { Waiting } from "./pages/rooms/Waiting";
 import { Play } from "./pages/rooms/Play";
 import { Alert } from "@mui/material";
 import { AlertProvider } from "./components/alert/AlertProvider";
+import { EndGame } from "./pages/rooms/EndGame";
 
 const PrivateRoute = ({ element: Component, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -33,7 +34,10 @@ function App() {
 
           <Route path="/" element={<Layout />}>
             <Route index element={<PrivateRoute element={Dashboard} />} />
-            <Route path="/history" element={<PrivateRoute element={History} />} />
+            <Route
+              path="/history"
+              element={<PrivateRoute element={History} />}
+            />
             <Route
               path="/groupManagement"
               element={<PrivateRoute element={GroupManagement} />}
@@ -71,11 +75,14 @@ function App() {
               path="/rooms/:id/play"
               element={<PrivateRoute element={Play} />}
             />
+            <Route
+              path="/rooms/:id/end-game"
+              element={<PrivateRoute element={EndGame} />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>
     </AlertProvider>
-
   );
 }
 

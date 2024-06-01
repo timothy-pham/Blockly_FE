@@ -1,9 +1,17 @@
-// src/components/ChatWindow.js
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 
 export const ChatBox = ({ messages, onSendMessage, userId }) => {
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -23,6 +31,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
               isUser={message.user_id == userId}
             />
           ))}
+          <div ref={messagesEndRef} />
         </div>
       </div>
       <div className="bg-gray-100 px-4 py-2">
@@ -34,7 +43,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 handleSendMessage();
               }
             }}

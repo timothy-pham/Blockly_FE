@@ -42,6 +42,7 @@ export const GroupManagement = () => {
   const [collection, setCollection] = useState([]);
   const [collectionValue, setCollectionValue] = useState();
   const [data, setData] = useState({ name: "", description: "" });
+  const [type, setType] = useState("");
 
   const [refresh, setRefresh] = React.useState(false);
 
@@ -100,6 +101,7 @@ export const GroupManagement = () => {
           collection_id: dataForm.get("collection_id"),
           meta_data: {
             description: dataForm.get("description"),
+            timer: Number(dataForm.get("timer")),
           },
         });
       }
@@ -142,10 +144,11 @@ export const GroupManagement = () => {
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className="[&>*]:font-bold">
-                <TableCell>Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Collection Name</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell>Tên</TableCell>
+                <TableCell>Mô tả</TableCell>
+                <TableCell>Thể loại</TableCell>
+                <TableCell>Thời gian</TableCell>
+                <TableCell>Hành động</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -162,6 +165,11 @@ export const GroupManagement = () => {
                   </TableCell>
                   <TableCell>{row?.meta_data?.description}</TableCell>
                   <TableCell>{row?.collection?.name}</TableCell>
+                  <TableCell>
+                    {row?.meta_data?.timer
+                      ? `${row?.meta_data?.timer} phút`
+                      : ""}
+                  </TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => {
@@ -243,42 +251,40 @@ export const GroupManagement = () => {
               native
               fullWidth
               // value={data?.type}
-              // onChange={(e) => setData({ type: e.target.value })}
+              onChange={(e) => {
+                if (e.target.value) {
+                  setType(
+                    collection.find((v) => v.collection_id == e.target.value)
+                      ?.type
+                  );
+                }
+              }}
               inputProps={{
                 name: "collection_id",
                 id: "collection_id",
               }}
               defaultValue={data?.collection?.collection_id}
             >
+              <option value={""}></option>
+
               {collection.map((row) => (
                 <option value={row.collection_id}>{row.name}</option>
               ))}
             </Select>
-            // <Autocomplete
-            //   disablePortal
-            //   id="collections"
-            //   fullWidth
-            //   options={collection}
-            //   defaultValue={collection.find(
-            //     (option) =>
-            //       option.collection_id === data?.collection.collection_id
-            //   )}
-            //   getOptionLabel={(option) => option.name}
-            //   renderInput={(params) => (
-            //     <TextField
-            //       {...params}
-            //       label="Danh Mục"
-            //       id="id"
-            //       name="collection_id"
-            //     />
-            //   )}
-            //   onChange={(e, val) => setCollectionValue(val?.collection_id)}
-            //   renderOption={(props, option) => (
-            //     <div {...props}>
-            //       <h3>{option?.name}</h3>
-            //     </div>
-            //   )}
-            // />
+          )}
+          {type === "multiplayer" && (
+            <TextField
+              margin="normal"
+              type="number"
+              required
+              fullWidth
+              id="timer"
+              label="Thời gian"
+              placeholder="Số phút"
+              name="timer"
+              defaultValue={data?.meta_data?.timer}
+              autoFocus
+            />
           )}
           <TextField
             margin="normal"

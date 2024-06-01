@@ -148,6 +148,9 @@ export const Play = () => {
   }, [socket]);
 
   const endGame = (data) => {
+    if (data) {
+      navigate(`/rooms/${id}/end-game`, { state: data });
+    }
     console.log("endgame +++>", data);
   };
 
