@@ -10,6 +10,11 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Button from '@mui/material/Button';
 import { milisecondToSecondMinute } from "../../utils/transform";
 export const EndGame = () => {
   const info = localStorage.getItem("authToken");
@@ -37,9 +42,69 @@ export const EndGame = () => {
   return (
     <>
       <div className="flex-1">
+        <h3>Bang xep hang</h3>
+        <div className="flex justify-center">
+          {/* Top 2 card*/}
+          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+            <CardMedia
+              sx={{ height: 150, aspectRatio: 1, objectFit: "contain", margin: 'auto' }}
+              component="img"
+              image="/top2.png"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {ranks[1]?.user_data.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Lizards are a widespread group of squamate reptiles, with over 6,000
+                species, ranging across all continents except Antarctica
+              </Typography>
+            </CardContent>
+
+          </Card>
+          {/* Top 1 card*/}
+          <Card sx={{ width: 345, height: 345, marginBottom: 20, marginX: 5 }}>
+            <CardMedia
+              sx={{ height: 150, aspectRatio: 1, objectFit: "contain", margin: 'auto' }}
+              component="img"
+              image="/top1.png"
+
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {ranks[0]?.user_data.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {ranks[0]?.score}/{allQuestions}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                +100 điểm
+              </Typography>
+            </CardContent>
+
+          </Card>
+          {/* Top 3 card */}
+          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+            <CardMedia
+              sx={{ height: 150, aspectRatio: 1, objectFit: "contain", margin: 'auto' }}
+              component="img"
+              image="/top3.png"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {ranks[2]?.user_data.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Lizards are a widespread group of squamate reptiles, with over 6,000
+                species, ranging across all continents except Antarctica
+              </Typography>
+            </CardContent>
+
+          </Card>
+        </div>
         <div className="flex-col">
           <div>
-            <Typography variant="h3">Bảng xếp hạng</Typography>
+            <Typography variant="h6">Chi tiết</Typography>
             <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
               <Table aria-label="simple table">
                 <TableHead>
