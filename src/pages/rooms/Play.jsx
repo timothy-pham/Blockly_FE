@@ -30,6 +30,8 @@ import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import LinearWithValueLabel from "../../components/progress/Progress";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -190,6 +192,29 @@ export const Play = () => {
       });
       setRows(answeredQuestion);
       handleNextQuestion();
+      toast("Bạn giỏi wa!", {
+        position: "top-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        type: "success"
+      });
+    } else {
+      toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
+        position: "top-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        type: "error"
+      });
     }
   };
 
@@ -214,7 +239,21 @@ export const Play = () => {
 
   return (
     <>
+
       <div className="flex justify-between">
+        <ToastContainer
+          position="top-left"
+          autoClose={1000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          stacked={true}
+        />
         <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
         {!isNaN(timeLeft) && (
           <Typography variant="h4">
