@@ -14,7 +14,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  formatTime,
   milisecondToSecondMinute,
   transformCodeBlockly,
 } from "../../utils/transform";
@@ -22,13 +21,15 @@ import {
   createData,
   fetchData,
   fetchDataDetail,
-  updateData,
 } from "../../utils/dataProvider";
 import { BlocklyLayout } from "../../components/Blockly";
-import moment from "moment";
 import { socket } from "../../socket";
-import { ChatBox } from "../../components/Chat/ChatBox";
 import Ranking from "./components/Ranking";
+
+import LinearProgress, {
+  LinearProgressProps,
+} from "@mui/material/LinearProgress";
+import LinearWithValueLabel from "../../components/progress/Progress";
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -207,6 +208,7 @@ export const Play = () => {
 
     return () => clearInterval(timer);
   }, [roomDetail]);
+
   return (
     <>
       <div className="flex justify-between">
@@ -222,23 +224,31 @@ export const Play = () => {
           Câu hỏi
         </Typography>
 
-        <div className="flex gap-3 ">
-          {rows.map((val, index) => (
-            <Button
-              variant="contained"
-              disabled={index > 0 && !rows[index - 1].answered}
-              className={` ${
-                index === currentQuestionIndex ? "bg-slate-200" : ""
-              }`}
-              key={index}
-              onClick={() => {
-                setCurrentQuestionIndex(index);
-                setBlockDetail(val);
-              }}
-            >
-              <span className="">{val.name}</span>
-            </Button>
-          ))}
+        <div className="flex-cols">
+          <div style={{ width: "100%" }}>
+            <LinearWithValueLabel
+              numberQuestions={rows.length}
+              currentQuestionIndex={currentQuestionIndex}
+            />
+          </div>
+          {/* <div className="flex gap-3 ">
+            {rows.map((val, index) => (
+              <Button
+                variant="contained"
+                disabled={index > 0 && !rows[index - 1].answered}
+                className={` ${
+                  index === currentQuestionIndex ? "bg-slate-200" : ""
+                }`}
+                key={index}
+                onClick={() => {
+                  setCurrentQuestionIndex(index);
+                  setBlockDetail(val);
+                }}
+              >
+                <span className="">{val.name}</span>
+              </Button>
+            ))}
+          </div> */}
         </div>
       </div>
       <div className="flex">
