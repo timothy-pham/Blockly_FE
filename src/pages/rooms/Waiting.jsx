@@ -45,9 +45,10 @@ export const Waiting = () => {
         setRoomDetail(res);
       }
     } catch (e) {
-      console.log("can not fetch groups");
+      console.log("can not fetch rooms");
     }
   };
+
 
   const fetchRoom = async () => {
     try {
@@ -55,12 +56,12 @@ export const Waiting = () => {
       if (res) {
         if (res.status === "waiting") {
           setIsLoading(false);
-        } else {
-          navigate("/rooms");
         }
+      } else {
+        navigate("/rooms");
       }
     } catch (e) {
-      console.log("can not fetch history");
+      console.log("can not fetch rooms");
     }
   };
 
@@ -164,6 +165,8 @@ export const Waiting = () => {
   const checkHost = (user, userList) => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
   };
+
+  console.log("userList", userList);
   return (
     <>
       <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
@@ -195,6 +198,8 @@ export const Waiting = () => {
                 <TableRow className="[&>*]:font-bold">
                   <TableCell>Tên</TableCell>
                   <TableCell>Sẵn sàng</TableCell>
+                  <TableCell>Điểm tích lũy </TableCell>
+                  <TableCell>Số trận đã đấu</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -209,6 +214,13 @@ export const Waiting = () => {
                       ) : (
                         <Chip label="Chưa sẵn sàng" color="error" />
                       )}
+                    </TableCell>
+
+                    <TableCell>
+                      {row?.user_data?.meta_data?.points || 0}
+                    </TableCell>
+                    <TableCell>
+                      {row?.user_data?.meta_data?.matches || 0}
                     </TableCell>
                   </TableRow>
                 ))}

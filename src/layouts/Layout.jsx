@@ -59,7 +59,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export const Layout = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const [openNav, setOpenNav] = useState(true);
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
@@ -71,6 +71,12 @@ export const Layout = () => {
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
+
+  useEffect(() => {
+    if (pathname.includes("/play")) {
+      setOpenNav(false);
+    }
+  }, [pathname]);
 
   const handleLogout = () => {
     logout();
