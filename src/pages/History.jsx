@@ -51,16 +51,16 @@ export const History = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">History</Typography>
+            <Typography variant="h6">Lịch sử luyện tập</Typography>
           </div>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className="[&>*]:font-bold">
-                <TableCell>Collection Name</TableCell>
-                <TableCell>Group Name</TableCell>
-                <TableCell>Score</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Updated At</TableCell>
+                <TableCell>Tên danh mục</TableCell>
+                <TableCell>Tên bài tập</TableCell>
+                <TableCell>Điểm số</TableCell>
+                <TableCell>Thời gian tham gia</TableCell>
+                <TableCell>Thời gian cập nhật</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

@@ -124,7 +124,7 @@ export const CollectionManagement = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">Collection Management</Typography>
+            <Typography variant="h6">Quản lí danh mục</Typography>
             <Button
               color="primary"
               variant="contained"
@@ -133,7 +133,7 @@ export const CollectionManagement = () => {
               startIcon={<AddIcon />}
               onClick={() => setOpenPopup(true)}
             >
-              Create
+              Thêm mới
             </Button>
           </div>
           <Table aria-label="simple table">

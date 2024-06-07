@@ -4,6 +4,7 @@ export const getToken = () => {
     ? "Bearer " + JSON.parse(currentUser).token
     : "";
 };
+
 export async function fetchData(resource, headers) {
   try {
     const response = await fetch(
@@ -17,6 +18,11 @@ export async function fetchData(resource, headers) {
           : headers,
       }
     );
+
+    if (response.status === 401) {
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }

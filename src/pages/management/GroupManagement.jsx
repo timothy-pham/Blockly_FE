@@ -129,7 +129,7 @@ export const GroupManagement = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">Groups Management</Typography>
+            <Typography variant="h6">Quản lí bài tập</Typography>
             <Button
               color="primary"
               variant="contained"
@@ -138,7 +138,7 @@ export const GroupManagement = () => {
               startIcon={<AddIcon />}
               onClick={() => setOpenPopup(true)}
             >
-              Create
+              Thêm mới
             </Button>
           </div>
           <Table aria-label="simple table">

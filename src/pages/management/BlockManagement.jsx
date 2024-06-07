@@ -15,6 +15,7 @@ import {
   Box,
   TextField,
   Autocomplete,
+  Chip,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState, useRef } from "react";
@@ -133,7 +134,7 @@ export const BlockManagement = () => {
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
-            <Typography variant="h6">Blocks Management</Typography>
+            <Typography variant="h6">Quản lí câu hỏi</Typography>
             <div>
               <>
                 <input
@@ -171,18 +172,18 @@ export const BlockManagement = () => {
                 startIcon={<AddIcon />}
                 onClick={() => navigate("/blockManagement/create")}
               >
-                Create
+                Thêm mới
               </Button>
             </div>
           </div>
           <Table aria-label="simple table">
             <TableHead>
               <TableRow className="[&>*]:font-bold">
-                <TableCell>Name</TableCell>
-                <TableCell>Question</TableCell>
-                <TableCell>Group</TableCell>
-                <TableCell>Level</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell>Tên Block</TableCell>
+                <TableCell>Câu hỏi</TableCell>
+                <TableCell>Tên bài tập</TableCell>
+                <TableCell>Cấp độ</TableCell>
+                <TableCell>Hành động</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -200,12 +201,24 @@ export const BlockManagement = () => {
                   <TableCell>{row?.question}</TableCell>
                   <TableCell>{row?.group.name}</TableCell>
                   <TableCell>
-                    {row.level}
-                    {/* {
-                      collection?.find(
-                        (v) => v?.collection_id == row?.collection_id
-                      )?.name
-                    } */}
+                    <Chip
+                      color={
+                        row?.level === 1
+                          ? "success"
+                          : row?.level === 2
+                          ? "warning"
+                          : "error"
+                      }
+                      label={
+                        row?.level === 1
+                          ? "Dễ"
+                          : row?.level === 2
+                          ? "Bình thường"
+                          : "Khó"
+                      }
+                      sx={{ width: "fit-content" }}
+                    />
+         
                   </TableCell>
                   <TableCell>
                     <IconButton

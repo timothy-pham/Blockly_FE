@@ -2,10 +2,14 @@ import { useState, StrictMode, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext/AuthContext";
 import { Typography } from "@mui/material";
+// import backgroundAuth from '/backgroundAuth.webp'
+
+
 const Login = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useContext(AuthContext);
   const [error, setError] = useState("");
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -27,12 +31,19 @@ const Login = () => {
   }, [isAuthenticated]);
 
   return (
-    <section class="dark:bg-gray-900 relative">
+    <section
+      class="dark:bg-gray-900 relative"
+      style={{
+        backgroundImage: `url(/backgroundAuth.jpeg)`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div class="flex flex-col items-center justify-center px-6 py-8 h-[100vh] mx-auto lg:py-0">
         <div class="w-full bg-white rounded-lg shadow-2xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 class="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Login
+              Đăng nhập
             </h1>
             <form class="space-y-4 md:space-y-6">
               <div>
