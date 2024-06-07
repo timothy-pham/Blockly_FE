@@ -18,7 +18,7 @@ import {
   Select,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,10 @@ import {
   createData,
   updateData,
   deleteData,
+  getToken,
 } from "../../utils/dataProvider";
+import { getCurrentDateTime } from "../../utils/generate";
+import { saveAs } from "file-saver";
 
 export const GroupManagement = () => {
   const navigate = useNavigate();
@@ -45,6 +48,7 @@ export const GroupManagement = () => {
   const [type, setType] = useState("");
 
   const [refresh, setRefresh] = React.useState(false);
+  const fileInputRef = useRef(null);
 
   const fetchGroup = async () => {
     try {
@@ -124,22 +128,100 @@ export const GroupManagement = () => {
     }
   };
 
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          await handleImport(JSON.parse(e.target.result));
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleImport = async (file) => {
+    try {
+      await createData("groups/import", file);
+    } catch (err) {
+      console.log("can not create block");
+    } finally {
+      setRefresh(!refresh);
+    }
+  };
+
+  const handleExport = async (url) => {
+    fetch(`${process.env.REACT_APP_API_URL}/groups/export`, {
+      headers: {
+        Authorization: getToken(),
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        var _url = window.URL.createObjectURL(blob);
+        saveAs(_url, `groupData-${getCurrentDateTime()}.json`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <div className="w-fullflex flex-col justify-center">
         <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
           <div className="flex justify-between">
             <Typography variant="h6">Quản lí bài tập</Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              component="a"
-              startIcon={<AddIcon />}
-              onClick={() => setOpenPopup(true)}
-            >
-              Thêm mới
-            </Button>
+            <div>
+              <>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  onClick={handleButtonClick}
+                  sx={{ marginRight: 2 }}
+                >
+                  Import JSON
+                </Button>
+              </>
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                component="a"
+                onClick={handleExport}
+                target="_blank"
+                sx={{ marginRight: 2 }}
+              >
+                Export Json
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                component="a"
+                startIcon={<AddIcon />}
+                onClick={() => setOpenPopup(true)}
+              >
+                Thêm mới
+              </Button>
+            </div>
           </div>
           <Table aria-label="simple table">
             <TableHead>
