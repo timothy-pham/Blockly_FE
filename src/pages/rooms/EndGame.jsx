@@ -39,37 +39,37 @@ export const EndGame = () => {
     rankingUpdate(location?.state);
   }, []);
 
+  console.log("ranks ==========>", ranks, ranks[2]);
+
   return (
     <>
       <div className="flex-1">
         <h3>Bang xep hang</h3>
         <div className="flex justify-center">
           {/* Top 2 card*/}
-          {ranks[1] && (
-            <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
-              <CardMedia
-                sx={{
-                  height: 150,
-                  aspectRatio: 1,
-                  objectFit: "contain",
-                  margin: "auto",
-                }}
-                component="img"
-                image="/top2.png"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {ranks[1]?.user_data.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {ranks[1]?.score}/{allQuestions}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  +75 điểm
-                </Typography>
-              </CardContent>
-            </Card>
-          )}
+          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+            <CardMedia
+              sx={{
+                height: 150,
+                aspectRatio: 1,
+                objectFit: "contain",
+                margin: "auto",
+              }}
+              component="img"
+              image="/top2.png"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {ranks[1]?.user_data.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {ranks[1]?.score}/{allQuestions}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                +75 điểm
+              </Typography>
+            </CardContent>
+          </Card>
           {/* Top 1 card*/}
           <Card sx={{ width: 345, height: 345, marginBottom: 20, marginX: 5 }}>
             <CardMedia
@@ -95,31 +95,30 @@ export const EndGame = () => {
             </CardContent>
           </Card>
           {/* Top 3 card */}
-          {ranks[2] && (
-            <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
-              <CardMedia
-                sx={{
-                  height: 150,
-                  aspectRatio: 1,
-                  objectFit: "contain",
-                  margin: "auto",
-                }}
-                component="img"
-                image="/top3.png"
-              />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  {ranks[2]?.user_data.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {ranks[2]?.score}/{allQuestions}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  +50 điểm
-                </Typography>
-              </CardContent>
-            </Card>
-          )}
+
+          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+            <CardMedia
+              sx={{
+                height: 150,
+                aspectRatio: 1,
+                objectFit: "contain",
+                margin: "auto",
+              }}
+              component="img"
+              image="/top3.png"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {ranks[2] ? ranks[2]?.user_data.name : "Không có đối thủ"}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {ranks[2] && ranks[2]?.score / allQuestions}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {ranks[2] && "+50 điểm"}
+              </Typography>
+            </CardContent>
+          </Card>
         </div>
         <div className="flex-col">
           <div>

@@ -176,7 +176,9 @@ export const Waiting = () => {
             socket?.emit("start_game", { room_id: id });
           }}
           disabled={
-            !userList.every((v) => v.is_ready) || !checkHost(user, userList)
+            !userList.every((v) => v.is_ready) ||
+            !checkHost(user, userList) ||
+            userList.length > 1
           }
           variant="contained"
           sx={{ mt: 3, mb: 2 }}

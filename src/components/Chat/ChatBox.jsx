@@ -39,7 +39,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
           <input
             className="w-full border rounded-full py-2 px-4 mr-2"
             type="text"
-            placeholder="Type your message..."
+            placeholder="..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {

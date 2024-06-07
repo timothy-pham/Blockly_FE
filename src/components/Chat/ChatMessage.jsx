@@ -15,7 +15,7 @@ const ChatMessage = ({ message, isUser }) => {
 
   // Check if the message is a special "has joined" message
 
-  const isJoinMessage = message[0]?.message?.includes("has joined");
+  const isJoinMessage = message[0]?.message?.includes("vừa tham gia");
 
   return isJoinMessage ? (
     <div className="flex justify-center mb-2">
