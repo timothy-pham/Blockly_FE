@@ -19,10 +19,13 @@ export const HistoryPlay = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = useState([]);
-
+  const [groups, setGroups] = useState([]);
+  const info = localStorage.getItem("authToken");
+  const { user } = JSON.parse(info);
+  const id = user?.user_id;
   const fetchHistory = async () => {
     try {
-      const res = await fetchData("histories");
+      const res = await fetchData("rooms/histories/" + id);
       if (res) {
         setRows(res);
       }
@@ -31,8 +34,20 @@ export const HistoryPlay = () => {
     }
   };
 
+  const fetchGroups = async () => {
+    try {
+      const res = await fetchData("groups");
+      if (res) {
+        setGroups(res);
+      }
+    } catch (e) {
+      console.log("can not fetch history");
+    }
+  };
+
   useEffect(() => {
     fetchHistory();
+    fetchGroups();
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -44,6 +59,15 @@ export const HistoryPlay = () => {
     setPage(0);
   };
 
+  const findRank = (userId, data) => {
+    const sortedData = data.sort((a, b) => b.score - a.score);
+    const userIndex = sortedData.findIndex((user) => user.user_id === userId);
+
+    const rank = userIndex + 1;
+
+    return rank;
+  };
+
   return (
     <TableContainer sx={{ padding: 3 }} component={Paper}>
       <div className="flex justify-between">
@@ -52,11 +76,11 @@ export const HistoryPlay = () => {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow className="[&>*]:font-bold">
-            <TableCell>Tên danh mục</TableCell>
+            <TableCell>Tên phòng</TableCell>
             <TableCell>Tên bài tập</TableCell>
             <TableCell>Điểm số</TableCell>
             <TableCell>Thời gian tham gia</TableCell>
-            <TableCell>Thời gian cập nhật</TableCell>
+            <TableCell>Thứ hạng/ Tổng số người</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -66,17 +90,28 @@ export const HistoryPlay = () => {
           ).map((row, index) => (
             <TableRow key={index}>
               <TableCell component="th" scope="row">
-                {row?.collection?.name}
-              </TableCell>
-              <TableCell>{row?.group?.name}</TableCell>
-              <TableCell>
-                {row?.meta_data?.score ? row?.meta_data?.score : 0}/
-                {row?.meta_data?.total}
+                {row?.name}
               </TableCell>
               <TableCell>
-                {formatDateTime(row?.meta_data?.start_time)}
+                {
+                  groups.find((v) => v?.group_id == row?.meta_data?.group_id)
+                    ?.name
+                }
               </TableCell>
-              <TableCell>{formatDateTime(row?.meta_data?.end_time)}</TableCell>
+              <TableCell>
+                {
+                  row.users.find((v) => {
+                    if (v.user_id === id) {
+                      return v;
+                    }
+                  }).score
+                }
+                / {row?.meta_data?.blocks.length}
+              </TableCell>
+              <TableCell>{formatDateTime(row?.created_at)}</TableCell>
+              <TableCell>
+                {findRank(id, row.users)}/{row.users.length}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

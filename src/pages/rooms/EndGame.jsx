@@ -63,7 +63,7 @@ export const EndGame = () => {
                 {ranks[1]?.user_data.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {ranks[1]?.score}/{allQuestions}
+                {`${ranks[1]?.score} / ${allQuestions}`}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 +75 điểm
@@ -87,7 +87,7 @@ export const EndGame = () => {
                 {ranks[0]?.user_data.name}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {ranks[0]?.score}/{allQuestions}
+                {`${ranks[0]?.score} / ${allQuestions}`}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 +100 điểm
@@ -112,7 +112,7 @@ export const EndGame = () => {
                 {ranks[2] ? ranks[2]?.user_data.name : "Không có đối thủ"}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {ranks[2] && ranks[2]?.score / allQuestions}
+                {ranks[2] && `${ranks[2]?.score} / ${allQuestions}`}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {ranks[2] && "+50 điểm"}

@@ -1,5 +1,5 @@
 import { BlocklyLayout } from "../../../components/Blockly";
-import { Button, TextField, Autocomplete, Box } from "@mui/material";
+import { Button, TextField, Autocomplete, Box, Paper } from "@mui/material";
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import {
   fetchData,
@@ -7,8 +7,10 @@ import {
   fetchDataDetail,
   updateData,
 } from "../../../utils/dataProvider";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { transformCodeBlockly } from "../../../utils/transform";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../../constant/toast";
 
 export const EditBlock = () => {
   const location = useLocation();
@@ -17,9 +19,9 @@ export const EditBlock = () => {
   const [categoryValue, setCategoryValue] = useState();
   const [dataBlock, setDataBlocks] = useState();
   const [blockDetail, setBlockDetail] = useState();
-
   const [answers, setAnswers] = useState("");
   const [showAnswers, setShowAnswers] = useState(false);
+  const navigate = useNavigate();
   const fetchCategory = async () => {
     try {
       const res = await fetchData("groups");
@@ -67,7 +69,7 @@ export const EditBlock = () => {
     event.preventDefault();
     const dataForm = new FormData(event.currentTarget);
     try {
-      await updateData("blocks", id, {
+      const res = await updateData("blocks", id, {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
@@ -79,13 +81,21 @@ export const EditBlock = () => {
           description: dataForm.get("description"),
         },
       });
+
+      if (res) {
+        toast.success("Chỉnh sửa câu hỏi thành công.", toastOptions);
+        navigate("/blockManagement");
+      }
     } catch (err) {
-      console.log("can not create block");
+      console.log("err ===>", err);
+      toast.error(
+        "Có lỗi trong lúc chỉnh sửa câu hỏi. Vui lòng kiểm tra lại.",
+        toastOptions
+      );
     }
   };
-
   return (
-    <>
+    <Paper sx={{ padding: 3 }}>
       Edit Block
       {blockDetail && (
         <Box
@@ -198,6 +208,6 @@ export const EditBlock = () => {
           </Button>
         </Box>
       )}
-    </>
+    </Paper>
   );
 };

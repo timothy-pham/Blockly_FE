@@ -1,7 +1,6 @@
 import { Box, ButtonBase } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { isEmpty } from "lodash";
-import { toast } from "react-toastify";
 
 export const SideNavItem = (props) => {
   const {

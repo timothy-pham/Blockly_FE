@@ -31,6 +31,8 @@ import {
 } from "../../utils/dataProvider";
 import { getCurrentDateTime } from "../../utils/generate";
 import { saveAs } from "file-saver";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../constant/toast";
 
 const types = [
   { value: "solo", label: "Thi đấu trực tuyến" },
@@ -81,11 +83,11 @@ export const CollectionManagement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    let res;
     const dataForm = new FormData(event.currentTarget);
     try {
       if (!data?.collection_id) {
-        await createData("collections", {
+        res = await createData("collections", {
           type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {
@@ -93,7 +95,7 @@ export const CollectionManagement = () => {
           },
         });
       } else {
-        await updateData("collections", data.collection_id, {
+        res = await updateData("collections", data.collection_id, {
           type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {
@@ -101,8 +103,20 @@ export const CollectionManagement = () => {
           },
         });
       }
+      if (res) {
+        toast.success(
+          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"} danh mục thành công.`,
+          toastOptions
+        );
+      }
+      setData({});
     } catch (err) {
-      console.log("can not create collection");
+      toast.error(
+        `Có lỗi trong lúc ${
+          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+        } danh mục. Vui lòng kiểm tra lại.`,
+        toastOptions
+      );
     } finally {
       setRefresh(!refresh);
       setOpenPopup(false);
@@ -111,9 +125,18 @@ export const CollectionManagement = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData("collections", data.collection_id);
+      const res = await deleteData("collections", data.collection_id);
+      if (res) {
+        toast.success(
+          `Xóa danh mục thành công.`,
+          toastOptions
+        );
+      }
     } catch (err) {
-      console.log("can not delete collection");
+      toast.error(
+        `Có lỗi trong lúc xóa danh mục. Vui lòng kiểm tra lại.`,
+        toastOptions
+      );
     } finally {
       setRefresh(!refresh);
       setOpen(false);
@@ -170,7 +193,7 @@ export const CollectionManagement = () => {
 
   return (
     <>
-      <TableContainer sx={{  padding: 3 }} component={Paper}>
+      <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí danh mục</Typography>
           <div>
@@ -342,7 +365,7 @@ export const CollectionManagement = () => {
             ))}
           </Select>
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Submit
+            Chỉnh sửa
           </Button>
         </Box>
       </Dialog>

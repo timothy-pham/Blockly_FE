@@ -112,7 +112,7 @@ export const Waiting = () => {
   const handleSendMessage = (text) => {
     socket.emit("send_message", {
       room_id: id,
-      user_id: user.user_id,
+      user_id: user?.user_id,
       message: text,
       user,
     });

@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Box,
-  Button,
-  Chip,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Chip, Typography } from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { createData, fetchData, updateData } from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
 import moment from "moment";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../../constant/toast";
 
 export const LessonsDetail = () => {
   const { collection_id, group_id } = useParams();
@@ -113,7 +110,10 @@ export const LessonsDetail = () => {
         return v;
       });
       setRows(answeredQuestion);
-      alert("Chúc mừng bạn đã làm đúng");
+      toast.success(`Chúc mừng bạn đã làm đúng`, toastOptions);
+      if (currentQuestionIndex === rows.length - 1) {
+        navigate(`/collections/${collection_id}`);
+      }
       handleNextQuestion();
     }
   };

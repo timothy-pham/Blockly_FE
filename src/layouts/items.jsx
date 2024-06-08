@@ -3,6 +3,7 @@ import RectangleGroupIcon from "@heroicons/react/24/solid/RectangleGroupIcon";
 import GlobeAltIcon from "@heroicons/react/24/solid/GlobeAltIcon";
 import ClockIcon from "@heroicons/react/24/solid/ClockIcon";
 import QuestionMarkCircleIcon from "@heroicons/react/24/solid/QuestionMarkCircleIcon";
+import TrophyIcon from "@heroicons/react/24/solid/TrophyIcon";
 import { SvgIcon } from "@mui/material";
 import { Role } from "../constant/role";
 
@@ -34,6 +35,16 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <ClockIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    permission: ["*"],
+    title: "Bảng xếp hạng ",
+    path: "/ranking",
+    icon: (
+      <SvgIcon fontSize="small">
+        <TrophyIcon />
       </SvgIcon>
     ),
   },

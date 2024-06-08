@@ -22,8 +22,6 @@ import React, { useEffect, useRef, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
@@ -34,6 +32,8 @@ import {
 } from "../../utils/dataProvider";
 import { getCurrentDateTime } from "../../utils/generate";
 import { saveAs } from "file-saver";
+import { toastOptions } from "../../constant/toast";
+import { toast } from "react-toastify";
 
 export const GroupManagement = () => {
   const navigate = useNavigate();
@@ -89,18 +89,18 @@ export const GroupManagement = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    let res;
     const dataForm = new FormData(event.currentTarget);
     try {
       if (!data?.group_id) {
-        await createData("groups", {
+        res = await createData("groups", {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
           },
         });
       } else {
-        await updateData("groups", data.group_id, {
+        res = await updateData("groups", data.group_id, {
           name: dataForm.get("name"),
           collection_id: dataForm.get("collection_id"),
           meta_data: {
@@ -109,8 +109,20 @@ export const GroupManagement = () => {
           },
         });
       }
+      if (res) {
+        toast.success(
+          ` ${!data?.group_id ? "Thêm mới" : "Chỉnh sửa"} bài tập thành công.`,
+          toastOptions
+        );
+      }
+      setData({});
     } catch (err) {
-      console.log("can not create collection");
+      toast.error(
+        `Có lỗi trong lúc ${
+          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+        } bài tập. Vui lòng kiểm tra lại.`,
+        toastOptions
+      );
     } finally {
       setRefresh(!refresh);
       setOpenPopup(false);
@@ -119,9 +131,15 @@ export const GroupManagement = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData("groups", data.collection_id);
+      const res = await deleteData("groups", data.collection_id);
+      if (res) {
+        toast.success(`Xóa bài tập thành công.`, toastOptions);
+      }
     } catch (err) {
-      console.log("can not delete collection");
+      toast.error(
+        `Có lỗi trong lúc xóa bài tập. Vui lòng kiểm tra lại.`,
+        toastOptions
+      );
     } finally {
       setRefresh(!refresh);
       setOpen(false);
@@ -178,7 +196,7 @@ export const GroupManagement = () => {
 
   return (
     <>
-      <TableContainer sx={{padding: 3 }} component={Paper}>
+      <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí bài tập</Typography>
           <div>
@@ -375,7 +393,7 @@ export const GroupManagement = () => {
             rows={4}
           />
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Submit
+            Chỉnh sửa
           </Button>
         </Box>
       </Dialog>
