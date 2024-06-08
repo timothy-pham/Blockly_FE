@@ -6,14 +6,16 @@ import {
   Autocomplete,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createData } from "../../../utils/dataProvider";
 import { transformCodeBlockly } from "../../../utils/transform";
+import { uploadImage } from "../../../utils/firebase";
 
 export const CreateBlock = () => {
   const [dataBlock, setDataBlocks] = useState(null);
   const [answers, setAnswers] = useState("");
   const [showAnswers, setShowAnswers] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handlePreviewClick = (e) => {
     e.preventDefault();
@@ -28,6 +30,10 @@ export const CreateBlock = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const dataForm = new FormData(event.currentTarget);
+
+    // Upload image
+    const imageUrl = await uploadImage(selectedImage, "blocks");
+
     try {
       await createData("blocks", {
         name: dataForm.get("name"),
@@ -38,6 +44,7 @@ export const CreateBlock = () => {
         answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
+          image: imageUrl,
         },
       });
     } catch (err) {
@@ -97,6 +104,16 @@ export const CreateBlock = () => {
           label="Cấp độ"
           name="level"
         />
+        <input
+          type="file"
+          name="myImage"
+          accept="image/*"
+          onChange={(event) => {
+            console.log(event.target.files[0]); // Log the selected file
+            setSelectedImage(event.target.files[0]); // Update the state with the selected file
+          }}
+        />
+
 
         <div>
           <BlocklyLayout setDataBlocks={setDataBlocks} />

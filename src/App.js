@@ -52,7 +52,7 @@ const PrivateRoute = ({ element: Component, permission, ...rest }) => {
     }
   }, [authToken, permission, role]);
 
-  if (authToken && (!permission || permission === role)) {
+  if (authToken && (!permission || permission.includes(role))) {
     return <Component />;
   }
   return null;
