@@ -30,8 +30,8 @@ import LinearProgress, {
   LinearProgressProps,
 } from "@mui/material/LinearProgress";
 import LinearWithValueLabel from "../../components/progress/Progress";
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -114,13 +114,15 @@ export const Play = () => {
   // };
 
   const rankingUpdate = (data) => {
-    const sortedRanks = [...data.users].sort((a, b) => {
-      if (a.score !== b.score) {
-        return b.score - a.score;
-      } else {
-        return a.end_timestamp - b.end_timestamp;
+    const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
+      (a, b) => {
+        if (a.score !== b.score) {
+          return b.score - a.score;
+        } else {
+          return a.end_timestamp - b.end_timestamp;
+        }
       }
-    });
+    );
     setRanks(sortedRanks);
   };
   const connectToRoom = () => {
@@ -201,7 +203,7 @@ export const Play = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        type: "success"
+        type: "success",
       });
     } else {
       toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
@@ -213,16 +215,15 @@ export const Play = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        type: "error"
+        type: "error",
       });
     }
   };
 
   useEffect(() => {
-    console.log("ROOM DETAIL", roomDetail)
     let timefromNow = moment().diff(roomDetail?.meta_data?.started_at);
     let timeLeft = roomDetail?.meta_data?.timer * 60 * 1000 - timefromNow;
-    timeLeft = timeLeft + 5000
+    timeLeft = timeLeft + 5000;
     setTimeLeft(timeLeft);
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
@@ -239,7 +240,6 @@ export const Play = () => {
 
   return (
     <>
-
       <div className="flex justify-between">
         <ToastContainer
           position="top-left"
@@ -308,15 +308,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                        ? "warning"
-                        : "error"
+                      ? "warning"
+                      : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                      ? "Bình thường"
+                      : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -333,15 +333,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    variant="contained"
-                    disabled={blockDetail.answered}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Kiểm tra
-                  </Button>
-                )}
+                <Button
+                  onClick={handleSubmitAnswer}
+                  variant="contained"
+                  disabled={blockDetail.answered}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
             </Box>
           )}
         </div>

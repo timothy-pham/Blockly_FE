@@ -24,7 +24,7 @@ export const EndGame = () => {
   const [ranks, setRanks] = useState([]);
 
   const rankingUpdate = (data) => {
-    const sortedRanks = [...data.users].sort((a, b) => {
+    const sortedRanks = [...data?.users].sort((a, b) => {
       if (a.score !== b.score) {
         return b.score - a.score;
       } else {
