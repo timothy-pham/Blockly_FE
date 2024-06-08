@@ -5,7 +5,7 @@ FROM node:18.16.1
 WORKDIR /usr/src/app
 
 # Copy the package.json and package-lock.json to the working directory
-COPY package*.json ./
+COPY package.json ./
 
 # Install dependencies
 RUN npm install
