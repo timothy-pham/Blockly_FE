@@ -35,7 +35,6 @@ import { saveAs } from "file-saver";
 const types = [
   { value: "solo", label: "Thi đấu trực tuyến" },
   { value: "normal", label: "Luyện tập" },
-  { value: "multiplayer", label: "Nhiều người chơi" },
 ];
 
 const COLLECTION_TYPE = {
@@ -171,84 +170,80 @@ export const CollectionManagement = () => {
 
   return (
     <>
-      <div className="w-fullflex flex-col justify-center">
-        <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
-          <div className="flex justify-between">
-            <Typography variant="h6">Quản lí danh mục</Typography>
-            <div>
-              <>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="small"
-                  onClick={handleButtonClick}
-                  sx={{ marginRight: 2 }}
-                >
-                  Import JSON
-                </Button>
-              </>
+      <TableContainer sx={{  padding: 3 }} component={Paper}>
+        <div className="flex justify-between">
+          <Typography variant="h6">Quản lí danh mục</Typography>
+          <div>
+            <>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
               <Button
                 color="primary"
                 variant="contained"
                 size="small"
-                component="a"
-                onClick={handleExport}
-                target="_blank"
+                onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Export Json
+                Import JSON
               </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                component="a"
-                startIcon={<AddIcon />}
-                onClick={() => setOpenPopup(true)}
-              >
-                Thêm mới
-              </Button>
-            </div>
+            </>
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              component="a"
+              onClick={handleExport}
+              target="_blank"
+              sx={{ marginRight: 2 }}
+            >
+              Export Json
+            </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              component="a"
+              startIcon={<AddIcon />}
+              onClick={() => setOpenPopup(true)}
+            >
+              Thêm mới
+            </Button>
           </div>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow className="[&>*]:font-bold">
-                <TableCell>Tên</TableCell>
-                <TableCell>Mô tả</TableCell>
-                <TableCell>Thể loại</TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? rows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : rows
-              ).map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell component="th" scope="row">
-                    {row?.name}
-                  </TableCell>
-                  <TableCell>{row?.meta_data?.description}</TableCell>
-                  <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={() => {
-                        setOpenPopup(true);
-                        setData(row);
-                      }}
-                    >
-                      <ModeEditIcon />
-                    </IconButton>
-                    {/* <IconButton
+        </div>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow className="[&>*]:font-bold">
+              <TableCell>Tên</TableCell>
+              <TableCell>Mô tả</TableCell>
+              <TableCell>Thể loại</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row?.name}
+                </TableCell>
+                <TableCell>{row?.meta_data?.description}</TableCell>
+                <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
+                <TableCell>
+                  <IconButton
+                    onClick={() => {
+                      setOpenPopup(true);
+                      setData(row);
+                    }}
+                  >
+                    <ModeEditIcon />
+                  </IconButton>
+                  {/* <IconButton
                       onClick={() => {
                         //   axios.delete(
                         //     `http://localhost:3001/category/${row.id}`
@@ -258,42 +253,41 @@ export const CollectionManagement = () => {
                     >
                       <VisibilityIcon />
                     </IconButton> */}
-                    <IconButton
-                      onClick={() => {
-                        setData(row);
-                        setOpen(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  slotProps={{
-                    select: {
-                      inputProps: {
-                        "aria-label": "rows per page",
-                      },
-                      native: true,
-                    },
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
+                  <IconButton
+                    onClick={() => {
+                      setData(row);
+                      setOpen(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </div>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
+                  },
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
 
       <Dialog
         sx={{

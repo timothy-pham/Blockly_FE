@@ -131,140 +131,133 @@ export const BlockManagement = () => {
 
   return (
     <>
-      <div className="w-fullflex flex-col justify-center">
-        <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
-          <div className="flex justify-between">
-            <Typography variant="h6">Quản lí câu hỏi</Typography>
-            <div>
-              <>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="small"
-                  onClick={handleButtonClick}
-                  sx={{ marginRight: 2 }}
-                >
-                  Import JSON
-                </Button>
-              </>
+      <TableContainer sx={{ padding: 3 }} component={Paper}>
+        <div className="flex justify-between">
+          <Typography variant="h6">Quản lí câu hỏi</Typography>
+          <div>
+            <>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
               <Button
                 color="primary"
                 variant="contained"
                 size="small"
-                component="a"
-                onClick={handleExport}
-                target="_blank"
+                onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Export Json
+                Import JSON
               </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                component="a"
-                startIcon={<AddIcon />}
-                onClick={() => navigate("/blockManagement/create")}
-              >
-                Thêm mới
-              </Button>
-            </div>
+            </>
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              component="a"
+              onClick={handleExport}
+              target="_blank"
+              sx={{ marginRight: 2 }}
+            >
+              Export Json
+            </Button>
+            <Button
+              color="primary"
+              variant="contained"
+              size="small"
+              component="a"
+              startIcon={<AddIcon />}
+              onClick={() => navigate("/blockManagement/create")}
+            >
+              Thêm mới
+            </Button>
           </div>
-          <Table aria-label="simple table">
-            <TableHead>
-              <TableRow className="[&>*]:font-bold">
-                <TableCell>Tên Block</TableCell>
-                <TableCell>Câu hỏi</TableCell>
-                <TableCell>Tên bài tập</TableCell>
-                <TableCell>Cấp độ</TableCell>
-                <TableCell>Hành động</TableCell>
+        </div>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow className="[&>*]:font-bold">
+              <TableCell>Tên Block</TableCell>
+              <TableCell>Câu hỏi</TableCell>
+              <TableCell>Tên bài tập</TableCell>
+              <TableCell>Cấp độ</TableCell>
+              <TableCell>Hành động</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row?.name}
+                </TableCell>
+                <TableCell>{row?.question}</TableCell>
+                <TableCell>{row?.group.name}</TableCell>
+                <TableCell>
+                  <Chip
+                    color={
+                      row?.level === 1
+                        ? "success"
+                        : row?.level === 2
+                        ? "warning"
+                        : "error"
+                    }
+                    label={
+                      row?.level === 1
+                        ? "Dễ"
+                        : row?.level === 2
+                        ? "Bình thường"
+                        : "Khó"
+                    }
+                    sx={{ width: "fit-content" }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    onClick={() =>
+                      navigate(`/blockManagement/${row.block_id}/edit`)
+                    }
+                  >
+                    <ModeEditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => {
+                      setData(row);
+                      setOpen(true);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? rows.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : rows
-              ).map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell component="th" scope="row">
-                    {row?.name}
-                  </TableCell>
-                  <TableCell>{row?.question}</TableCell>
-                  <TableCell>{row?.group.name}</TableCell>
-                  <TableCell>
-                    <Chip
-                      color={
-                        row?.level === 1
-                          ? "success"
-                          : row?.level === 2
-                          ? "warning"
-                          : "error"
-                      }
-                      label={
-                        row?.level === 1
-                          ? "Dễ"
-                          : row?.level === 2
-                          ? "Bình thường"
-                          : "Khó"
-                      }
-                      sx={{ width: "fit-content" }}
-                    />
-         
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={() =>
-                        navigate(`/blockManagement/${row.block_id}/edit`)
-                      }
-                    >
-                      <ModeEditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => {
-                        setData(row);
-                        setOpen(true);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  slotProps={{
-                    select: {
-                      inputProps: {
-                        "aria-label": "rows per page",
-                      },
-                      native: true,
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
                     },
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-      </div>
-
+                    native: true,
+                  },
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
       <Dialog
         sx={{
           "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: 435 },
