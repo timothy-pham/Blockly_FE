@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -15,5 +16,21 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const email = process.env.REACT_APP_FIREBASE_EMAIL;
+const password = process.env.REACT_APP_FIREBASE_PASSWORD;
+console.log("FBA - Email: ", email)
+
+signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        console.log("FBA - Successfully")
+    })
+    .catch((error) => {
+        const errorCode = error.code;
+        console.log("FBA - Error code: ", errorCode)
+        const errorMessage = error.message;
+        console.log("FBA - Error message: ", errorMessage)
+    });
 
 export default app;
