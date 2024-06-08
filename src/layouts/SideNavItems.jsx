@@ -1,9 +1,27 @@
 import { Box, ButtonBase } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { isEmpty } from "lodash";
+import { toast } from "react-toastify";
 
 export const SideNavItem = (props) => {
-  const { active = false, disabled, external, icon, path, title } = props;
+  const {
+    active = false,
+    disabled,
+    external,
+    icon,
+    path,
+    title,
+    permission,
+    userRole,
+  } = props;
   const theme = useTheme();
+
+  if (
+    isEmpty(permission) ||
+    (!permission.includes("*") && !permission.includes(userRole))
+  ) {
+    return null;
+  }
   const linkProps = path
     ? external
       ? {

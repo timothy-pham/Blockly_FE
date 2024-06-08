@@ -1,6 +1,12 @@
 import "./App.css";
 import { Layout } from "./layouts/Layout";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { Dashboard } from "./pages/Dashboards";
 import { GroupManagement } from "./pages/management/GroupManagement";
 import { BlockManagement } from "./pages/management/BlockManagement";
@@ -15,13 +21,44 @@ import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
 import { Waiting } from "./pages/rooms/Waiting";
 import { Play } from "./pages/rooms/Play";
-import { Alert } from "@mui/material";
 import { AlertProvider } from "./components/alert/AlertProvider";
 import { EndGame } from "./pages/rooms/EndGame";
+import { HistoryPlay } from "./pages/HistoryPlay";
+import { toast } from "react-toastify";
+import { Role } from "./constant/role";
+import { useEffect } from "react";
+import { isEmpty } from "lodash";
 
-const PrivateRoute = ({ element: Component, ...rest }) => {
+const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
-  return authToken ? <Component /> : <Navigate to="/login" />;
+  const navigate = useNavigate();
+  const {
+    user: { role },
+  } = authToken;
+
+  console.log(permission, role);
+  useEffect(() => {
+    if (authToken) {
+      if (permission && !permission.includes(role)) {
+        toast.error("Bạn không có quyền truy cập vào mục này.", {
+          position: "top-left",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } else {
+      navigate("/login");
+    }
+  }, [authToken, permission, role]);
+
+  if (authToken && (!permission || permission === role)) {
+    return <Component />;
+  }
+  return null;
 };
 
 function App() {
@@ -39,24 +76,53 @@ function App() {
               element={<PrivateRoute element={History} />}
             />
             <Route
+              path="/history-plays"
+              element={<PrivateRoute element={HistoryPlay} />}
+            />
+            <Route
               path="/groupManagement"
-              element={<PrivateRoute element={GroupManagement} />}
+              element={
+                <PrivateRoute
+                  element={GroupManagement}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
             />
             <Route
               path="/blockManagement"
-              element={<PrivateRoute element={BlockManagement} />}
+              element={
+                <PrivateRoute
+                  element={BlockManagement}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
             />
             <Route
               path="/collectionManagement"
-              element={<PrivateRoute element={CollectionManagement} />}
+              element={
+                <PrivateRoute
+                  element={CollectionManagement}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
             />
             <Route
               path="/blockManagement/create"
-              element={<PrivateRoute element={CreateBlock} />}
+              element={
+                <PrivateRoute
+                  element={CreateBlock}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
             />
             <Route
               path="/blockManagement/:id/edit"
-              element={<PrivateRoute element={EditBlock} />}
+              element={
+                <PrivateRoute
+                  element={EditBlock}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
             />
             <Route
               path="/collections/:id"

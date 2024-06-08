@@ -1,56 +1,69 @@
-import ChartBarIcon from "@heroicons/react/24/solid/ChartBarIcon";
-import CogIcon from "@heroicons/react/24/solid/CogIcon";
-import LockClosedIcon from "@heroicons/react/24/solid/LockClosedIcon";
-import ShoppingBagIcon from "@heroicons/react/24/solid/ShoppingBagIcon";
-import UserIcon from "@heroicons/react/24/solid/UserIcon";
-import UserPlusIcon from "@heroicons/react/24/solid/UserPlusIcon";
-import UsersIcon from "@heroicons/react/24/solid/UsersIcon";
-import XCircleIcon from "@heroicons/react/24/solid/XCircleIcon";
+import CircleStackIcon from "@heroicons/react/24/solid/CircleStackIcon";
+import RectangleGroupIcon from "@heroicons/react/24/solid/RectangleGroupIcon";
+import GlobeAltIcon from "@heroicons/react/24/solid/GlobeAltIcon";
+import ClockIcon from "@heroicons/react/24/solid/ClockIcon";
+import QuestionMarkCircleIcon from "@heroicons/react/24/solid/QuestionMarkCircleIcon";
 import { SvgIcon } from "@mui/material";
+import { Role } from "../constant/role";
 
 export const items = [
   {
     title: "Trang chủ",
+    permission: ["*"],
     path: "/",
     icon: (
       <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
+        <GlobeAltIcon />
       </SvgIcon>
     ),
   },
   {
+    permission: ["*"],
     title: "Lịch sử luyện tập",
     path: "/history",
     icon: (
       <SvgIcon fontSize="small">
-        <UsersIcon />
+        <ClockIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    permission: ["*"],
+    title: "Lịch sử thi đấu",
+    path: "/history-plays",
+    icon: (
+      <SvgIcon fontSize="small">
+        <ClockIcon />
       </SvgIcon>
     ),
   },
   {
     title: "Quản lí danh mục",
     path: "/collectionManagement",
+    permission: [Role.ADMIN, Role.TEACHER],
     icon: (
       <SvgIcon fontSize="small">
-        <UserIcon />
+        <CircleStackIcon />
       </SvgIcon>
     ),
   },
   {
     title: "Quản lí bài tập",
     path: "/groupManagement",
+    permission: [Role.ADMIN, Role.TEACHER],
     icon: (
       <SvgIcon fontSize="small">
-        <CogIcon />
+        <RectangleGroupIcon />
       </SvgIcon>
     ),
   },
   {
     title: "Quản lí câu hỏi",
     path: "/blockManagement",
+    permission: [Role.ADMIN, Role.TEACHER],
     icon: (
       <SvgIcon fontSize="small">
-        <LockClosedIcon />
+        <QuestionMarkCircleIcon />
       </SvgIcon>
     ),
   },

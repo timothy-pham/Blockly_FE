@@ -44,6 +44,8 @@ const Scrollbar = styled(SimpleBar)(({ theme }) => ({
 
 export const SideNav = ({ open, setOpenNav }) => {
   const theme = useTheme(); // Access the theme for dark mode support
+  const authToken = JSON.parse(localStorage.getItem("authToken"));
+  const userRole = authToken?.user?.role;
 
   const content = (
     <Scrollbar
@@ -115,16 +117,17 @@ export const SideNav = ({ open, setOpenNav }) => {
             }}
           >
             {items.map((item) => {
-              // const active = item.path ? pathname === item.path : false
               return (
                 <SideNavItem
                   active={true}
-                  //   disabled={item?.disabled}
-                  //   external={item?.external}
+                  disabled={item?.disabled}
+                  external={item?.external}
                   icon={item.icon}
                   key={item.title}
                   path={item.path}
                   title={item.title}
+                  userRole={userRole}
+                  permission={item.permission}
                 />
               );
             })}
