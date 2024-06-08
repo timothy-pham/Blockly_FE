@@ -32,11 +32,8 @@ import { isEmpty } from "lodash";
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const navigate = useNavigate();
-  const {
-    user: { role },
-  } = authToken;
+  const role = authToken?.user?.role;
 
-  console.log(permission, role);
   useEffect(() => {
     if (authToken) {
       if (permission && !permission.includes(role)) {
