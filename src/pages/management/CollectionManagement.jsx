@@ -33,6 +33,8 @@ import { getCurrentDateTime } from "../../utils/generate";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
+import { ImageInput } from "../../components/input/ImageInput";
+import { uploadImage } from "../../utils/firebase";
 
 const types = [
   { value: "solo", label: "Thi đấu trực tuyến" },
@@ -54,7 +56,8 @@ export const CollectionManagement = () => {
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
   const fileInputRef = useRef(null);
-
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
 
   const fetchCollection = async () => {
@@ -85,6 +88,10 @@ export const CollectionManagement = () => {
     event.preventDefault();
     let res;
     const dataForm = new FormData(event.currentTarget);
+    let imageUrl;
+    if (selectedImage) {
+      imageUrl = await uploadImage(selectedImage, "collections");
+    }
     try {
       if (!data?.collection_id) {
         res = await createData("collections", {
@@ -92,6 +99,7 @@ export const CollectionManagement = () => {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
+            image: imageUrl,
           },
         });
       } else {
@@ -100,12 +108,15 @@ export const CollectionManagement = () => {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
+            image: !preview.includes("blob") ? preview : imageUrl,
           },
         });
       }
       if (res) {
         toast.success(
-          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"} danh mục thành công.`,
+          ` ${
+            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          } danh mục thành công.`,
           toastOptions
         );
       }
@@ -113,11 +124,13 @@ export const CollectionManagement = () => {
     } catch (err) {
       toast.error(
         `Có lỗi trong lúc ${
-          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
     } finally {
+      setPreview(null);
+      setSelectedImage(null);
       setRefresh(!refresh);
       setOpenPopup(false);
     }
@@ -127,10 +140,7 @@ export const CollectionManagement = () => {
     try {
       const res = await deleteData("collections", data.collection_id);
       if (res) {
-        toast.success(
-          `Xóa danh mục thành công.`,
-          toastOptions
-        );
+        toast.success(`Xóa danh mục thành công.`, toastOptions);
       }
     } catch (err) {
       toast.error(
@@ -243,6 +253,7 @@ export const CollectionManagement = () => {
               <TableCell>Tên</TableCell>
               <TableCell>Mô tả</TableCell>
               <TableCell>Thể loại</TableCell>
+              <TableCell>Hình ảnh </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -258,6 +269,14 @@ export const CollectionManagement = () => {
                 <TableCell>{row?.meta_data?.description}</TableCell>
                 <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
                 <TableCell>
+                  <img
+                    src={row?.meta_data?.image || "/noImage.jpg"}
+                    height={100}
+                    width={100}
+                    alt=""
+                  />
+                </TableCell>
+                <TableCell>
                   <IconButton
                     onClick={() => {
                       setOpenPopup(true);
@@ -266,16 +285,6 @@ export const CollectionManagement = () => {
                   >
                     <ModeEditIcon />
                   </IconButton>
-                  {/* <IconButton
-                      onClick={() => {
-                        //   axios.delete(
-                        //     `http://localhost:3001/category/${row.id}`
-                        //   );
-                        setRefresh(true);
-                      }}
-                    >
-                      <VisibilityIcon />
-                    </IconButton> */}
                   <IconButton
                     onClick={() => {
                       setData(row);
@@ -321,9 +330,13 @@ export const CollectionManagement = () => {
         onClose={() => {
           setData({});
           setOpenPopup(false);
+          setPreview(null);
+          setSelectedImage(null);
         }}
       >
-        Tạo Collection
+        {!data.collection_id
+          ? `Tạo danh mục`
+          : `Chỉnh sửa danh mục ${data.name}`}
         <Box
           className="flex flex-col items-center"
           component="form"
@@ -364,8 +377,14 @@ export const CollectionManagement = () => {
               <option value={row.value}>{row.label}</option>
             ))}
           </Select>
+          <ImageInput
+            setPreview={setPreview}
+            setSelectedImage={setSelectedImage}
+            preview={preview}
+            defaultValue={data?.meta_data?.image}
+          />
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Chỉnh sửa
+            Lưu
           </Button>
         </Box>
       </Dialog>
@@ -382,7 +401,7 @@ export const CollectionManagement = () => {
         }}
       >
         <span>
-          Xác nhận để xóa collection{" "}
+          Xác nhận để xóa danh mục{" "}
           <span style={{ color: "red" }}>{data.name}</span>
         </span>
         <Button

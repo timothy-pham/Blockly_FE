@@ -34,6 +34,8 @@ import { getCurrentDateTime } from "../../utils/generate";
 import { saveAs } from "file-saver";
 import { toastOptions } from "../../constant/toast";
 import { toast } from "react-toastify";
+import { ImageInput } from "../../components/input/ImageInput";
+import { uploadImage } from "../../utils/firebase";
 
 export const GroupManagement = () => {
   const navigate = useNavigate();
@@ -47,6 +49,8 @@ export const GroupManagement = () => {
   const [data, setData] = useState({ name: "", description: "" });
   const [type, setType] = useState("");
 
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
   const fileInputRef = useRef(null);
 
@@ -90,13 +94,18 @@ export const GroupManagement = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     let res;
+    let imageUrl;
     const dataForm = new FormData(event.currentTarget);
+    if (selectedImage) {
+      imageUrl = await uploadImage(selectedImage, "collections");
+    }
     try {
       if (!data?.group_id) {
         res = await createData("groups", {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
+            image: imageUrl,
           },
         });
       } else {
@@ -106,6 +115,7 @@ export const GroupManagement = () => {
           meta_data: {
             description: dataForm.get("description"),
             timer: Number(dataForm.get("timer")),
+            image: !preview.includes("blob") ? preview : imageUrl,
           },
         });
       }
@@ -125,6 +135,8 @@ export const GroupManagement = () => {
       );
     } finally {
       setRefresh(!refresh);
+      setPreview(null);
+      setSelectedImage(null)
       setOpenPopup(false);
     }
   };
@@ -247,6 +259,7 @@ export const GroupManagement = () => {
               <TableCell>Mô tả</TableCell>
               <TableCell>Thể loại</TableCell>
               <TableCell>Thời gian</TableCell>
+              <TableCell>Hình ảnh</TableCell>
               <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -263,6 +276,14 @@ export const GroupManagement = () => {
                 <TableCell>{row?.collection?.name}</TableCell>
                 <TableCell>
                   {row?.meta_data?.timer ? `${row?.meta_data?.timer} phút` : ""}
+                </TableCell>
+                <TableCell>
+                  <img
+                    src={row?.meta_data?.image || "/noImage.jpg"}
+                    height={100}
+                    width={100}
+                    alt=""
+                  />
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -317,11 +338,13 @@ export const GroupManagement = () => {
         maxWidth="md"
         open={openPopup}
         onClose={() => {
+          setPreview(null);
+          setSelectedImage(null);
           setData({});
           setOpenPopup(false);
         }}
       >
-        Tạo Groups
+        {!data.group_id ? `Tạo bài tập` : `Chỉnh sửa bài tập ${data.name}`}
         <Box
           className="flex flex-col items-center"
           component="form"
@@ -392,8 +415,14 @@ export const GroupManagement = () => {
             multiline
             rows={4}
           />
+          <ImageInput
+            setPreview={setPreview}
+            setSelectedImage={setSelectedImage}
+            preview={preview}
+            defaultValue={data?.meta_data?.image}
+          />
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Chỉnh sửa
+            Lưu
           </Button>
         </Box>
       </Dialog>
