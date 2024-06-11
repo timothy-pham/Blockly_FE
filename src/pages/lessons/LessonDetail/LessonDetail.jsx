@@ -120,39 +120,48 @@ export const LessonsDetail = () => {
 
   return (
     <>
-      <Typography variant="h4">Bài tập 1</Typography>
+      <Typography variant="h4" className="text-3xl font-bold mb-6">
+        Bài tập 1
+      </Typography>
       <div className="border-b border-solid border-gray-300 pb-10 my-5">
-        <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
+        <Typography variant="subtitle1" className="text-lg mb-4">
           Câu hỏi
         </Typography>
 
-        <div className="flex gap-3 ">
+        <div className="flex gap-3 flex-wrap">
           {rows.map((val, index) => (
             <Button
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
-              className={` ${
-                index === currentQuestionIndex ? "bg-slate-200" : ""
-              }`}
+              className={`${
+                index === currentQuestionIndex
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-blue-500"
+              } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
                 setBlockDetail(val);
               }}
             >
-              <span className="">{val.name}</span>
+              <span>{val.name}</span>
             </Button>
           ))}
         </div>
       </div>
-      <div>
-        <Box>
-          <div>
-            <Typography component="span">Đề bài: </Typography>
-            <span className="font-semibold">{blockDetail?.question}</span>
+
+      <div className="bg-gray-100 p-5 rounded-lg shadow-lg">
+        <Box className="p-5 bg-white rounded-lg shadow-sm">
+          <div className="mb-4">
+            <Typography component="span" className="font-semibold text-lg">
+              Đề bài:{" "}
+            </Typography>
+            <span>{blockDetail?.question}</span>
           </div>
-          <div>
-            <Typography component="span">Mức độ: </Typography>
+          <div className="mb-4">
+            <Typography component="span" className="font-semibold text-lg">
+              Mức độ:{" "}
+            </Typography>
             <Chip
               color={
                 blockDetail?.level === 1
@@ -168,23 +177,44 @@ export const LessonsDetail = () => {
                   ? "Bình thường"
                   : "Khó"
               }
-              sx={{ width: "fit-content" }}
+              sx={{
+                width: "fit-content",
+                fontSize: "14px",
+                fontWeight: "bold",
+              }}
             />
           </div>
 
-          <div className="my-2">
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Blockly Section */}
             <BlocklyLayout
               setDataBlocks={setDataBlocks}
               data={blockDetail?.data}
               isEdit={false}
             />
+            {/* Image Section */}
+
+            <div className="flex-1 ">
+              <Typography component="span" className="font-semibold text-lg">
+                Hình ảnh:{" "}
+              </Typography>{" "}
+              {blockDetail?.meta_data?.image && (
+                <div className="max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
+                  <img
+                    src={blockDetail?.meta_data?.image}
+                    alt="block detail"
+                    className="w-full max-h-[400px] object-contain rounded-lg"
+                  />
+                </div>
+              )}
+            </div>
           </div>
           {currentQuestionIndex ===
             rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
             <Button
               onClick={handleSubmitAnswer}
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 1,}}
             >
               Kiểm tra
             </Button>

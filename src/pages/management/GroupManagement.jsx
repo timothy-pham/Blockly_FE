@@ -97,7 +97,7 @@ export const GroupManagement = () => {
     let imageUrl;
     const dataForm = new FormData(event.currentTarget);
     if (selectedImage) {
-      imageUrl = await uploadImage(selectedImage, "collections");
+      imageUrl = await uploadImage(selectedImage, "groups");
     }
     try {
       if (!data?.group_id) {
@@ -136,7 +136,7 @@ export const GroupManagement = () => {
     } finally {
       setRefresh(!refresh);
       setPreview(null);
-      setSelectedImage(null)
+      setSelectedImage(null);
       setOpenPopup(false);
     }
   };

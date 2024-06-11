@@ -43,7 +43,7 @@ export const EditBlock = () => {
       const res = await fetchDataDetail("blocks", id);
       if (res) {
         setBlockDetail(res);
-        setAnswers(res.answers);
+        setAnswers(res.answers.toString());
       }
     } catch (e) {
       console.log("can not fetch groups");
@@ -67,7 +67,6 @@ export const EditBlock = () => {
   };
 
   const handleAnswersChange = (e) => {
-    console.log(e.target.value);
     setAnswers(e.target.value); // Update answers when edited
   };
 
@@ -93,7 +92,7 @@ export const EditBlock = () => {
           image: !preview.includes("blob") ? preview : imageUrl,
         },
       });
-
+      console.log("res=====>", res);
       if (res) {
         toast.success("Chỉnh sửa câu hỏi thành công.", toastOptions);
         navigate("/blockManagement");

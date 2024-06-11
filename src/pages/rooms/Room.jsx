@@ -1,4 +1,4 @@
-import { Typography, Button, Select } from "@mui/material";
+import { Typography, Button, Select, Paper } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Dialog,
@@ -83,7 +83,7 @@ export const Rooms = () => {
     }
   };
   return (
-    <>
+    <Paper sx={{ padding: 3 ,height:800}}>
       {/* header */}
       <div className="flex justify-between items-center mb-5">
         <div className="flex items-center">
@@ -199,12 +199,14 @@ export const Rooms = () => {
             >
               {collections.map((collection) => {
                 return (
-                  <MenuItem
-                    key={collection.collection_id}
-                    value={collection.collection_id}
-                  >
-                    {collection.name}
-                  </MenuItem>
+                  collection.type !== "normal" && (
+                    <MenuItem
+                      key={collection.collection_id}
+                      value={collection.collection_id}
+                    >
+                      {collection.name}
+                    </MenuItem>
+                  )
                 );
               })}
             </Select>
@@ -240,6 +242,6 @@ export const Rooms = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Paper>
   );
 };
