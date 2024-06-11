@@ -49,7 +49,6 @@ export const Waiting = () => {
     }
   };
 
-
   const fetchRoom = async () => {
     try {
       const res = await fetchData(`rooms/${id}`);
@@ -166,9 +165,15 @@ export const Waiting = () => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
   };
 
-  console.log("userList", userList);
   return (
-    <>
+    <Paper
+      sx={{
+        padding: 3,
+        height: "100%",
+        borderRadius: "20px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
       <div className="flex  justify-between">
         <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
@@ -238,6 +243,6 @@ export const Waiting = () => {
         </div>
       </div>
       <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
-    </>
+    </Paper>
   );
 };

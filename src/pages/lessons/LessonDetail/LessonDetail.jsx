@@ -2,7 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Chip, Typography } from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
-import { createData, fetchData, updateData } from "../../../utils/dataProvider";
+import {
+  createData,
+  fetchData,
+  fetchDataDetail,
+  updateData,
+} from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -16,6 +21,7 @@ export const LessonsDetail = () => {
   const [blockDetail, setBlockDetail] = useState();
   const [dataBlock, setDataBlocks] = useState();
   const [history, setHistory] = useState();
+  const [groupDetail, setGroupDetail] = useState();
   const hasFetched = useRef(false);
 
   const createHistory = async (initialBlockDetail) => {
@@ -43,7 +49,18 @@ export const LessonsDetail = () => {
     }
   };
 
-  const fetchCollection = async () => {
+  const fetchGroupDetail = async () => {
+    try {
+      const res = await fetchDataDetail("groups", group_id);
+      if (res) {
+        setGroupDetail(res);
+      }
+    } catch (e) {
+      console.log("can not fetch collection");
+    }
+  };
+
+  const fetchBlock = async () => {
     try {
       const res = await fetchData(`blocks/search?group_id=${group_id}`);
       if (res) {
@@ -65,7 +82,8 @@ export const LessonsDetail = () => {
 
   useEffect(() => {
     if (!hasFetched.current) {
-      fetchCollection();
+      fetchBlock();
+      fetchGroupDetail();
       hasFetched.current = true; // Ensure it only runs once
     }
   }, []);
@@ -121,7 +139,7 @@ export const LessonsDetail = () => {
   return (
     <>
       <Typography variant="h4" className="text-3xl font-bold mb-6">
-        Bài tập 1
+        {groupDetail?.name}
       </Typography>
       <div className="border-b border-solid border-gray-300 pb-10 my-5">
         <Typography variant="subtitle1" className="text-lg mb-4">
@@ -214,7 +232,7 @@ export const LessonsDetail = () => {
             <Button
               onClick={handleSubmitAnswer}
               variant="contained"
-              sx={{ mt: 1,}}
+              sx={{ mt: 1 }}
             >
               Kiểm tra
             </Button>

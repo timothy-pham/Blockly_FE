@@ -239,7 +239,14 @@ export const Play = () => {
   }, [roomDetail]);
 
   return (
-    <>
+    <Paper
+      sx={{
+        padding: 3,
+        height: "100%",
+        borderRadius: "20px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       <div className="flex justify-between">
         <ToastContainer
           position="top-left"
@@ -273,24 +280,6 @@ export const Play = () => {
               currentQuestionIndex={currentQuestionIndex}
             />
           </div>
-          {/* <div className="flex gap-3 ">
-            {rows.map((val, index) => (
-              <Button
-                variant="contained"
-                disabled={index > 0 && !rows[index - 1].answered}
-                className={` ${
-                  index === currentQuestionIndex ? "bg-slate-200" : ""
-                }`}
-                key={index}
-                onClick={() => {
-                  setCurrentQuestionIndex(index);
-                  setBlockDetail(val);
-                }}
-              >
-                <span className="">{val.name}</span>
-              </Button>
-            ))}
-          </div> */}
         </div>
       </div>
       <div className="flex">
@@ -348,18 +337,9 @@ export const Play = () => {
         <div className="flex-1">
           <div className="flex-col">
             <Ranking ranks={ranks} rows={rows} />
-            {/* <div className="mt-10">
-              Nhắn tin
-              <ChatBox
-                messages={messages}
-                onSendMessage={handleSendMessage}
-                userId={user?.user_id}
-                roomId={id}
-              />
-            </div> */}
           </div>
         </div>
       </div>
-    </>
+    </Paper>
   );
 };

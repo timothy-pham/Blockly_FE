@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { fetchData } from "../utils/dataProvider";
 import { truncateText } from "../utils/transform";
 import { useNavigate } from "react-router-dom";
@@ -15,14 +15,14 @@ export const Dashboard = () => {
       }
     } catch (e) {}
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchCollection();
   }, []);
   return (
     <Paper sx={{ padding: 3 }}>
-      <Typography variant="h6">Chủ đề</Typography>
+      <Typography variant="h6" sx={{mb:2}}>Chủ đề</Typography>
 
-      <div className="border-b border-solid border-gray-300 pb-10">
+      <div className="border-t border-solid border-gray-300 pt-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {rows.map((val) => {
             return (

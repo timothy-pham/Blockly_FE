@@ -83,35 +83,29 @@ export const Rooms = () => {
     }
   };
   return (
-    <Paper sx={{ padding: 3 ,height:800}}>
-      {/* header */}
+    <Paper sx={{ padding: 3, height: '100%', backgroundColor: '#f5f5f5', borderRadius: '20px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
+      {/* Header */}
       <div className="flex justify-between items-center mb-5">
-        <div className="flex items-center">
-          <Typography variant="h6">Phòng</Typography>
-        </div>
+        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333333' }}>Phòng</Typography>
         <div className="flex items-center">
           <Button
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, fontWeight: 'bold' }}
             variant="contained"
             color="primary"
-            onClick={() => {
-              fetchRoom();
-            }}
+            onClick={fetchRoom}
           >
             Làm mới
           </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {
-              setDialogCreateRoom(true);
-            }}
+            onClick={() => setDialogCreateRoom(true)}
           >
             Tạo phòng
           </Button>
         </div>
       </div>
-      {/* table content*/}
+      {/* Table content */}
       <div>
         <table className="table-auto w-full">
           <thead>
@@ -124,51 +118,38 @@ export const Rooms = () => {
             </tr>
           </thead>
           <tbody>
-            {rooms.map((room) => {
-              return (
-                <tr key={room.room_id}>
-                  <td className="border px-4 py-2">{room.name}</td>
-                  <td className="border px-4 py-2">{room.description}</td>
-                  <td className="border px-4 py-2">{room.type}</td>
-                  <td className="border px-4 py-2">
-                    {room.meta_data.collection_id}
-                  </td>
-                  <td className="border px-4 py-2">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        navigate("/rooms/" + room.room_id);
-                      }}
-                    >
-                      Tham gia
-                    </Button>
-                  </td>
-                </tr>
-              );
-            })}
+            {rooms.map((room) => (
+              <tr key={room.room_id}>
+                <td className="border px-4 py-2">{room.name}</td>
+                <td className="border px-4 py-2">{room.description}</td>
+                <td className="border px-4 py-2">{room.type}</td>
+                <td className="border px-4 py-2">{room.meta_data.collection_id}</td>
+                <td className="border px-4 py-2">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ fontWeight: 'bold' }}
+                    onClick={() => navigate("/rooms/" + room.room_id)}
+                  >
+                    Tham gia
+                  </Button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-      {/* dialog create room */}
-      <Dialog
-        open={dialogCreateRoom}
-        maxWidth="lg"
-        onClose={() => {
-          setDialogCreateRoom(false);
-        }}
-      >
-        <DialogTitle>Tạo phòng</DialogTitle>
-        <DialogContent>
+      {/* Dialog create room */}
+      <Dialog open={dialogCreateRoom} maxWidth="lg" onClose={() => setDialogCreateRoom(false)}>
+        <DialogTitle sx={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #ddd', color: '#333333', fontWeight: 'bold' }}>Tạo phòng</DialogTitle>
+        <DialogContent sx={{ backgroundColor: '#f5f5f5', paddingTop: '20px' }}>
           <div className="mb-5 mt-3">
             <TextField
               label="Tên phòng"
               variant="outlined"
               fullWidth
-              value={createRoom.name || ""}
-              onChange={(e) => {
-                setCreateRoom({ ...createRoom, name: e.target.value });
-              }}
+              value={createRoom.name}
+              onChange={(e) => setCreateRoom({ ...createRoom, name: e.target.value })}
             />
           </div>
           <div className="mb-5">
@@ -178,65 +159,52 @@ export const Rooms = () => {
               label="Mô tả"
               variant="outlined"
               fullWidth
-              value={createRoom.description || ""}
-              onChange={(e) => {
-                setCreateRoom({ ...createRoom, description: e.target.value });
-              }}
+              value={createRoom.description}
+              onChange={(e) => setCreateRoom({ ...createRoom, description: e.target.value })}
             />
           </div>
           <div className="mb-5">
             <Select
               fullWidth
               defaultValue={collections[0]?.collection_id || ""}
-              value={createRoom.collection_id || ""}
+              value={createRoom.collection_id}
               onChange={(e) => {
-                setCreateRoom({
-                  ...createRoom,
-                  collection_id: e.target.value,
-                });
+                setCreateRoom({ ...createRoom, collection_id: e.target.value });
                 fetchGroup(e.target.value);
               }}
+              sx={{ fontWeight: 'bold' }}
             >
-              {collections.map((collection) => {
-                return (
-                  collection.type !== "normal" && (
-                    <MenuItem
-                      key={collection.collection_id}
-                      value={collection.collection_id}
-                    >
-                      {collection.name}
-                    </MenuItem>
-                  )
-                );
-              })}
+              {collections.map((collection) => (
+                collection.type !== "normal" && (
+                  <MenuItem key={collection.collection_id} value={collection.collection_id}>
+                    {collection.name}
+                  </MenuItem>
+                )
+              ))}
             </Select>
           </div>
           <div className="mb-5">
             <Select
               fullWidth
               defaultValue={groups[0]?.group_id || ""}
-              value={createRoom.group_id || ""}
-              onChange={(e) => {
-                setCreateRoom({ ...createRoom, group_id: e.target.value });
-              }}
+              value={createRoom.group_id}
+              onChange={(e) => setCreateRoom({ ...createRoom, group_id: e.target.value })}
+              sx={{ fontWeight: 'bold' }}
             >
-              {groups.map((group) => {
-                return (
-                  <MenuItem key={group.group_id} value={group.group_id}>
-                    {group.name}
-                  </MenuItem>
-                );
-              })}
+              {groups.map((group) => (
+                <MenuItem key={group.group_id} value={group.group_id}>
+                  {group.name}
+                </MenuItem>
+              ))}
             </Select>
           </div>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ backgroundColor: '#f5f5f5', padding: '20px' }}>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => {
-              handleCreateRoom();
-            }}
+            onClick={handleCreateRoom}
+            sx={{ fontWeight: 'bold' }}
           >
             Tạo
           </Button>

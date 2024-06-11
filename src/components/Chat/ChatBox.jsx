@@ -22,7 +22,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
 
   return (
     <div className="flex flex-col flex-1 ml-5 h-[300px]">
-      <div className="bg-gray-200 flex-1 overflow-y-scroll">
+      <div className="bg-gray-200 flex-1 overflow-y-scroll rounded-t-[20px]">
         <div className="px-4 py-2">
           {messages.map((message, index) => (
             <ChatMessage
@@ -43,7 +43,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 handleSendMessage();
               }
             }}

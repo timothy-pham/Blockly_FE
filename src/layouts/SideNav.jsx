@@ -13,10 +13,15 @@ import SimpleBar from "simplebar-react";
 import * as React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Logo = () => {
+  const navigate = useNavigate();
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box
+      sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
+      onClick={() => navigate("/")}
+    >
       <img
         src="/logo.webp"
         alt="adassadsd"
@@ -46,7 +51,8 @@ export const SideNav = ({ open, setOpenNav }) => {
   const theme = useTheme(); // Access the theme for dark mode support
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const userRole = authToken?.user?.role;
-
+  const { pathname } = useLocation();
+  console.log("pathname ====>", pathname);
   const content = (
     <Scrollbar
       sx={{
@@ -142,6 +148,11 @@ export const SideNav = ({ open, setOpenNav }) => {
       </Box>
     </Scrollbar>
   );
+  React.useEffect(() => {
+    if (pathname.includes("rooms")) {
+      setOpenNav(false);
+    }
+  }, [pathname]);
 
   return (
     <Drawer
