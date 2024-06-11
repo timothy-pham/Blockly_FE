@@ -211,7 +211,7 @@ export const CollectionManagement = () => {
                 onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Import JSON
+                Nhập JSON
               </Button>
             </>
             <Button
@@ -223,7 +223,7 @@ export const CollectionManagement = () => {
               target="_blank"
               sx={{ marginRight: 2 }}
             >
-              Export Json
+              Xuất Json
             </Button>
             <Button
               color="primary"

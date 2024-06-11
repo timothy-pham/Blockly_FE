@@ -5,17 +5,24 @@ import {
   TextField,
   Autocomplete,
   Typography,
+  Paper,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { createData } from "../../../utils/dataProvider";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { uploadImage } from "../../../utils/firebase";
+import { ImageInput } from "../../../components/input/ImageInput";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../../constant/toast";
+import { useNavigate } from "react-router-dom";
 
 export const CreateBlock = () => {
   const [dataBlock, setDataBlocks] = useState(null);
   const [answers, setAnswers] = useState("");
   const [showAnswers, setShowAnswers] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const navigate = useNavigate();
 
   const handlePreviewClick = (e) => {
     e.preventDefault();
@@ -35,7 +42,7 @@ export const CreateBlock = () => {
     const imageUrl = await uploadImage(selectedImage, "blocks");
 
     try {
-      await createData("blocks", {
+      const res = await createData("blocks", {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
@@ -47,104 +54,109 @@ export const CreateBlock = () => {
           image: imageUrl,
         },
       });
+      if (res) {
+        toast.success("Thêm mới câu hỏi thành công.", toastOptions);
+        navigate("/blockManagement");
+      }
     } catch (err) {
-      console.log("Cannot create block");
+      toast.error(
+        "Có lỗi trong lúc thêm mới câu hỏi. Vui lòng kiểm tra lại.",
+        toastOptions
+      );
     }
   };
 
   return (
-    <>
-      <Typography variant="h4">Tạo Block</Typography>
-      <Box
-        className="flex flex-col items-center"
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{ mt: 1, width: "100%" }}
-      >
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="Name"
-          label="Tên"
-          name="name"
-          autoFocus
-        />
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="Question"
-          label="Câu hỏi"
-          name="question"
-        />
-
-        <Autocomplete
-          disablePortal
-          id="type"
-          fullWidth
-          options={[{ id: "all" }, { id: "include" }]}
-          getOptionLabel={(option) => option.id}
-          renderInput={(params) => (
-            <TextField {...params} label="Loại câu hỏi" name="type" />
-          )}
-          renderOption={(props, option) => (
-            <div {...props}>
-              <h3>{option?.id}</h3>
-            </div>
-          )}
-        />
-
-        <TextField
-          margin="normal"
-          required
-          fullWidth
-          id="Level"
-          type="number"
-          label="Cấp độ"
-          name="level"
-        />
-        <input
-          type="file"
-          name="myImage"
-          accept="image/*"
-          onChange={(event) => {
-            console.log(event.target.files[0]); // Log the selected file
-            setSelectedImage(event.target.files[0]); // Update the state with the selected file
-          }}
-        />
-
-
-        <div>
-          <BlocklyLayout setDataBlocks={setDataBlocks} />
-        </div>
-        <>
-          <Button
-            disabled={!dataBlock?.code}
-            onClick={handlePreviewClick}
-            variant="outlined"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Preview
-          </Button>
-          {showAnswers && (
+    <Paper sx={{ padding: 3 }}>
+      <Typography variant="h4">Tạo câu hỏi</Typography>
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <div style={{ display: "flex", gap: 10 }}>
+          <div>
             <TextField
               margin="normal"
               required
               fullWidth
-              value={answers}
-              multiline
-              onChange={handleAnswersChange}
-              id="Answers"
-              label="Đáp án"
-              name="answers"
+              id="Name"
+              label="Tên"
+              name="name"
+              autoFocus
             />
-          )}
-        </>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="Question"
+              label="Câu hỏi"
+              name="question"
+            />
+
+            <Autocomplete
+              disablePortal
+              id="type"
+              fullWidth
+              options={[{ id: "all" }, { id: "include" }]}
+              getOptionLabel={(option) => option.id}
+              renderInput={(params) => (
+                <TextField {...params} label="Loại câu hỏi" name="type" />
+              )}
+              renderOption={(props, option) => (
+                <div {...props}>
+                  <h3>{option?.id}</h3>
+                </div>
+              )}
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="Level"
+              type="number"
+              label="Cấp độ"
+              name="level"
+            />
+            <ImageInput
+              setPreview={setPreview}
+              setSelectedImage={setSelectedImage}
+              preview={preview}
+            />
+          </div>
+
+          <div>
+            <div>
+              <BlocklyLayout setDataBlocks={setDataBlocks} />
+            </div>
+            <>
+              <Button
+                disabled={!dataBlock?.code}
+                onClick={handlePreviewClick}
+                variant="outlined"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Kiểm tra câu trả lời
+              </Button>
+              {showAnswers && (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  value={answers}
+                  multiline
+                  maxRows={2}
+                  onChange={handleAnswersChange}
+                  id="Answers"
+                  label="Đáp án"
+                  name="answers"
+                  helperText="Có thể nhiều hơn 1 đáp án. Đáp án chỉ lấy các giá trị có toán tử như: =, >, <, >=, <=, !="
+                />
+              )}
+            </>
+          </div>
+        </div>
         <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-          Submit
+          Lưu
         </Button>
       </Box>
-    </>
+    </Paper>
   );
 };

@@ -32,6 +32,8 @@ import {
 } from "../../utils/dataProvider";
 import { saveAs } from "file-saver";
 import { getCurrentDateTime } from "../../utils/generate";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../constant/toast";
 
 export const BlockManagement = () => {
   const navigate = useNavigate();
@@ -53,11 +55,18 @@ export const BlockManagement = () => {
     try {
       const res = await fetchData("blocks");
       if (res) {
-        setRows(res);
+        sortBlocks(res);
       }
     } catch (e) {
       console.log("can not fetch groups");
     }
+  };
+
+  const sortBlocks = (data) => {
+    const sortedBlocks = data.sort((a, b) => {
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+    setRows(sortedBlocks);
   };
 
   useEffect(() => {
@@ -75,9 +84,15 @@ export const BlockManagement = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData("blocks", data.block_id);
+      const res = await deleteData("blocks", data.block_id);
+      if (res) {
+        toast.success("Xóa câu hỏi thành công.", toastOptions);
+      }
     } catch (err) {
-      console.log("can not delete collection");
+      toast.error(
+        "Có lỗi trong lúc xóa câu hỏi. Vui lòng kiểm tra lại.",
+        toastOptions
+      );
     } finally {
       setRefresh(!refresh);
       setOpen(false);
@@ -149,7 +164,7 @@ export const BlockManagement = () => {
                 onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Import JSON
+                Nhập JSON
               </Button>
             </>
             <Button
@@ -161,7 +176,7 @@ export const BlockManagement = () => {
               target="_blank"
               sx={{ marginRight: 2 }}
             >
-              Export Json
+              Xuất JSON
             </Button>
             <Button
               color="primary"
@@ -182,6 +197,7 @@ export const BlockManagement = () => {
               <TableCell>Câu hỏi</TableCell>
               <TableCell>Tên bài tập</TableCell>
               <TableCell>Cấp độ</TableCell>
+              <TableCell>Hình ảnh</TableCell>
               <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -213,6 +229,14 @@ export const BlockManagement = () => {
                         : "Khó"
                     }
                     sx={{ width: "fit-content" }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <img
+                    src={row?.meta_data?.image || "/noImage.jpg"}
+                    height={100}
+                    width={100}
+                    alt=""
                   />
                 </TableCell>
                 <TableCell>

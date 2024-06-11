@@ -214,7 +214,7 @@ export const GroupManagement = () => {
                 onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Import JSON
+                Nhập JSON
               </Button>
             </>
             <Button
@@ -226,7 +226,7 @@ export const GroupManagement = () => {
               target="_blank"
               sx={{ marginRight: 2 }}
             >
-              Export Json
+              Xuất Json
             </Button>
             <Button
               color="primary"
