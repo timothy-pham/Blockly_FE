@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { fetchData } from "../../utils/dataProvider";
 import { truncateText } from "../../utils/transform";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -16,7 +16,7 @@ export const Lessons = () => {
       }
     } catch (e) {}
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchCollection();
   }, []);
   return (
