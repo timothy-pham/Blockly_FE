@@ -68,6 +68,31 @@ export const HistoryPlay = () => {
     return rank;
   };
 
+  const findPoints = (userId, data, roomId) => {
+    if (!Array.isArray(data)) {
+      console.error("Invalid data: Expected an array.");
+      return null;
+    }
+
+    const userDetails = data.find((user) => user.user_id === userId);
+
+    console.log("User Details: ", userDetails);
+
+    const pointsHistory = userDetails?.user_data?.meta_data?.points_history;
+    if (!Array.isArray(pointsHistory)) {
+      console.warn("Points history is not available or not an array.");
+      return null;
+    }
+
+    const pointsRecord = pointsHistory.find((v) => v.room_id === roomId);
+    if (!pointsRecord) {
+      console.warn(`No points record found for room_id: ${roomId}`);
+      return null;
+    }
+
+    return pointsRecord.points ?? null;
+  };
+
   return (
     <TableContainer sx={{ padding: 3 }} component={Paper}>
       <div className="flex justify-between">
@@ -81,6 +106,7 @@ export const HistoryPlay = () => {
             <TableCell>Điểm số</TableCell>
             <TableCell>Thời gian tham gia</TableCell>
             <TableCell>Thứ hạng/ Tổng số người</TableCell>
+            <TableCell>Điểm tích lũy</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -112,6 +138,7 @@ export const HistoryPlay = () => {
               <TableCell>
                 {findRank(id, row.users)}/{row.users.length}
               </TableCell>
+              <TableCell>{findPoints(id, row.users, row.room_id)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
