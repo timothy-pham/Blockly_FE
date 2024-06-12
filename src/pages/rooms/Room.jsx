@@ -38,6 +38,7 @@ export const Rooms = () => {
       if (res) {
         const temp = res.filter((collection) => collection.type !== "normal");
         setCollections(temp);
+        setCreateRoom({ ...createRoom, collection_id: temp[0].collection_id });
         fetchGroup(temp[0].collection_id);
       }
     } catch (e) {
@@ -52,6 +53,7 @@ export const Rooms = () => {
       );
       if (res) {
         setGroups(res);
+        setCreateRoom({ ...createRoom, group_id: res[0].group_id });
       }
     } catch (e) {
       console.log("can not fetch collection");
