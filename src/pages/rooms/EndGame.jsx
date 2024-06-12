@@ -44,7 +44,7 @@ export const EndGame = () => {
   return (
     <>
       <div className="flex-1">
-        <h3>Bang xep hang</h3>
+        <h3>Bảng xếp hạng</h3>
         <div className="flex justify-center">
           {/* Top 2 card*/}
           <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
