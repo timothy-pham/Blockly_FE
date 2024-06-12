@@ -3,7 +3,8 @@ import { fetchData } from "../utils/dataProvider";
 
 export const RankingPage = () => {
   const [list, setList] = useState([]);
-
+  const [username, setUsername] = useState("");
+  console.log("username", username)
   const fetchRanking = async () => {
     try {
       const res = await fetchData("histories/ranking");
@@ -17,6 +18,12 @@ export const RankingPage = () => {
   };
   useEffect(() => {
     fetchRanking();
+    try {
+      let usernameTemp = JSON.parse(localStorage.getItem("authToken"))?.user?.username;
+      setUsername(usernameTemp);
+    } catch (error) {
+      console.log("error", error);
+    }
   }, []);
 
   const rankingUpdate = (data) => {
@@ -30,6 +37,26 @@ export const RankingPage = () => {
 
   return (
     <div style={{ width: "1000px", margin: "80px auto" }}>
+      {/* your ranking */}
+      <div
+        style={{
+          width: '100%',
+          borderRadius: "5px 5px 0 0",
+          marginBottom: "10px",
+        }}
+      >
+        <h2>
+          Hạng của bạn:{" "}{list.findIndex((user) => user.username === username) + 1 || 1}{"\n"}
+
+        </h2>
+        <h2>
+          Điểm tích lũy:{" "}{list.find((user) => user.username === username)?.points || 0}{"\n"}
+
+        </h2>
+        <h2>
+          Tổng số trận đã đấu:{" "}{list.find((user) => user.username === username)?.matches || 0}
+        </h2>
+      </div>
       <div
         style={{
           width: "100%",
@@ -76,23 +103,28 @@ export const RankingPage = () => {
       {list?.map((user, i) => (
         <User
           key={user?.username}
-          username={user?.name}
+          name={user?.name}
           rank={i + 1 || 1}
           points={user?.points}
           matches={user?.matches}
+          username={user?.username}
+          currentUser={username}
         />
       ))}
     </div>
   );
 };
 
-const User = ({ rank, username, points, matches }) => {
+const User = ({ name, rank, username, points, matches, currentUser }) => {
+  console.log("🚀 ~ User ~ currentUser:", username, currentUser)
   const getInitials = (name) => {
     if (!name) return "";
     const names = name.split(" ");
     const initials = names.map((n) => n.charAt(0).toUpperCase());
     return initials.join("");
   };
+
+
 
   return (
     <div
@@ -101,7 +133,7 @@ const User = ({ rank, username, points, matches }) => {
         flexDirection: "row",
         flexWrap: "nowrap",
         alignItems: "center",
-        background: "rgba(254, 254, 254, 1)",
+        background: currentUser === username ? "rgba(120, 168, 232, 0.79)" : "rgba(254, 254, 254, .9)",
         width: "100%",
         height: "100%",
         padding: "5px",
@@ -119,7 +151,7 @@ const User = ({ rank, username, points, matches }) => {
           width: "55%",
         }}
       >
-        <a style={{ verticalAlign: "middle" }}>{username}</a>
+        <a style={{ verticalAlign: "middle" }}>{name}</a>
       </div>
 
       <div style={{ width: "12.5%" }}>
