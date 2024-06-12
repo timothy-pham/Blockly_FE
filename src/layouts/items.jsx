@@ -4,6 +4,7 @@ import GlobeAltIcon from "@heroicons/react/24/solid/GlobeAltIcon";
 import ClockIcon from "@heroicons/react/24/solid/ClockIcon";
 import QuestionMarkCircleIcon from "@heroicons/react/24/solid/QuestionMarkCircleIcon";
 import TrophyIcon from "@heroicons/react/24/solid/TrophyIcon";
+import UserIcon from "@heroicons/react/24/solid/UserIcon";
 import { SvgIcon } from "@mui/material";
 import { Role } from "../constant/role";
 
@@ -75,6 +76,16 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <QuestionMarkCircleIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    title: "Gán phụ huynh học sinh",
+    path: "/userManagement",
+    permission: [Role.ADMIN, Role.TEACHER],
+    icon: (
+      <SvgIcon fontSize="small">
+        <UserIcon />
       </SvgIcon>
     ),
   },

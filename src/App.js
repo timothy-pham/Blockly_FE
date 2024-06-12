@@ -23,6 +23,7 @@ import { Role } from "./constant/role";
 import { useEffect } from "react";
 import { RankingPage } from "./pages/Ranking";
 import { toastOptions } from "./constant/toast";
+import { UserManagement } from "./pages/management/UserManagement";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -77,6 +78,15 @@ function App() {
               element={
                 <PrivateRoute
                   element={BlockManagement}
+                  permission={[Role.ADMIN, Role.TEACHER]}
+                />
+              }
+            />
+            <Route
+              path="/userManagement"
+              element={
+                <PrivateRoute
+                  element={UserManagement}
                   permission={[Role.ADMIN, Role.TEACHER]}
                 />
               }
