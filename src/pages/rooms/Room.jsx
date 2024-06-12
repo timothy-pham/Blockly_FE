@@ -36,7 +36,9 @@ export const Rooms = () => {
     try {
       const res = await fetchData("collections");
       if (res) {
-        setCollections(res);
+        const temp = res.filter((collection) => collection.type !== "normal");
+        setCollections(temp);
+        fetchGroup(temp[0].collection_id);
       }
     } catch (e) {
       console.log("can not fetch collection");
@@ -175,7 +177,7 @@ export const Rooms = () => {
               sx={{ fontWeight: 'bold' }}
             >
               {collections.map((collection) => (
-                collection.type !== "normal" && (
+                (
                   <MenuItem key={collection.collection_id} value={collection.collection_id}>
                     {collection.name}
                   </MenuItem>
