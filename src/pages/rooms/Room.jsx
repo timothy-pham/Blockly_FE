@@ -85,13 +85,23 @@ export const Rooms = () => {
     }
   };
   return (
-    <Paper sx={{ padding: 3, height: '100%', backgroundColor: '#f5f5f5', borderRadius: '20px', boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' }}>
+    <Paper
+      sx={{
+        padding: 3,
+        height: "100%",
+        backgroundColor: "#f5f5f5",
+        borderRadius: "20px",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+      }}
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-5">
-        <Typography variant="h6" sx={{ fontWeight: 'bold', color: '#333333' }}>Phòng</Typography>
+        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333333" }}>
+          Phòng
+        </Typography>
         <div className="flex items-center">
           <Button
-            sx={{ mr: 2, fontWeight: 'bold' }}
+            sx={{ mr: 2, fontWeight: "bold" }}
             variant="contained"
             color="primary"
             onClick={fetchRoom}
@@ -125,12 +135,14 @@ export const Rooms = () => {
                 <td className="border px-4 py-2">{room.name}</td>
                 <td className="border px-4 py-2">{room.description}</td>
                 <td className="border px-4 py-2">{room.type}</td>
-                <td className="border px-4 py-2">{room.meta_data.collection_id}</td>
+                <td className="border px-4 py-2">
+                  {room.meta_data.collection_id}
+                </td>
                 <td className="border px-4 py-2">
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ fontWeight: 'bold' }}
+                    sx={{ fontWeight: "bold" }}
                     onClick={() => navigate("/rooms/" + room.room_id)}
                   >
                     Tham gia
@@ -142,16 +154,31 @@ export const Rooms = () => {
         </table>
       </div>
       {/* Dialog create room */}
-      <Dialog open={dialogCreateRoom} maxWidth="lg" onClose={() => setDialogCreateRoom(false)}>
-        <DialogTitle sx={{ backgroundColor: '#f5f5f5', borderBottom: '1px solid #ddd', color: '#333333', fontWeight: 'bold' }}>Tạo phòng</DialogTitle>
-        <DialogContent sx={{ backgroundColor: '#f5f5f5', paddingTop: '20px' }}>
+      <Dialog
+        open={dialogCreateRoom}
+        fullWidth
+        onClose={() => setDialogCreateRoom(false)}
+      >
+        <DialogTitle
+          sx={{
+            backgroundColor: "#f5f5f5",
+            borderBottom: "1px solid #ddd",
+            color: "#333333",
+            fontWeight: "bold",
+          }}
+        >
+          Tạo phòng
+        </DialogTitle>
+        <DialogContent sx={{ backgroundColor: "#f5f5f5", paddingTop: "20px" }}>
           <div className="mb-5 mt-3">
             <TextField
               label="Tên phòng"
               variant="outlined"
               fullWidth
               value={createRoom.name}
-              onChange={(e) => setCreateRoom({ ...createRoom, name: e.target.value })}
+              onChange={(e) =>
+                setCreateRoom({ ...createRoom, name: e.target.value })
+              }
             />
           </div>
           <div className="mb-5">
@@ -162,7 +189,9 @@ export const Rooms = () => {
               variant="outlined"
               fullWidth
               value={createRoom.description}
-              onChange={(e) => setCreateRoom({ ...createRoom, description: e.target.value })}
+              onChange={(e) =>
+                setCreateRoom({ ...createRoom, description: e.target.value })
+              }
             />
           </div>
           <div className="mb-5">
@@ -174,14 +203,15 @@ export const Rooms = () => {
                 setCreateRoom({ ...createRoom, collection_id: e.target.value });
                 fetchGroup(e.target.value);
               }}
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: "bold" }}
             >
               {collections.map((collection) => (
-                (
-                  <MenuItem key={collection.collection_id} value={collection.collection_id}>
-                    {collection.name}
-                  </MenuItem>
-                )
+                <MenuItem
+                  key={collection.collection_id}
+                  value={collection.collection_id}
+                >
+                  {collection.name}
+                </MenuItem>
               ))}
             </Select>
           </div>
@@ -190,8 +220,10 @@ export const Rooms = () => {
               fullWidth
               defaultValue={groups[0]?.group_id || ""}
               value={createRoom.group_id}
-              onChange={(e) => setCreateRoom({ ...createRoom, group_id: e.target.value })}
-              sx={{ fontWeight: 'bold' }}
+              onChange={(e) =>
+                setCreateRoom({ ...createRoom, group_id: e.target.value })
+              }
+              sx={{ fontWeight: "bold" }}
             >
               {groups.map((group) => (
                 <MenuItem key={group.group_id} value={group.group_id}>
@@ -201,12 +233,12 @@ export const Rooms = () => {
             </Select>
           </div>
         </DialogContent>
-        <DialogActions sx={{ backgroundColor: '#f5f5f5', padding: '20px' }}>
+        <DialogActions sx={{ backgroundColor: "#f5f5f5", padding: "20px" }}>
           <Button
             variant="contained"
             color="primary"
             onClick={handleCreateRoom}
-            sx={{ fontWeight: 'bold' }}
+            sx={{ fontWeight: "bold" }}
           >
             Tạo
           </Button>
