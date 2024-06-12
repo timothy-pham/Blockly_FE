@@ -55,30 +55,38 @@ export const RankingPage = () => {
         <div style={{ display: "inline-block", width: "12.5%" }}>
           <h4 style={{ fontSize: "15px" }}>Hạng</h4>
         </div>
-        <div style={{ display: "inline-block", width: "62.5%" }}>
+        <div style={{ display: "inline-block", width: "55%" }}>
           <h4 style={{ fontSize: "15px" }}>Tên</h4>
         </div>
-        <div style={{ display: "inline-block", width: "25%" }}>
+        <div style={{ display: "inline-block", width: "12.5%" }}>
           <h4
             style={{ fontSize: "15px", cursor: "pointer", userSelect: "none" }}
           >
             Điểm tích lũy
           </h4>
         </div>
+        <div style={{ display: "inline-block", width: "20%" }}>
+          <h4
+            style={{ fontSize: "15px", cursor: "pointer", userSelect: "none" }}
+          >
+            Tổng số trận đã đấu
+          </h4>
+        </div>
       </div>
       {list?.map((user, i) => (
         <User
           key={user?.username}
-          username={user?.username}
+          username={user?.name}
           rank={i + 1 || 1}
           points={user?.points}
+          matches={user?.matches}
         />
       ))}
     </div>
   );
 };
 
-const User = ({ rank, username, points }) => {
+const User = ({ rank, username, points, matches }) => {
   const getInitials = (name) => {
     if (!name) return "";
     const names = name.split(" ");
@@ -108,14 +116,17 @@ const User = ({ rank, username, points }) => {
       </div>
       <div
         style={{
-          width: "62.5%",
+          width: "55%",
         }}
       >
         <a style={{ verticalAlign: "middle" }}>{username}</a>
       </div>
 
-      <div style={{ width: "25%" }}>
+      <div style={{ width: "12.5%" }}>
         <h4>{points}</h4>
+      </div>
+      <div style={{ width: "20%" }}>
+        <h4>{matches}</h4>
       </div>
     </div>
   );
