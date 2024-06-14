@@ -48,9 +48,8 @@ const AppBar = styled(MuiAppBar, {
   zIndex: 50,
   width: "100%",
   backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#ffffff",
-  borderBottom: `1px solid ${
-    theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
-  }`,
+  borderBottom: `1px solid ${theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
+    }`,
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -155,9 +154,8 @@ export const Layout = () => {
 
             <div
               ref={dropdownRef} // Attach ref to the dropdown
-              className={`z-50 ${
-                isUserDropdownOpen ? "" : "hidden"
-              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+              className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
+                } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
               id="user-dropdown"
             >
               <div className="px-4 py-3">

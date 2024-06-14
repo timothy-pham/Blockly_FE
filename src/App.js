@@ -25,6 +25,7 @@ import { RankingPage } from "./pages/Ranking";
 import { toastOptions } from "./constant/toast";
 import { UserManagement } from "./pages/management/UserManagement";
 import { Profile } from "./pages/auth/Profile";
+import MessageHome from "./pages/message/MessageHome";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -64,6 +65,10 @@ function App() {
             <Route
               path="/profile"
               element={<PrivateRoute element={Profile} />}
+            />
+            <Route
+              path="/messages"
+              element={<PrivateRoute element={MessageHome} />}
             />
             <Route
               path="/history-plays"

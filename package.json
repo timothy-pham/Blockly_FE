@@ -4,8 +4,13 @@
   "private": true,
   "dependencies": {
     "@blockly/zoom-to-fit": "^5.0.17",
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@heroicons/react": "^2.1.3",
     "@mui/icons-material": "^5.15.17",
     "@mui/material": "^5.15.17",
