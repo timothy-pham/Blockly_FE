@@ -17,7 +17,7 @@ import { formatDateTime } from "../utils/transform";
 
 export const HistoryPlay = () => {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState([]);
   const [groups, setGroups] = useState([]);
   const info = localStorage.getItem("authToken");

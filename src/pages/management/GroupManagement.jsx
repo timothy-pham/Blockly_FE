@@ -40,7 +40,7 @@ import { uploadImage } from "../../utils/firebase";
 export const GroupManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openPopup, setOpenPopup] = useState(false);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);

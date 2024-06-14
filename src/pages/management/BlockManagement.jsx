@@ -38,7 +38,7 @@ import { toastOptions } from "../../constant/toast";
 export const BlockManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
