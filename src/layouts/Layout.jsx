@@ -1,6 +1,12 @@
-import React, { useCallback, useEffect, useState, useContext } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+} from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { IconButton, Toolbar, styled } from "@mui/material";
+import { Avatar, IconButton, Toolbar, styled } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AuthContext from "../pages/auth/AuthContext/AuthContext";
 import MuiAppBar from "@mui/material/AppBar";
@@ -67,12 +73,32 @@ export const Layout = () => {
   const { logout } = useContext(AuthContext);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
+  const dropdownRef = useRef(null); // Create a ref for the dropdown
+
   const info = localStorage.getItem("authToken");
   const user = get(JSON.parse(info), "user", {});
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(!isUserDropdownOpen);
   };
+
+  const closeUserDropdown = useCallback(() => {
+    setIsUserDropdownOpen(false);
+  }, []);
+
+  // Close the dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        closeUserDropdown();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [closeUserDropdown]);
 
   useEffect(() => {
     if (pathname.includes("/play")) {
@@ -110,36 +136,55 @@ export const Layout = () => {
             <MenuIcon color="primary" />
           </IconButton>
           <div>
-            <div
-              aria-expanded={isUserDropdownOpen}
-              onClick={toggleUserDropdown}
-              style={{ backgroundColor: "#1976d2" }}
-              className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white font-bold select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-600"
-            >
-              {getName(user.name)}
-            </div>
+            {user.meta_data?.avatar ? (
+              <Avatar
+                src={user.meta_data?.avatar}
+                aria-expanded={isUserDropdownOpen}
+                onClick={toggleUserDropdown}
+              />
+            ) : (
+              <div
+                aria-expanded={isUserDropdownOpen}
+                onClick={toggleUserDropdown}
+                style={{ backgroundColor: "#1976d2" }}
+                className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white font-bold select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-600"
+              >
+                {getName(user.name)}
+              </div>
+            )}
 
             <div
+              ref={dropdownRef} // Attach ref to the dropdown
               className={`z-50 ${
                 isUserDropdownOpen ? "" : "hidden"
               } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
               id="user-dropdown"
             >
-              <div class="px-4 py-3">
-                <span class="block text-sm text-gray-900 dark:text-white">
+              <div className="px-4 py-3">
+                <span className="block text-sm text-gray-900 dark:text-white">
                   {user.name}
                 </span>
-                <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">
+                <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
                   {user.username}
                 </span>
               </div>
-              <ul class="py-2" aria-labelledby="user-menu-button">
+              <ul className="py-2" aria-labelledby="user-menu-button">
+                <li>
+                  <a
+                    onClick={() => navigate("/profile")}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  >
+                    Trang cá nhân
+                  </a>
+                </li>
+              </ul>
+              <ul className="py-2" aria-labelledby="user-menu-button">
                 <li>
                   <a
                     onClick={handleLogout}
-                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >
-                    Sign out
+                    Đăng xuất
                   </a>
                 </li>
               </ul>

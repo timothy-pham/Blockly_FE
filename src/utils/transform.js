@@ -46,3 +46,7 @@ export const formatTime = (seconds) => {
   const secs = seconds % 60;
   return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
 };
+
+export const formatNumber = (number) => {
+  return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

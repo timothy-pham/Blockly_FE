@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import { RankingPage } from "./pages/Ranking";
 import { toastOptions } from "./constant/toast";
 import { UserManagement } from "./pages/management/UserManagement";
+import { Profile } from "./pages/auth/Profile";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -59,6 +60,10 @@ function App() {
             <Route
               path="/history"
               element={<PrivateRoute element={History} />}
+            />
+            <Route
+              path="/profile"
+              element={<PrivateRoute element={Profile} />}
             />
             <Route
               path="/history-plays"
