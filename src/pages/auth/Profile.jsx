@@ -28,6 +28,8 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
 import { uploadImage } from "../../utils/firebase";
+import { useLoader } from "../../components/progress/LoaderContext";
+import { set } from "lodash";
 
 export const Profile = () => {
   const info = localStorage.getItem("authToken");
@@ -36,9 +38,9 @@ export const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userDetail, setUserDetail] = useState();
-  const [showIcon, setShowIcon] = useState(false); // State để điều khiển việc hiển thị icon
+  const [showIcon, setShowIcon] = useState(false);
   const [refresh, setRefresh] = React.useState(false);
-
+  const { setLoading } = useLoader();
   const fetchUserDetail = async () => {
     try {
       const res = await fetchDataDetail("users", user.user_id);
@@ -55,7 +57,22 @@ export const Profile = () => {
   }, [refresh]);
 
   const handleSave = async () => {
-    if (newPassword === confirmPassword) {
+    try {
+      setLoading(true);
+      if (!newPassword || !confirmPassword) {
+        toast.error(
+          `Vui lòng nhập mật khẩu mới và xác nhận mật khẩu.`,
+          toastOptions
+        );
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        toast.error(
+          `Mật khẩu mới và xác nhận mật khẩu không khớp.`,
+          toastOptions
+        );
+        return;
+      }
       const res = await createData("auth/reset-password", {
         username: user.username,
         password: newPassword,
@@ -64,11 +81,12 @@ export const Profile = () => {
         toast.success(`Thay đổi mật khẩu thành công.`, toastOptions);
         handleCloseChangePassword();
       }
-    } else {
-      toast.error(
-        `Mật khẩu mới và xác nhận mật khẩu không khớp.`,
-        toastOptions
-      );
+    } catch (e) {
+      console.log("can not change password", e);
+    } finally {
+      setLoading(false);
+      setNewPassword(null);
+      setConfirmPassword(null);
     }
   };
 
@@ -77,13 +95,16 @@ export const Profile = () => {
   };
 
   const handleCloseChangePassword = () => {
+    setNewPassword(null);
+    setConfirmPassword(null);
     setOpenChangePassword(false);
   };
 
   const handleAvatarChange = async (event) => {
-    const file = event.target.files[0];
+    const file = event?.target?.files?.[0];
     if (file) {
       try {
+        setLoading(true);
         let imageUrl = await uploadImage(file, "users");
         const res = await updateData(`users`, user.user_id, {
           meta_data: { avatar: imageUrl },
@@ -97,7 +118,9 @@ export const Profile = () => {
           toastOptions
         );
       } finally {
+        setLoading(false);
         setRefresh(!refresh);
+        event.target.value = "";
       }
     }
   };

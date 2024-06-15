@@ -133,9 +133,8 @@ export const LessonsDetail = () => {
         navigate(`/collections/${collection_id}`);
       }
       handleNextQuestion();
-    }else if(!res.correct){
+    } else if (!res.correct) {
       toast.error(`Tiếc quá! :<, bạn đã sai gòyyyy`, toastOptions);
-
     }
   };
 

@@ -132,6 +132,7 @@ export const CollectionManagement = () => {
       setPreview(null);
       setSelectedImage(null);
       setRefresh(!refresh);
+      event.target.value = "";
       setOpenPopup(false);
     }
   };

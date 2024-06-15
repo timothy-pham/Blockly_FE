@@ -26,6 +26,8 @@ import { toastOptions } from "./constant/toast";
 import { UserManagement } from "./pages/management/UserManagement";
 import { Profile } from "./pages/auth/Profile";
 import MessageHome from "./pages/message/MessageHome";
+import { LoaderProvider } from "./components/progress/LoaderContext";
+import { Loader } from "./components/progress/Loader";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -51,112 +53,115 @@ const PrivateRoute = ({ element: Component, permission, ...rest }) => {
 function App() {
   return (
     <AlertProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+      <LoaderProvider>
+        <Loader />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
 
-          <Route path="/" element={<Layout />}>
-            <Route index element={<PrivateRoute element={Dashboard} />} />
-            <Route
-              path="/history"
-              element={<PrivateRoute element={History} />}
-            />
-            <Route
-              path="/profile"
-              element={<PrivateRoute element={Profile} />}
-            />
-            <Route
-              path="/messages"
-              element={<PrivateRoute element={MessageHome} />}
-            />
-            <Route
-              path="/history-plays"
-              element={<PrivateRoute element={HistoryPlay} />}
-            />
-            <Route
-              path="/groupManagement"
-              element={
-                <PrivateRoute
-                  element={GroupManagement}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/blockManagement"
-              element={
-                <PrivateRoute
-                  element={BlockManagement}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/userManagement"
-              element={
-                <PrivateRoute
-                  element={UserManagement}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/collectionManagement"
-              element={
-                <PrivateRoute
-                  element={CollectionManagement}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/blockManagement/create"
-              element={
-                <PrivateRoute
-                  element={CreateBlock}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/blockManagement/:id/edit"
-              element={
-                <PrivateRoute
-                  element={EditBlock}
-                  permission={[Role.ADMIN, Role.TEACHER]}
-                />
-              }
-            />
-            <Route
-              path="/collections/:id"
-              element={<PrivateRoute element={Lessons} />}
-            />
-            <Route
-              path="/collections/:collection_id/groups/:group_id"
-              element={<PrivateRoute element={LessonsDetail} />}
-            />
-            <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
-            <Route
-              path="/rooms/:id"
-              element={<PrivateRoute element={Waiting} />}
-            />
-            <Route
-              path="/rooms/:id/play"
-              element={<PrivateRoute element={Play} />}
-            />
-            <Route
-              path="/rooms/:id/end-game"
-              element={<PrivateRoute element={EndGame} />}
-            />
+            <Route path="/" element={<Layout />}>
+              <Route index element={<PrivateRoute element={Dashboard} />} />
+              <Route
+                path="/history"
+                element={<PrivateRoute element={History} />}
+              />
+              <Route
+                path="/profile"
+                element={<PrivateRoute element={Profile} />}
+              />
+              <Route
+                path="/messages"
+                element={<PrivateRoute element={MessageHome} />}
+              />
+              <Route
+                path="/history-plays"
+                element={<PrivateRoute element={HistoryPlay} />}
+              />
+              <Route
+                path="/groupManagement"
+                element={
+                  <PrivateRoute
+                    element={GroupManagement}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/blockManagement"
+                element={
+                  <PrivateRoute
+                    element={BlockManagement}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/userManagement"
+                element={
+                  <PrivateRoute
+                    element={UserManagement}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/collectionManagement"
+                element={
+                  <PrivateRoute
+                    element={CollectionManagement}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/blockManagement/create"
+                element={
+                  <PrivateRoute
+                    element={CreateBlock}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/blockManagement/:id/edit"
+                element={
+                  <PrivateRoute
+                    element={EditBlock}
+                    permission={[Role.ADMIN, Role.TEACHER]}
+                  />
+                }
+              />
+              <Route
+                path="/collections/:id"
+                element={<PrivateRoute element={Lessons} />}
+              />
+              <Route
+                path="/collections/:collection_id/groups/:group_id"
+                element={<PrivateRoute element={LessonsDetail} />}
+              />
+              <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
+              <Route
+                path="/rooms/:id"
+                element={<PrivateRoute element={Waiting} />}
+              />
+              <Route
+                path="/rooms/:id/play"
+                element={<PrivateRoute element={Play} />}
+              />
+              <Route
+                path="/rooms/:id/end-game"
+                element={<PrivateRoute element={EndGame} />}
+              />
 
-            <Route
-              path="/ranking"
-              element={<PrivateRoute element={RankingPage} />}
-            />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+              <Route
+                path="/ranking"
+                element={<PrivateRoute element={RankingPage} />}
+              />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </LoaderProvider>
     </AlertProvider>
   );
 }

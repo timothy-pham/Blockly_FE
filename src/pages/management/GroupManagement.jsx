@@ -134,6 +134,7 @@ export const GroupManagement = () => {
         toastOptions
       );
     } finally {
+      event.target.value = "";
       setRefresh(!refresh);
       setPreview(null);
       setSelectedImage(null);

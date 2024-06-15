@@ -103,6 +103,10 @@ export const EditBlock = () => {
         "Có lỗi trong lúc chỉnh sửa câu hỏi. Vui lòng kiểm tra lại.",
         toastOptions
       );
+    } finally {
+      event.target.value = "";
+      setAnswers("");
+      setShowAnswers(false);
     }
   };
   return (

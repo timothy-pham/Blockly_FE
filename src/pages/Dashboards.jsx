@@ -20,7 +20,9 @@ export const Dashboard = () => {
   }, []);
   return (
     <Paper sx={{ padding: 3 }}>
-      <Typography variant="h6" sx={{mb:2}}>Chủ đề</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Chủ đề
+      </Typography>
 
       <div className="border-t border-solid border-gray-300 pt-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -63,6 +63,10 @@ export const CreateBlock = () => {
         "Có lỗi trong lúc thêm mới câu hỏi. Vui lòng kiểm tra lại.",
         toastOptions
       );
+    } finally {
+      event.target.value = "";
+      setAnswers("");
+      setShowAnswers(false);
     }
   };
 
