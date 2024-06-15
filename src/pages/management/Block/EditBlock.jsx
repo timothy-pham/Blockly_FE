@@ -5,7 +5,7 @@ import {
   fetchData,
   apiPost,
   fetchDataDetail,
-  updateData,
+  apiPatch,
 } from "../../../utils/dataProvider";
 import { useLocation, useNavigate } from "react-router-dom";
 import { transformCodeBlockly } from "../../../utils/transform";
@@ -79,7 +79,7 @@ export const EditBlock = () => {
     }
 
     try {
-      const res = await updateData("blocks", id, {
+      const res = await apiPatch("blocks", id, {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),

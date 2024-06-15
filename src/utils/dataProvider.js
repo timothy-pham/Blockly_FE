@@ -79,7 +79,7 @@ export async function deleteData(resource, id) {
   }
 }
 
-export async function updateData(resource, id, data) {
+export async function apiPatch(resource, id, data) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,

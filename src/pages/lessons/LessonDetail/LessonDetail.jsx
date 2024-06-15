@@ -6,7 +6,7 @@ import {
   apiPost,
   fetchData,
   fetchDataDetail,
-  updateData,
+  apiPatch,
 } from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
 import moment from "moment";
@@ -98,7 +98,7 @@ export const LessonsDetail = () => {
 
   const updateHistory = async (blockDetail) => {
     try {
-      const res = await updateData(
+      const res = await apiPatch(
         `histories/add-result`,
         history?.histories_id,
         {

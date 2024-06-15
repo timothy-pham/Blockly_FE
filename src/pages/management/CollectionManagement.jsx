@@ -25,7 +25,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
   apiPost,
-  updateData,
+  apiPatch,
   deleteData,
   getToken,
 } from "../../utils/dataProvider";
@@ -103,7 +103,7 @@ export const CollectionManagement = () => {
           },
         });
       } else {
-        res = await updateData("collections", data.collection_id, {
+        res = await apiPatch("collections", data.collection_id, {
           type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {

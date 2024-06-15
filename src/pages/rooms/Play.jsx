@@ -97,7 +97,7 @@ export const Play = () => {
 
   // const updateHistory = async (blockDetail) => {
   //   try {
-  //     const res = await updateData(
+  //     const res = await apiPatch(
   //       `histories/add-result`,
   //       history?.histories_id,
   //       {

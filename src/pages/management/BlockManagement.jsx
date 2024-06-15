@@ -26,7 +26,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
   apiPost,
-  updateData,
+  apiPatch,
   deleteData,
   getToken,
 } from "../../utils/dataProvider";

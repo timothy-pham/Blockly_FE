@@ -21,7 +21,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import {
   apiPost,
   fetchDataDetail,
-  updateData,
+  apiPatch,
 } from "../../utils/dataProvider";
 import { formatDateTime, formatNumber } from "../../utils/transform";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
@@ -109,7 +109,7 @@ export const Profile = () => {
         setLoading(true);
         let imageUrl = await uploadImage(file, "users");
 
-        const res = await updateData(`users`, user.user_id, {
+        const res = await apiPatch(`users`, user.user_id, {
           meta_data: { avatar: imageUrl },
         });
 
@@ -289,7 +289,7 @@ export const Profile = () => {
                 onClick={async () => {
                   try {
                     setLoading(true);
-                    const res = await updateData(`users`, user.user_id, {
+                    const res = await apiPatch(`users`, user.user_id, {
                       name,
                     });
                     if (res) {

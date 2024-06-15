@@ -27,7 +27,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
   apiPost,
-  updateData,
+  apiPatch,
   deleteData,
   getToken,
 } from "../../utils/dataProvider";
@@ -99,7 +99,7 @@ export const UserManagement = () => {
       toast.error(`Vui lòng chọn quyền để gán.`, toastOptions);
     } else {
       try {
-        res = await updateData(`users`, data.user_id, { role });
+        res = await apiPatch(`users`, data.user_id, { role });
         if (res) {
           toast.success(`Thay đổi quyền thành công.`, toastOptions);
         }
