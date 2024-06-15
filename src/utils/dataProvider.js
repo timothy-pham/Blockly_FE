@@ -56,7 +56,7 @@ export async function fetchDataDetail(resource, id) {
   }
 }
 
-export async function deleteData(resource, id) {
+export async function apiDelete(resource, id) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,

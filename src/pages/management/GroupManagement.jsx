@@ -27,7 +27,7 @@ import {
   fetchData,
   apiPost,
   apiPatch,
-  deleteData,
+  apiDelete,
   getToken,
 } from "../../utils/dataProvider";
 import { getCurrentDateTime } from "../../utils/generate";
@@ -143,7 +143,7 @@ export const GroupManagement = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await deleteData("groups", data.collection_id);
+      const res = await apiDelete("groups", data.collection_id);
       if (res) {
         toast.success(`Xóa bài tập thành công.`, toastOptions);
       }

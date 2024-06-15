@@ -28,7 +28,7 @@ import {
   fetchData,
   apiPost,
   apiPatch,
-  deleteData,
+  apiDelete,
   getToken,
 } from "../../utils/dataProvider";
 import { getCurrentDateTime } from "../../utils/generate";

@@ -27,7 +27,7 @@ import {
   fetchData,
   apiPost,
   apiPatch,
-  deleteData,
+  apiDelete,
   getToken,
 } from "../../utils/dataProvider";
 import { saveAs } from "file-saver";
@@ -84,7 +84,7 @@ export const BlockManagement = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await deleteData("blocks", data.block_id);
+      const res = await apiDelete("blocks", data.block_id);
       if (res) {
         toast.success("Xóa câu hỏi thành công.", toastOptions);
       }

@@ -26,7 +26,7 @@ import {
   fetchData,
   apiPost,
   apiPatch,
-  deleteData,
+  apiDelete,
   getToken,
 } from "../../utils/dataProvider";
 import { getCurrentDateTime } from "../../utils/generate";
@@ -137,7 +137,7 @@ export const CollectionManagement = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await deleteData("collections", data.collection_id);
+      const res = await apiDelete("collections", data.collection_id);
       if (res) {
         toast.success(`Xóa danh mục thành công.`, toastOptions);
       }
