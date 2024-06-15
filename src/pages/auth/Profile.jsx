@@ -38,6 +38,7 @@ export const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [userDetail, setUserDetail] = useState();
+  const [name, setName] = useState();
   const [showIcon, setShowIcon] = useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const { setLoading } = useLoader();
@@ -46,6 +47,7 @@ export const Profile = () => {
       const res = await fetchDataDetail("users", user.user_id);
       if (res) {
         setUserDetail(res);
+        setName(res.name);
       }
     } catch (e) {
       console.log("can not fetch users");
@@ -199,18 +201,26 @@ export const Profile = () => {
             </>
 
             <CardHeader
-              title={
-                <Typography variant="h5" component="div">
-                  {user.name}
-                </Typography>
-              }
-              subheader={
-                <Typography variant="subtitle1" color="textSecondary">
-                  {user.username}
-                </Typography>
-              }
+              // title={
+              //   <Typography variant="h5" component="div">
+              //     {user.name}
+              //   </Typography>
+              // }
+
               action={
-                <IconButton onClick={handleOpenChangePassword}>
+                <IconButton onClick={handleOpenChangePassword}
+                  style={{
+                    marginRight: "10px",
+                    backgroundColor: "#f0f0f0",
+                    borderRadius: "5px",
+
+                  }}
+                >
+                  <Typography variant="subtitle1" color="textSecondary" sx={
+                    { mr: 1 }
+                  }>
+                    Đặt lại mật khẩu
+                  </Typography>
                   <LockIcon />
                 </IconButton>
               }
@@ -225,16 +235,26 @@ export const Profile = () => {
               <TextField
                 InputLabelProps={{ shrink: true }}
                 margin="dense"
-                label="Quyền"
+                label="Tên"
                 fullWidth
-                value={userRole[userDetail?.role]}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               <TextField
                 InputLabelProps={{ shrink: true }}
                 margin="dense"
-                label="Tài khoản"
+                label="Quyền"
+                fullWidth
+                value={userRole[userDetail?.role]}
+                disabled
+              />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                margin="dense"
+                label="Tên đăng nhập"
                 fullWidth
                 value={userDetail?.username}
+                disabled
               />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -242,6 +262,7 @@ export const Profile = () => {
                 label="Điểm tích lũy"
                 fullWidth
                 value={formatNumber(userDetail?.meta_data.points)}
+                disabled
               />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -249,6 +270,7 @@ export const Profile = () => {
                 label="Số trận tham gia thi đấu"
                 fullWidth
                 value={formatNumber(userDetail?.meta_data.matches)}
+                disabled
               />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -256,7 +278,37 @@ export const Profile = () => {
                 label="Ngày tạo tài khoản"
                 fullWidth
                 value={formatDateTime(userDetail?.created_at)}
+                disabled
               />
+              {/* submit */}
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ mt: 2 }}
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    const res = await updateData(`users`, user.user_id, {
+                      name,
+                    });
+                    if (res) {
+                      toast.success(`Cập nhật thông tin thành công.`, toastOptions);
+                    }
+                  } catch (e) {
+                    console.log("can not update user", e);
+                    toast.error(
+                      `Có lỗi trong lúc cập nhật thông tin. Vui lòng kiểm tra lại.`,
+                      toastOptions
+                    );
+                  } finally {
+                    setLoading(false);
+                    setRefresh(!refresh);
+                  }
+                }}
+              >
+                Lưu
+              </Button>
             </CardContent>
           </Card>
         </Grid>
