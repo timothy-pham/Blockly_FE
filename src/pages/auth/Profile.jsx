@@ -116,6 +116,9 @@ export const Profile = () => {
           let currentUser = JSON.parse(localStorage.getItem("authToken"));
           if (currentUser) {
             console.log("before ===>", currentUser);
+            if (!currentUser.user.meta_data) {
+              currentUser.user.meta_data = {};
+            }
             currentUser.user.meta_data.avatar = imageUrl;
             console.log("after ===>", currentUser);
             localStorage.setItem("authToken", JSON.stringify(currentUser));
@@ -124,6 +127,7 @@ export const Profile = () => {
           toast.success(`Thay đổi ảnh đại diện thành công.`, toastOptions);
         }
       } catch (err) {
+        console.log("Error when updating avatar", err);
         toast.error(
           `Có lỗi trong lúc thay đổi quyền. Vui lòng kiểm tra lại.`,
           toastOptions
