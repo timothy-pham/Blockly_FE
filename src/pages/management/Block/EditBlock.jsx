@@ -89,7 +89,7 @@ export const EditBlock = () => {
         answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
-          image: !preview.includes("blob") ? preview : imageUrl,
+          image: preview?.includes("blob") ? preview : imageUrl,
         },
       });
       console.log("res=====>", res);
