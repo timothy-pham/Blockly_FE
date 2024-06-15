@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  post,
+  apiPost,
   updateData,
   deleteData,
   getToken,
@@ -101,7 +101,7 @@ export const GroupManagement = () => {
     }
     try {
       if (!data?.group_id) {
-        res = await post("groups", {
+        res = await apiPost("groups", {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
@@ -181,7 +181,7 @@ export const GroupManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await post("groups/import", file);
+      await apiPost("groups/import", file);
     } catch (err) {
       console.log("can not create block");
     } finally {

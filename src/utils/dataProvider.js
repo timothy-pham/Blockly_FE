@@ -103,7 +103,7 @@ export async function updateData(resource, id, data) {
   }
 }
 
-export async function post(resource, data) {
+export async function apiPost(resource, data) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,

@@ -3,7 +3,7 @@ import { Button, TextField, Autocomplete, Box, Paper } from "@mui/material";
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import {
   fetchData,
-  post,
+  apiPost,
   fetchDataDetail,
   updateData,
 } from "../../../utils/dataProvider";

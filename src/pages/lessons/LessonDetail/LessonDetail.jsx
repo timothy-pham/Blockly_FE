@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Chip, Typography } from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
 import {
-  post,
+  apiPost,
   fetchData,
   fetchDataDetail,
   updateData,
@@ -26,7 +26,7 @@ export const LessonsDetail = () => {
 
   const createHistory = async (initialBlockDetail) => {
     try {
-      const res = await post(`histories`, {
+      const res = await apiPost(`histories`, {
         type: "normal",
         user_id: 1,
         group_id: Number(group_id),
@@ -115,7 +115,7 @@ export const LessonsDetail = () => {
   };
 
   const handleSubmitAnswer = async () => {
-    const res = await post("blocks/check-answer", {
+    const res = await apiPost("blocks/check-answer", {
       id: blockDetail.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
@@ -154,8 +154,8 @@ export const LessonsDetail = () => {
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
               className={`${index === currentQuestionIndex
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-blue-500"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-blue-500"
                 } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
               key={index}
               onClick={() => {

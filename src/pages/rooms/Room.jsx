@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { post, fetchData } from "../../utils/dataProvider";
+import { apiPost, fetchData } from "../../utils/dataProvider";
 
 export const Rooms = () => {
   const navigate = useNavigate();
@@ -75,7 +75,7 @@ export const Rooms = () => {
           group_id: createRoom.group_id,
         },
       };
-      const res = await post("rooms", data);
+      const res = await apiPost("rooms", data);
       if (res) {
         setDialogCreateRoom(false);
         setCreateRoom({});

@@ -20,7 +20,7 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { post, fetchData } from "../../utils/dataProvider"
+import { apiPost, fetchData } from "../../utils/dataProvider"
 
 const userRole = {
   teacher: "Giáo viên",
@@ -92,7 +92,7 @@ const ClassHome = () => {
 
   const handleStartChat = async (receiver_id) => {
     try {
-      const res = await post("messages", {
+      const res = await apiPost("messages", {
         type: "private",
         users: [receiver_id],
       })

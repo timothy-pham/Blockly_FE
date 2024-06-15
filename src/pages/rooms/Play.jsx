@@ -18,7 +18,7 @@ import {
   transformCodeBlockly,
 } from "../../utils/transform";
 import {
-  post,
+  apiPost,
   fetchData,
   fetchDataDetail,
 } from "../../utils/dataProvider";
@@ -177,7 +177,7 @@ export const Play = () => {
   };
 
   const handleSubmitAnswer = async () => {
-    const res = await post("blocks/check-answer", {
+    const res = await apiPost("blocks/check-answer", {
       id: blockDetail.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });

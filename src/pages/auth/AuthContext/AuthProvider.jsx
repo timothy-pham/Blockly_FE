@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
-import { post } from "../../../utils/dataProvider";
+import { apiPost } from "../../../utils/dataProvider";
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

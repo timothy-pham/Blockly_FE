@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  post,
+  apiPost,
   updateData,
   deleteData,
   getToken,
@@ -118,7 +118,7 @@ export const BlockManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await post("blocks/import", file);
+      await apiPost("blocks/import", file);
     } catch (err) {
       console.log("can not create block");
     } finally {

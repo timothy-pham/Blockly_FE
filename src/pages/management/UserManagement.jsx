@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  post,
+  apiPost,
   updateData,
   deleteData,
   getToken,
@@ -130,7 +130,7 @@ export const UserManagement = () => {
           data.role === "parent"
             ? { parent_id: data?.user_id }
             : { student_id: data?.user_id };
-        res = await post(`users/${endpoint}/${teacher}`, requestData);
+        res = await apiPost(`users/${endpoint}/${teacher}`, requestData);
         if (res) {
           toast.success(
             `Thêm học sinh cho giáo viên thành công.`,
@@ -158,7 +158,7 @@ export const UserManagement = () => {
       toast.error(`Vui lòng chọn phụ huynh để gán.`, toastOptions);
     } else {
       try {
-        res = await post(`users/addStudentToParent/${parent}`, {
+        res = await apiPost(`users/addStudentToParent/${parent}`, {
           student_id: data?.user_id,
         });
         if (res) {
@@ -184,7 +184,7 @@ export const UserManagement = () => {
   const handleDeleteAssign = async () => {
     try {
       let res;
-      res = await post(
+      res = await apiPost(
         `users/removeStudentFromParent/${data?.meta_data?.parent}`,
         { student_id: data?.user_id }
       );
@@ -214,7 +214,7 @@ export const UserManagement = () => {
         data.role === "parent"
           ? { parent_id: data?.user_id }
           : { student_id: data?.user_id };
-      res = await post(
+      res = await apiPost(
         `users/${endpoint}/${data?.meta_data?.teacher}`,
         requestData
       );
