@@ -152,7 +152,7 @@ const MessageHome = () => {
         <MainContainer
             responsive
             style={{
-                height: '700px'
+                height: '900px'
             }}
         >
             <Sidebar

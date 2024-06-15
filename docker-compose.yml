@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   blockly-fe:
@@ -7,9 +7,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - REACT_APP_API_URL=https://api.timothypham.io.vn
-      - REACT_APP_FIREBASE_EMAIL=datpham@gmail.com
-      - REACT_APP_FIREBASE_PASSWORD=datons2024
+      - REACT_APP_API_URL="https://api.timothypham.io.vn"
+      - REACT_APP_FIREBASE_EMAIL="datpham@gmail.com"
+      - REACT_APP_FIREBASE_PASSWORD="datons2024"
     networks:
       - blockly-network
     restart: always
