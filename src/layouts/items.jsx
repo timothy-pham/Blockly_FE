@@ -21,6 +21,7 @@ export const items = [
       </SvgIcon>
     ),
   },
+
   {
     title: "Trò chuyện",
     permission: ["*"],
@@ -28,6 +29,17 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <ChatBubbleOvalLeftEllipsisIcon />
+      </SvgIcon>
+    ),
+  },
+
+  {
+    permission: ["*"],
+    title: "Bảng xếp hạng ",
+    path: "/ranking",
+    icon: (
+      <SvgIcon fontSize="small">
+        <TrophyIcon />
       </SvgIcon>
     ),
   },
@@ -62,19 +74,9 @@ export const items = [
     ),
   },
   {
-    permission: ["*"],
-    title: "Bảng xếp hạng ",
-    path: "/ranking",
-    icon: (
-      <SvgIcon fontSize="small">
-        <TrophyIcon />
-      </SvgIcon>
-    ),
-  },
-  {
     title: "Quản lí danh mục",
     path: "/collectionManagement",
-    permission: [Role.ADMIN, Role.TEACHER],
+    permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
         <CircleStackIcon />
@@ -84,7 +86,7 @@ export const items = [
   {
     title: "Quản lí bài tập",
     path: "/groupManagement",
-    permission: [Role.ADMIN, Role.TEACHER],
+    permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
         <RectangleGroupIcon />
@@ -94,7 +96,7 @@ export const items = [
   {
     title: "Quản lí câu hỏi",
     path: "/blockManagement",
-    permission: [Role.ADMIN, Role.TEACHER],
+    permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
         <QuestionMarkCircleIcon />

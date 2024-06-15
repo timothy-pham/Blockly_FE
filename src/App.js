@@ -88,7 +88,7 @@ function App() {
                 element={
                   <PrivateRoute
                     element={GroupManagement}
-                    permission={[Role.ADMIN, Role.TEACHER]}
+                    permission={[Role.ADMIN]}
                   />
                 }
               />
@@ -97,7 +97,7 @@ function App() {
                 element={
                   <PrivateRoute
                     element={BlockManagement}
-                    permission={[Role.ADMIN, Role.TEACHER]}
+                    permission={[Role.ADMIN]}
                   />
                 }
               />
@@ -115,7 +115,7 @@ function App() {
                 element={
                   <PrivateRoute
                     element={CollectionManagement}
-                    permission={[Role.ADMIN, Role.TEACHER]}
+                    permission={[Role.ADMIN]}
                   />
                 }
               />
@@ -124,17 +124,14 @@ function App() {
                 element={
                   <PrivateRoute
                     element={CreateBlock}
-                    permission={[Role.ADMIN, Role.TEACHER]}
+                    permission={[Role.ADMIN]}
                   />
                 }
               />
               <Route
                 path="/blockManagement/:id/edit"
                 element={
-                  <PrivateRoute
-                    element={EditBlock}
-                    permission={[Role.ADMIN, Role.TEACHER]}
-                  />
+                  <PrivateRoute element={EditBlock} permission={[Role.ADMIN]} />
                 }
               />
               <Route
