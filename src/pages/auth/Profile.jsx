@@ -106,10 +106,21 @@ export const Profile = () => {
       try {
         setLoading(true);
         let imageUrl = await uploadImage(file, "users");
+
         const res = await updateData(`users`, user.user_id, {
           meta_data: { avatar: imageUrl },
         });
+
         if (res) {
+          // Update localStorage with the new avatar URL
+          let currentUser = JSON.parse(localStorage.getItem("authToken"));
+          if (currentUser) {
+            console.log("before ===>", currentUser);
+            currentUser.user.meta_data.avatar = imageUrl;
+            console.log("after ===>", currentUser);
+            localStorage.setItem("authToken", JSON.stringify(currentUser));
+          }
+
           toast.success(`Thay đổi ảnh đại diện thành công.`, toastOptions);
         }
       } catch (err) {
