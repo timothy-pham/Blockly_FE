@@ -7,7 +7,6 @@ import { Typography } from "@mui/material";
 export const Lessons = () => {
   const { id } = useParams();
   const info = localStorage.getItem("authToken");
-  const { user } = JSON.parse(info);
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
   const [statistics, setStatistics] = useState();
@@ -34,7 +33,6 @@ export const Lessons = () => {
     fetchStatistics();
   }, []);
 
-  console.log("statistics ===>", statistics);
   return (
     <>
       <Typography variant="h6">Bài tập</Typography>
