@@ -261,7 +261,7 @@ export const Profile = () => {
                 margin="dense"
                 label="Điểm tích lũy"
                 fullWidth
-                value={formatNumber(userDetail?.meta_data.points)}
+                value={formatNumber(userDetail?.meta_data?.points)}
                 disabled
               />
               <TextField
@@ -269,7 +269,7 @@ export const Profile = () => {
                 margin="dense"
                 label="Số trận tham gia thi đấu"
                 fullWidth
-                value={formatNumber(userDetail?.meta_data.matches)}
+                value={formatNumber(userDetail?.meta_data?.matches)}
                 disabled
               />
               <TextField
