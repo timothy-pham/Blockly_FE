@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { createData } from "../../utils/dataProvider";
+import { post } from "../../utils/dataProvider";
 import { Typography } from "@mui/material";
 import { useState } from "react";
 const Register = () => {

@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
 import {
-  createData,
+  post,
   fetchDataDetail,
   updateData,
 } from "../../utils/dataProvider";
@@ -75,7 +75,7 @@ export const Profile = () => {
         );
         return;
       }
-      const res = await createData("auth/reset-password", {
+      const res = await post("auth/reset-password", {
         username: user.username,
         password: newPassword,
       });

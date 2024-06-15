@@ -6,6 +6,7 @@ import QuestionMarkCircleIcon from "@heroicons/react/24/solid/QuestionMarkCircle
 import TrophyIcon from "@heroicons/react/24/solid/TrophyIcon";
 import UserIcon from "@heroicons/react/24/solid/UserIcon";
 import ChatBubbleOvalLeftEllipsisIcon from "@heroicons/react/24/solid/ChatBubbleOvalLeftEllipsisIcon";
+import QueueListIcon from "@heroicons/react/24/solid/QueueListIcon";
 import { SvgIcon } from "@mui/material";
 import { Role } from "../constant/role";
 
@@ -27,6 +28,16 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <ChatBubbleOvalLeftEllipsisIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    title: "Danh sách lớp",
+    permission: ["*"],
+    path: "/class",
+    icon: (
+      <SvgIcon fontSize="small">
+        <QueueListIcon />
       </SvgIcon>
     ),
   },

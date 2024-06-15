@@ -28,6 +28,7 @@ import { Profile } from "./pages/auth/Profile";
 import MessageHome from "./pages/message/MessageHome";
 import { LoaderProvider } from "./components/progress/LoaderContext";
 import { Loader } from "./components/progress/Loader";
+import ClassHome from "./pages/class/ClassHome";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -73,6 +74,10 @@ function App() {
               <Route
                 path="/messages"
                 element={<PrivateRoute element={MessageHome} />}
+              />
+              <Route
+                path="/class"
+                element={<PrivateRoute element={ClassHome} />}
               />
               <Route
                 path="/history-plays"

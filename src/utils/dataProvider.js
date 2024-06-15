@@ -12,9 +12,9 @@ export async function fetchData(resource, headers) {
       {
         headers: !headers
           ? {
-              Authorization: getToken(),
-              "Content-Type": "application/json",
-            }
+            Authorization: getToken(),
+            "Content-Type": "application/json",
+          }
           : headers,
       }
     );
@@ -103,7 +103,7 @@ export async function updateData(resource, id, data) {
   }
 }
 
-export async function createData(resource, data) {
+export async function post(resource, data) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,

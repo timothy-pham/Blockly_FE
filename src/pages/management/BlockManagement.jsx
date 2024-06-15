@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  createData,
+  post,
   updateData,
   deleteData,
   getToken,
@@ -118,7 +118,7 @@ export const BlockManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await createData("blocks/import", file);
+      await post("blocks/import", file);
     } catch (err) {
       console.log("can not create block");
     } finally {
@@ -218,15 +218,15 @@ export const BlockManagement = () => {
                       row?.level === 1
                         ? "success"
                         : row?.level === 2
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                     label={
                       row?.level === 1
                         ? "Dễ"
                         : row?.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                          ? "Bình thường"
+                          : "Khó"
                     }
                     sx={{ width: "fit-content" }}
                   />

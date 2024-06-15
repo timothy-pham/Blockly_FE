@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Chip, Typography } from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
 import {
-  createData,
+  post,
   fetchData,
   fetchDataDetail,
   updateData,
@@ -26,7 +26,7 @@ export const LessonsDetail = () => {
 
   const createHistory = async (initialBlockDetail) => {
     try {
-      const res = await createData(`histories`, {
+      const res = await post(`histories`, {
         type: "normal",
         user_id: 1,
         group_id: Number(group_id),
@@ -115,7 +115,7 @@ export const LessonsDetail = () => {
   };
 
   const handleSubmitAnswer = async () => {
-    const res = await createData("blocks/check-answer", {
+    const res = await post("blocks/check-answer", {
       id: blockDetail.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
@@ -153,11 +153,10 @@ export const LessonsDetail = () => {
             <Button
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
-              className={`${
-                index === currentQuestionIndex
+              className={`${index === currentQuestionIndex
                   ? "bg-blue-500 text-white"
                   : "bg-white text-blue-500"
-              } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+                } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
@@ -187,15 +186,15 @@ export const LessonsDetail = () => {
                 blockDetail?.level === 1
                   ? "success"
                   : blockDetail?.level === 2
-                  ? "warning"
-                  : "error"
+                    ? "warning"
+                    : "error"
               }
               label={
                 blockDetail?.level === 1
                   ? "Dễ"
                   : blockDetail?.level === 2
-                  ? "Bình thường"
-                  : "Khó"
+                    ? "Bình thường"
+                    : "Khó"
               }
               sx={{
                 width: "fit-content",
@@ -231,14 +230,14 @@ export const LessonsDetail = () => {
           </div>
           {currentQuestionIndex ===
             rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
-            <Button
-              onClick={handleSubmitAnswer}
-              variant="contained"
-              sx={{ mt: 1 }}
-            >
-              Kiểm tra
-            </Button>
-          )}
+              <Button
+                onClick={handleSubmitAnswer}
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Kiểm tra
+              </Button>
+            )}
         </Box>
       </div>
     </>

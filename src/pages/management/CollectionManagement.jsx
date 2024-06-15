@@ -24,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  createData,
+  post,
   updateData,
   deleteData,
   getToken,
@@ -94,7 +94,7 @@ export const CollectionManagement = () => {
     }
     try {
       if (!data?.collection_id) {
-        res = await createData("collections", {
+        res = await post("collections", {
           type: dataForm.get("type"),
           name: dataForm.get("name"),
           meta_data: {
@@ -114,8 +114,7 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${
-            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -123,8 +122,7 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -177,7 +175,7 @@ export const CollectionManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await createData("collections/import", file);
+      await post("collections/import", file);
     } catch (err) {
       console.log("can not create block");
     } finally {

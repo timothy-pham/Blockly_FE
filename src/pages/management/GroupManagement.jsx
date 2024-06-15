@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
   fetchData,
-  createData,
+  post,
   updateData,
   deleteData,
   getToken,
@@ -101,7 +101,7 @@ export const GroupManagement = () => {
     }
     try {
       if (!data?.group_id) {
-        res = await createData("groups", {
+        res = await post("groups", {
           name: dataForm.get("name"),
           meta_data: {
             description: dataForm.get("description"),
@@ -128,8 +128,7 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -182,7 +181,7 @@ export const GroupManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await createData("groups/import", file);
+      await post("groups/import", file);
     } catch (err) {
       console.log("can not create block");
     } finally {
@@ -393,19 +392,19 @@ export const GroupManagement = () => {
             collection.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-            <TextField
-              margin="normal"
-              type="number"
-              required
-              fullWidth
-              id="timer"
-              label="Thời gian"
-              placeholder="Số phút"
-              name="timer"
-              defaultValue={data?.meta_data?.timer}
-              autoFocus
-            />
-          )}
+              <TextField
+                margin="normal"
+                type="number"
+                required
+                fullWidth
+                id="timer"
+                label="Thời gian"
+                placeholder="Số phút"
+                name="timer"
+                defaultValue={data?.meta_data?.timer}
+                autoFocus
+              />
+            )}
           <TextField
             margin="normal"
             fullWidth

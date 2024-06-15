@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, Search, ConversationList, Conversation, Avatar, ConversationHeader, TypingIndicator, MessageSeparator, VoiceCallButton, VideoCallButton, EllipsisButton } from '@chatscope/chat-ui-kit-react';
-import { fetchData, createData } from "../../utils/dataProvider";
+import { fetchData, post } from "../../utils/dataProvider";
 import { socket } from "../../socket";
 import { formatTimeMessage } from "../../utils/transform";
 // import "./message.css";
@@ -18,8 +18,13 @@ const MessageHome = () => {
         try {
             const res = await fetchData("messages");
             setConversations(res);
+            console.log("CONVERSATIONS", res)
             if (currentChat) {
                 const newChat = res.find(chat => chat.message_id === currentChat?.message_id);
+                setCurrentChat(newChat);
+            } else {
+                const chat_id = new URLSearchParams(window.location.search).get("chat_id");
+                const newChat = res.find(chat => chat.message_id == chat_id);
                 setCurrentChat(newChat);
             }
         } catch (err) {
@@ -67,7 +72,7 @@ const MessageHome = () => {
 
     const handleSendMessage = async (data) => {
         try {
-            const res = await createData(`messages/send/${currentChat.message_id}`, {
+            const res = await post(`messages/send/${currentChat.message_id}`, {
                 method: "POST",
                 body: {
                     message: data
@@ -116,7 +121,6 @@ const MessageHome = () => {
                     {
                         currentChat.messages.map((message, index) => {
                             const time = formatTimeMessage(message.send_at)
-                            console.log("MESSAGE", message)
                             return (
                                 <Message
                                     key={index}
@@ -162,6 +166,8 @@ const MessageHome = () => {
                     name="Phòng chat chung"
                     onClick={() => {
                         setCurrentChat(null)
+                        // clear url params
+                        window.history.pushState({}, document.title, window.location.pathname);
                     }}
                     active={currentChat === null}
                 >
@@ -177,24 +183,29 @@ const MessageHome = () => {
 
                             const lastMessage = conversation.messages[conversation.messages.length - 1]
                             const lastUser = conversation.users.find(user => user.user_id === lastMessage.user_id)
+                            const user_receiver = conversation.users.find(u => u.user_id !== user.user_id)
                             return (
                                 <Conversation
                                     key={index}
                                     info={lastMessage.message}
                                     lastSenderName={lastUser.name}
-                                    name={lastUser.name}
+                                    name={user_receiver.name}
                                     active={currentChat === conversation}
                                     onClick={() => {
                                         if (currentChat === conversation) {
                                             setCurrentChat(null)
+                                            // clear url params
+                                            window.history.pushState({}, document.title, window.location.pathname);
                                         } else {
                                             setCurrentChat(conversation)
+                                            // set url params
+                                            window.history.pushState({}, document.title, `?chat_id=${conversation.message_id}`);
                                         }
                                     }}
                                 >
                                     <Avatar
-                                        name={lastUser.name}
-                                        src={lastUser.meta_data.avatar ? lastUser.meta_data.avatar : "/default_avatar.png"}
+                                        name={user_receiver.name}
+                                        src={user_receiver.meta_data.avatar ? user_receiver.meta_data.avatar : "/default_avatar.png"}
                                         status="available"
                                     />
                                 </Conversation>

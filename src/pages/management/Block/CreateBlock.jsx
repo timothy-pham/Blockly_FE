@@ -8,7 +8,7 @@ import {
   Paper,
 } from "@mui/material";
 import React, { useState } from "react";
-import { createData } from "../../../utils/dataProvider";
+import { post } from "../../../utils/dataProvider";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { uploadImage } from "../../../utils/firebase";
 import { ImageInput } from "../../../components/input/ImageInput";
@@ -42,7 +42,7 @@ export const CreateBlock = () => {
     const imageUrl = await uploadImage(selectedImage, "blocks");
 
     try {
-      const res = await createData("blocks", {
+      const res = await post("blocks", {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),

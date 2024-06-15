@@ -18,7 +18,7 @@ import {
   transformCodeBlockly,
 } from "../../utils/transform";
 import {
-  createData,
+  post,
   fetchData,
   fetchDataDetail,
 } from "../../utils/dataProvider";
@@ -177,7 +177,7 @@ export const Play = () => {
   };
 
   const handleSubmitAnswer = async () => {
-    const res = await createData("blocks/check-answer", {
+    const res = await post("blocks/check-answer", {
       id: blockDetail.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
@@ -297,15 +297,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                      ? "Bình thường"
-                      : "Khó"
+                        ? "Bình thường"
+                        : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -322,15 +322,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  variant="contained"
-                  disabled={blockDetail.answered}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    variant="contained"
+                    disabled={blockDetail.answered}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Kiểm tra
+                  </Button>
+                )}
             </Box>
           )}
         </div>
