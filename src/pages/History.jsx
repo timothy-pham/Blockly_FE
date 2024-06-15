@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState } from "react";
-import { fetchData } from "../utils/dataProvider";
+import { apiGet } from "../utils/dataProvider";
 import { formatDateTime } from "../utils/transform";
 
 export const History = () => {
@@ -24,7 +24,7 @@ export const History = () => {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetchData("histories");
+      const res = await apiGet("histories");
       if (res) {
         setRows(res);
       }

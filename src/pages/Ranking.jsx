@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchData } from "../utils/dataProvider";
+import { apiGet } from "../utils/dataProvider";
 import { Avatar } from "@mui/material";
 import { formatDateTime, formatNumber } from "../utils/transform";
 
@@ -9,7 +9,7 @@ export const RankingPage = () => {
   console.log("username", username);
   const fetchRanking = async () => {
     try {
-      const res = await fetchData("histories/ranking");
+      const res = await apiGet("histories/ranking");
       console.log("res", res);
       if (res) {
         rankingUpdate(res);

@@ -20,7 +20,7 @@ import {
 import LockIcon from "@mui/icons-material/Lock";
 import {
   apiPost,
-  fetchDataDetail,
+  apiGetDetail,
   apiPatch,
 } from "../../utils/dataProvider";
 import { formatDateTime, formatNumber } from "../../utils/transform";
@@ -44,7 +44,7 @@ export const Profile = () => {
   const { setLoading } = useLoader();
   const fetchUserDetail = async () => {
     try {
-      const res = await fetchDataDetail("users", user.user_id);
+      const res = await apiGetDetail("users", user.user_id);
       if (res) {
         setUserDetail(res);
         setName(res.name);

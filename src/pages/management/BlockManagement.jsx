@@ -24,7 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
-  fetchData,
+  apiGet,
   apiPost,
   apiPatch,
   apiDelete,
@@ -53,7 +53,7 @@ export const BlockManagement = () => {
 
   const fetchBlocks = async () => {
     try {
-      const res = await fetchData("blocks");
+      const res = await apiGet("blocks");
       if (res) {
         sortBlocks(res);
       }

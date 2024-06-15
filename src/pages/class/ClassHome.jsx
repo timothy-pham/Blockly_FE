@@ -20,7 +20,7 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { apiPost, fetchData } from "../../utils/dataProvider"
+import { apiPost, apiGet } from "../../utils/dataProvider"
 
 const userRole = {
   teacher: "Giáo viên",
@@ -49,7 +49,7 @@ const ClassHome = () => {
       const teacher_id =
         user.role === "teacher" ? user.user_id : user?.meta_data?.teacher
       if (teacher_id) {
-        const res = await fetchData(`users/class/${teacher_id}`)
+        const res = await apiGet(`users/class/${teacher_id}`)
         if (res) {
           setRows(res)
         }
@@ -138,9 +138,9 @@ const ClassHome = () => {
           <TableBody>
             {(rowsPerPage > 0
               ? filteredRows.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+              )
               : filteredRows
             ).map((row, index) => (
               <TableRow key={index}>

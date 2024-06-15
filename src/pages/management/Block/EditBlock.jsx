@@ -2,9 +2,9 @@ import { BlocklyLayout } from "../../../components/Blockly";
 import { Button, TextField, Autocomplete, Box, Paper } from "@mui/material";
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import {
-  fetchData,
+  apiGet,
   apiPost,
-  fetchDataDetail,
+  apiGetDetail,
   apiPatch,
 } from "../../../utils/dataProvider";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ export const EditBlock = () => {
 
   const fetchCategory = async () => {
     try {
-      const res = await fetchData("groups");
+      const res = await apiGet("groups");
       if (res) {
         setCategory(res);
       }
@@ -40,7 +40,7 @@ export const EditBlock = () => {
 
   const fetchBlockData = async () => {
     try {
-      const res = await fetchDataDetail("blocks", id);
+      const res = await apiGetDetail("blocks", id);
       if (res) {
         setBlockDetail(res);
         setAnswers(res.answers.toString());

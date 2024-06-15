@@ -25,7 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
-  fetchData,
+  apiGet,
   apiPost,
   apiPatch,
   apiDelete,
@@ -70,7 +70,7 @@ export const UserManagement = () => {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData("users");
+      const res = await apiGet("users");
       if (res) {
         setRows(res);
       }

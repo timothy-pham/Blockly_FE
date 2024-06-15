@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, Sidebar, Search, ConversationList, Conversation, Avatar, ConversationHeader, TypingIndicator, MessageSeparator, VoiceCallButton, VideoCallButton, EllipsisButton } from '@chatscope/chat-ui-kit-react';
-import { fetchData, apiPost } from "../../utils/dataProvider";
+import { apiGet, apiPost } from "../../utils/dataProvider";
 import { socket } from "../../socket";
 import { formatTimeMessage } from "../../utils/transform";
 // import "./message.css";
@@ -16,7 +16,7 @@ const MessageHome = () => {
 
     const fetchConversations = async () => {
         try {
-            const res = await fetchData("messages");
+            const res = await apiGet("messages");
             setConversations(res);
             console.log("CONVERSATIONS", res)
             if (currentChat) {

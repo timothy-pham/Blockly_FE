@@ -19,8 +19,8 @@ import {
 } from "../../utils/transform";
 import {
   apiPost,
-  fetchData,
-  fetchDataDetail,
+  apiGet,
+  apiGetDetail,
 } from "../../utils/dataProvider";
 import { BlocklyLayout } from "../../components/Blockly";
 import { socket } from "../../socket";
@@ -51,7 +51,7 @@ export const Play = () => {
   const [timeLeft, setTimeLeft] = useState();
   const fetchCollection = async () => {
     try {
-      const res = await fetchData(`blocks/random?room_id=${id}`);
+      const res = await apiGet(`blocks/random?room_id=${id}`);
       if (res) {
         const data = res.map((item) => ({
           ...item,
@@ -70,7 +70,7 @@ export const Play = () => {
 
   const fetchRoomData = async () => {
     try {
-      const res = await fetchDataDetail("rooms", id);
+      const res = await apiGetDetail("rooms", id);
       if (res) {
         setRoomDetail(res);
       }

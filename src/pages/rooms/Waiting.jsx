@@ -16,7 +16,7 @@ import {
   Chip,
 } from "@mui/material";
 import { socket } from "../../socket";
-import { fetchData, fetchDataDetail } from "../../utils/dataProvider";
+import { apiGet, apiGetDetail } from "../../utils/dataProvider";
 import { ChatBox } from "../../components/Chat/ChatBox";
 import CooldownDialog from "../../components/CooldownDialog";
 
@@ -40,7 +40,7 @@ export const Waiting = () => {
 
   const fetchRoomData = async () => {
     try {
-      const res = await fetchDataDetail("rooms", id);
+      const res = await apiGetDetail("rooms", id);
       if (res) {
         setRoomDetail(res);
       }
@@ -51,7 +51,7 @@ export const Waiting = () => {
 
   const fetchRoom = async () => {
     try {
-      const res = await fetchData(`rooms/${id}`);
+      const res = await apiGet(`rooms/${id}`);
       if (res) {
         if (res.status === "waiting") {
           setIsLoading(false);

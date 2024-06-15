@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { fetchData } from "../../utils/dataProvider";
+import { apiGet } from "../../utils/dataProvider";
 import { truncateText } from "../../utils/transform";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Typography } from "@mui/material";
@@ -10,11 +10,11 @@ export const Lessons = () => {
   const [rows, setRows] = useState([]);
   const fetchCollection = async () => {
     try {
-      const res = await fetchData(`groups/search?collection_id=${id}`);
+      const res = await apiGet(`groups/search?collection_id=${id}`);
       if (res) {
         setRows(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useLayoutEffect(() => {
     fetchCollection();

@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { fetchData } from "../utils/dataProvider";
+import { apiGet } from "../utils/dataProvider";
 import { truncateText } from "../utils/transform";
 import { useNavigate } from "react-router-dom";
 import { Paper, Typography } from "@mui/material";
@@ -9,11 +9,11 @@ export const Dashboard = () => {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData("collections");
+      const res = await apiGet("collections");
       if (res) {
         setRows(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useLayoutEffect(() => {
     fetchCollection();

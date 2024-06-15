@@ -24,7 +24,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import {
-  fetchData,
+  apiGet,
   apiPost,
   apiPatch,
   apiDelete,
@@ -56,7 +56,7 @@ export const GroupManagement = () => {
 
   const fetchGroup = async () => {
     try {
-      const res = await fetchData("groups");
+      const res = await apiGet("groups");
       console.log("res", res);
       if (res) {
         setRows(res);
@@ -68,7 +68,7 @@ export const GroupManagement = () => {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData("collections");
+      const res = await apiGet("collections");
       console.log("res", res);
       if (res) {
         setCollection(res);

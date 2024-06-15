@@ -9,7 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { apiPost, fetchData } from "../../utils/dataProvider";
+import { apiPost, apiGet } from "../../utils/dataProvider";
 
 export const Rooms = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export const Rooms = () => {
 
   const fetchRoom = async () => {
     try {
-      const res = await fetchData("rooms");
+      const res = await apiGet("rooms");
       if (res) {
         setRooms(res);
       }
@@ -34,7 +34,7 @@ export const Rooms = () => {
 
   const fetchCollection = async () => {
     try {
-      const res = await fetchData("collections");
+      const res = await apiGet("collections");
       if (res) {
         const temp = res.filter((collection) => collection.type !== "normal");
         setCollections(temp);
@@ -48,7 +48,7 @@ export const Rooms = () => {
 
   const fetchGroup = async (collection_id) => {
     try {
-      const res = await fetchData(
+      const res = await apiGet(
         "groups/search?collection_id=" + collection_id
       );
       if (res) {

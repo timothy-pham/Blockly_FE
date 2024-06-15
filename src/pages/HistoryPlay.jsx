@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState } from "react";
-import { fetchData } from "../utils/dataProvider";
+import { apiGet } from "../utils/dataProvider";
 import { formatDateTime } from "../utils/transform";
 
 export const HistoryPlay = () => {
@@ -25,7 +25,7 @@ export const HistoryPlay = () => {
   const id = user?.user_id;
   const fetchHistory = async () => {
     try {
-      const res = await fetchData("rooms/histories/" + id);
+      const res = await apiGet("rooms/histories/" + id);
       if (res) {
         setRows(res);
       }
@@ -36,7 +36,7 @@ export const HistoryPlay = () => {
 
   const fetchGroups = async () => {
     try {
-      const res = await fetchData("groups");
+      const res = await apiGet("groups");
       if (res) {
         setGroups(res);
       }

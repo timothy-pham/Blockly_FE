@@ -4,8 +4,8 @@ import { Box, Button, Chip, Typography } from "@mui/material";
 import { transformCodeBlockly } from "../../../utils/transform";
 import {
   apiPost,
-  fetchData,
-  fetchDataDetail,
+  apiGet,
+  apiGetDetail,
   apiPatch,
 } from "../../../utils/dataProvider";
 import { BlocklyLayout } from "../../../components/Blockly";
@@ -51,7 +51,7 @@ export const LessonsDetail = () => {
 
   const fetchGroupDetail = async () => {
     try {
-      const res = await fetchDataDetail("groups", group_id);
+      const res = await apiGetDetail("groups", group_id);
       if (res) {
         setGroupDetail(res);
       }
@@ -62,7 +62,7 @@ export const LessonsDetail = () => {
 
   const fetchBlock = async () => {
     try {
-      const res = await fetchData(`blocks/search?group_id=${group_id}`);
+      const res = await apiGet(`blocks/search?group_id=${group_id}`);
       if (res) {
         const data = res.map((item) => ({
           ...item,

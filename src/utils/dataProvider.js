@@ -5,7 +5,7 @@ export const getToken = () => {
     : "";
 };
 
-export async function fetchData(resource, headers) {
+export async function apiGet(resource, headers) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
@@ -34,7 +34,7 @@ export async function fetchData(resource, headers) {
   }
 }
 
-export async function fetchDataDetail(resource, id) {
+export async function apiGetDetail(resource, id) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
