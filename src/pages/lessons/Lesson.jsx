@@ -24,7 +24,7 @@ export const Lessons = () => {
       const res = await apiGet(`histories/statistics`);
       if (res) {
         console.log("res", res, id);
-        setStatistics(res.find((v) => v.collection_id == id).listGroup);
+        setStatistics(res?.find((v) => v.collection_id == id).listGroup);
       }
     } catch (e) {}
   };
@@ -50,7 +50,7 @@ export const Lessons = () => {
               >
                 <div
                   className={`relative ${
-                    statistics.find((v) => v.group_id == val.group_id)
+                    statistics?.find((v) => v.group_id == val.group_id)
                       ? ` shadow-green-lg`
                       : `shadow-lg`
                   } max-w-full flex flex-col items-center p-[25px] bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300`}
