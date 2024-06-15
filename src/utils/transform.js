@@ -33,6 +33,29 @@ export const formatDateTime = (value, formatString = "DD/MM/YYYY HH:mm:ss") => {
   return moment(value).format(formatString);
 };
 
+export const formatTimeMessage = (value) => {
+  const now = Date.now();
+  const timeObj = new Date(value);
+  const delta = (now - timeObj.getTime()) / 1000;
+
+  if (delta < 60) {
+    return "Vừa xong";
+  } else if (delta < 3600) {
+    const minutes = Math.floor(delta / 60);
+    return `${minutes} phút trước`;
+  } else if (delta < 86400) {
+    const hours = Math.floor(delta / 3600);
+    return `${hours} giờ trước`;
+  } else if (delta < 604800) {
+    const days = Math.floor(delta / 86400);
+    return `${days} ngày trước`;
+  } else {
+    // Định dạng cho các khoảng thời gian dài hơn (tùy chọn)
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return timeObj.toLocaleDateString('vi-VN', options);
+  }
+}
+
 export const milisecondToSecondMinute = (milisecond) => {
   const seconds = Math.floor(milisecond / 1000);
   const minutes = Math.floor(seconds / 60);
