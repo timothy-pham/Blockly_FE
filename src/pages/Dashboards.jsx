@@ -57,7 +57,7 @@ export const Dashboard = () => {
                       <span>{val.name}</span>
                     </div>
                     <div className="text-gray-400 [&>span]:text-xs lg:[&>span]:text-sm flex flex-wrap justify-between items-center break-all">
-                      <span>{truncateText(val.meta_data.description)}</span>
+                      <span>{truncateText(val?.meta_data?.description)}</span>
                     </div>
                   </div>
                 </div>

@@ -48,9 +48,7 @@ export const Rooms = () => {
 
   const fetchGroup = async (collection_id) => {
     try {
-      const res = await apiGet(
-        "groups/search?collection_id=" + collection_id
-      );
+      const res = await apiGet("groups/search?collection_id=" + collection_id);
       if (res) {
         setGroups(res);
         setCreateRoom({ ...createRoom, group_id: res[0].group_id });
@@ -138,7 +136,7 @@ export const Rooms = () => {
                 <td className="border px-4 py-2">{room.description}</td>
                 <td className="border px-4 py-2">{room.type}</td>
                 <td className="border px-4 py-2">
-                  {room.meta_data.collection_id}
+                  {room?.meta_data?.collection_id}
                 </td>
                 <td className="border px-4 py-2">
                   <Button

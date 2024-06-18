@@ -55,7 +55,7 @@ export const Lessons = () => {
                       : `shadow-lg`
                   } max-w-full flex flex-col items-center p-[25px] bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300`}
                   style={{
-                    backgroundImage: `url(${val.meta_data.image})`,
+                    backgroundImage: `url(${val?.meta_data?.image})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -64,10 +64,10 @@ export const Lessons = () => {
                   {/* Overlay */}
                   <div className="relative w-full text-center">
                     <div className="text-white py-2 flex flex-wrap justify-between items-center">
-                      <span className="text-lg font-bold">{val.name}</span>
+                      <span className="text-lg font-bold">{val?.name}</span>
                     </div>
                     <div className="text-gray-200 [&>span]:text-xs lg:[&>span]:text-sm flex flex-wrap justify-between items-center break-all">
-                      <span>{truncateText(val.meta_data.description)}</span>
+                      <span>{truncateText(val?.meta_data?.description)}</span>
                     </div>
                   </div>
                 </div>
