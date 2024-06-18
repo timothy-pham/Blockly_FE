@@ -114,7 +114,8 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${
+            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -122,7 +123,8 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -350,7 +352,7 @@ export const CollectionManagement = () => {
             id="Name"
             label="Tên"
             name="name"
-            defaultValue={data.name}
+            defaultValue={data?.name}
             autoFocus
           />
           <TextField
@@ -358,7 +360,7 @@ export const CollectionManagement = () => {
             fullWidth
             name="description"
             label="Mô tả"
-            defaultValue={data.meta_data?.description}
+            defaultValue={data?.meta_data?.description}
             id="description"
             multiline
             rows={4}

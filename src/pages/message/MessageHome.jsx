@@ -128,8 +128,8 @@ const MessageHome = () => {
             <Avatar
               name={receiver?.name}
               src={
-                receiver?.meta_data.avatar
-                  ? receiver?.meta_data.avatar
+                receiver?.meta_data?.avatar
+                  ? receiver?.meta_data?.avatar
                   : "/default_avatar.png"
               }
             />
@@ -243,8 +243,8 @@ const MessageHome = () => {
                 <Avatar
                   name={user_receiver.name}
                   src={
-                    user_receiver.meta_data.avatar
-                      ? user_receiver.meta_data.avatar
+                    user_receiver?.meta_data?.avatar
+                      ? user_receiver?.meta_data?.avatar
                       : "/default_avatar.png"
                   }
                   status="available"

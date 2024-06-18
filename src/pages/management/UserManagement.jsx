@@ -286,9 +286,9 @@ export const UserManagement = () => {
           <TableBody>
             {(rowsPerPage > 0
               ? filteredRows.slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-              )
+                  page * rowsPerPage,
+                  page * rowsPerPage + rowsPerPage
+                )
               : filteredRows
             ).map((row, index) => (
               <TableRow key={index}>
@@ -300,7 +300,7 @@ export const UserManagement = () => {
                 <TableCell>
                   {(Array.isArray(row?.meta_data?.teachers)
                     ? row.meta_data.teachers
-                    : [row.meta_data?.teacher]
+                    : [row?.meta_data?.teacher]
                   ).map((teacherId, index) => {
                     const name = rows.find(
                       (v) => v.user_id === teacherId
@@ -318,7 +318,7 @@ export const UserManagement = () => {
                 <TableCell>
                   {(Array.isArray(row?.meta_data?.parents)
                     ? row.meta_data.parents
-                    : [row.meta_data?.parent]
+                    : [row?.meta_data?.parent]
                   ).map((parentId, index) => {
                     const name = rows.find((v) => v.user_id === parentId)?.name;
                     return name ? (
@@ -334,7 +334,7 @@ export const UserManagement = () => {
                 <TableCell>
                   {(Array.isArray(row?.meta_data?.students)
                     ? row.meta_data.students
-                    : [row.meta_data?.student]
+                    : [row?.meta_data?.student]
                   ).map((studentId, index) => {
                     const name = rows.find(
                       (v) => v.user_id === studentId
@@ -362,7 +362,7 @@ export const UserManagement = () => {
                         <ModeEditIcon />
                       </IconButton>
                     )}
-                    {row.meta_data.teacher && (
+                    {row?.meta_data?.teacher && (
                       <IconButton
                         onClick={() => {
                           setData(row);
@@ -386,7 +386,7 @@ export const UserManagement = () => {
                       <AutorenewIcon />
                     </IconButton>
                   )}
-                  {row.role === "student" && row.meta_data.parent && (
+                  {row.role === "student" && row?.meta_data?.parent && (
                     <IconButton
                       onClick={() => {
                         setData(row);

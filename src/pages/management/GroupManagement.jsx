@@ -128,7 +128,8 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -392,25 +393,25 @@ export const GroupManagement = () => {
             collection.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-              <TextField
-                margin="normal"
-                type="number"
-                required
-                fullWidth
-                id="timer"
-                label="Thời gian"
-                placeholder="Số phút"
-                name="timer"
-                defaultValue={data?.meta_data?.timer}
-                autoFocus
-              />
-            )}
+            <TextField
+              margin="normal"
+              type="number"
+              required
+              fullWidth
+              id="timer"
+              label="Thời gian"
+              placeholder="Số phút"
+              name="timer"
+              defaultValue={data?.meta_data?.timer}
+              autoFocus
+            />
+          )}
           <TextField
             margin="normal"
             fullWidth
             name="description"
             label="Mô tả"
-            defaultValue={data.meta_data?.description}
+            defaultValue={data?.meta_data?.description}
             id="description"
             multiline
             rows={4}

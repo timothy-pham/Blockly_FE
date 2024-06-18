@@ -18,11 +18,7 @@ import {
   Box,
 } from "@mui/material";
 import LockIcon from "@mui/icons-material/Lock";
-import {
-  apiPost,
-  apiGetDetail,
-  apiPatch,
-} from "../../utils/dataProvider";
+import { apiPost, apiGetDetail, apiPatch } from "../../utils/dataProvider";
 import { formatDateTime, formatNumber } from "../../utils/transform";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { toast } from "react-toastify";
@@ -117,7 +113,6 @@ export const Profile = () => {
           // Update localStorage with the new avatar URL
           let currentUser = JSON.parse(localStorage.getItem("authToken"));
           if (currentUser) {
-            console.log("before ===>", currentUser);
             if (!currentUser.user.meta_data) {
               currentUser.user.meta_data = {};
             }
@@ -208,17 +203,19 @@ export const Profile = () => {
               // }
 
               action={
-                <IconButton onClick={handleOpenChangePassword}
+                <IconButton
+                  onClick={handleOpenChangePassword}
                   style={{
                     marginRight: "10px",
                     backgroundColor: "#f0f0f0",
                     borderRadius: "5px",
-
                   }}
                 >
-                  <Typography variant="subtitle1" color="textSecondary" sx={
-                    { mr: 1 }
-                  }>
+                  <Typography
+                    variant="subtitle1"
+                    color="textSecondary"
+                    sx={{ mr: 1 }}
+                  >
                     Đặt lại mật khẩu
                   </Typography>
                   <LockIcon />
@@ -293,7 +290,10 @@ export const Profile = () => {
                       name,
                     });
                     if (res) {
-                      toast.success(`Cập nhật thông tin thành công.`, toastOptions);
+                      toast.success(
+                        `Cập nhật thông tin thành công.`,
+                        toastOptions
+                      );
                     }
                   } catch (e) {
                     console.log("can not update user", e);
