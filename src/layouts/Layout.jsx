@@ -12,18 +12,20 @@ import AuthContext from "../pages/auth/AuthContext/AuthContext";
 import MuiAppBar from "@mui/material/AppBar";
 import { SideNav } from "./SideNav";
 import { get } from "lodash";
+import { ContactButton } from "../components/ContactButton/ContactButton";
 
 const drawerWidth = 280;
 const appBarHeight = 64;
 
-const LayoutContainer = styled("div")(({ theme, open }) => ({
+const LayoutContainer = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   flexDirection: "column",
   width: "100%",
   backgroundColor: "#f0f0f0",
-  minHeight: "100vh",
+  minHeight: "94vh",
   padding: theme.spacing(3),
+  overflow: "hidden",
 }));
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -72,6 +74,7 @@ export const Layout = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [openContact, setOpenContact] = useState(false);
 
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
@@ -128,6 +131,13 @@ export const Layout = () => {
   useEffect(() => {
     if (pathname.includes("/play")) {
       setOpenNav(false);
+      setOpenContact(false);
+    } else if (pathname.includes("/message")) {
+      setOpenContact(false);
+      setOpenNav(true);
+    } else {
+      setOpenContact(true);
+      setOpenNav(true);
     }
   }, [pathname]);
 
@@ -221,6 +231,7 @@ export const Layout = () => {
       <Main open={openNav}>
         <LayoutContainer>
           <Outlet />
+          {openContact && <ContactButton />}
         </LayoutContainer>
       </Main>
     </>

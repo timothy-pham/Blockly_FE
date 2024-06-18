@@ -76,8 +76,6 @@ export const HistoryPlay = () => {
 
     const userDetails = data.find((user) => user.user_id === userId);
 
-    console.log("User Details: ", userDetails);
-
     const pointsHistory = userDetails?.user_data?.meta_data?.points_history;
     if (!Array.isArray(pointsHistory)) {
       console.warn("Points history is not available or not an array.");

@@ -13,7 +13,7 @@ export const Dashboard = () => {
       if (res) {
         setRows(res);
       }
-    } catch (e) { }
+    } catch (e) {}
   };
   useLayoutEffect(() => {
     fetchCollection();
