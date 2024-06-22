@@ -13,6 +13,10 @@
   }
 }
 
+img {
+  object-fit: cover !important;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -37,6 +41,6 @@
   }
 }
 
-svg[display='none'] {
+svg[display="none"] {
   display: none;
 }
