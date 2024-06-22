@@ -145,7 +145,7 @@ export const GroupManagement = () => {
 
   const handleDelete = async () => {
     try {
-      const res = await apiDelete("groups", data.collection_id);
+      const res = await apiDelete("groups", data.group_id);
       if (res) {
         toast.success(`Xóa bài tập thành công.`, toastOptions);
       }
