@@ -6,7 +6,7 @@ import { formatDateTime, formatNumber } from "../utils/transform";
 export const RankingPage = () => {
   const [list, setList] = useState([]);
   const [username, setUsername] = useState("");
-  console.log("username", username);
+
   const fetchRanking = async () => {
     try {
       const res = await apiGet("histories/ranking");
@@ -35,8 +35,6 @@ export const RankingPage = () => {
     });
     setList(sortedRanks);
   };
-
-  console.log("list", list);
 
   return (
     <div style={{ width: "1000px", margin: "80px auto" }}>
@@ -115,14 +113,14 @@ export const RankingPage = () => {
           matches={user?.matches}
           username={user?.username}
           currentUser={username}
+          userData={user.meta_data}
         />
       ))}
     </div>
   );
 };
 
-const User = ({ name, rank, username, points, matches, currentUser }) => {
-  console.log("🚀 ~ User ~ currentUser:", username, currentUser);
+const User = ({ name, rank, username, points, matches, currentUser, userData }) => {
   const getInitials = (name) => {
     if (!name) return "";
     const names = name.split(" ");
@@ -150,8 +148,9 @@ const User = ({ name, rank, username, points, matches, currentUser }) => {
         border: "1px solid rgba(0,0,0,.2)",
       }}
     >
-      <div style={{ paddingLeft: "6px", width: "12.5%" }}>
+      <div style={{ paddingLeft: "6px", width: "12.5%", display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
         <h4>{rank}</h4>
+        <img src={userData?.avatar ? userData?.avatar : '/default_avatar.png'} className="w-20 h-20 rounded-full ms-2 object-cover" />
       </div>
       <div
         style={{

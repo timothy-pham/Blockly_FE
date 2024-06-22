@@ -163,7 +163,7 @@ const MessageHome = () => {
                     sentTime: time,
                   }}
                 >
-                  <Message.Footer sentTime={time} />
+                  <Message.Header sentTime={time} />
                 </Message>
               );
             })}
@@ -286,7 +286,7 @@ const MessageHome = () => {
                     sentTime: time,
                   }}
                 >
-                  <Message.Footer
+                  <Message.Header
                     sender={message.sender.name}
                     sentTime={time}
                   />
