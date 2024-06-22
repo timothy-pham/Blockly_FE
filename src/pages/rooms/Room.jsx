@@ -124,8 +124,6 @@ export const Rooms = () => {
             <tr>
               <th className="border px-4 py-2">Tên phòng</th>
               <th className="border px-4 py-2">Mô tả</th>
-              <th className="border px-4 py-2">Loại</th>
-              <th className="border px-4 py-2">Chủ đề</th>
               <th className="border px-4 py-2">Hành động</th>
             </tr>
           </thead>
@@ -134,10 +132,6 @@ export const Rooms = () => {
               <tr key={room.room_id}>
                 <td className="border px-4 py-2">{room.name}</td>
                 <td className="border px-4 py-2">{room.description}</td>
-                <td className="border px-4 py-2">{room.type}</td>
-                <td className="border px-4 py-2">
-                  {room?.meta_data?.collection_id}
-                </td>
                 <td className="border px-4 py-2">
                   <Button
                     variant="contained"

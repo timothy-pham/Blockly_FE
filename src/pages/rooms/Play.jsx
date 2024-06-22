@@ -17,11 +17,7 @@ import {
   milisecondToSecondMinute,
   transformCodeBlockly,
 } from "../../utils/transform";
-import {
-  apiPost,
-  apiGet,
-  apiGetDetail,
-} from "../../utils/dataProvider";
+import { apiPost, apiGet, apiGetDetail } from "../../utils/dataProvider";
 import { BlocklyLayout } from "../../components/Blockly";
 import { socket } from "../../socket";
 import Ranking from "./components/Ranking";
@@ -297,15 +293,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                        ? "warning"
-                        : "error"
+                      ? "warning"
+                      : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                      ? "Bình thường"
+                      : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -322,19 +318,35 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    variant="contained"
-                    disabled={blockDetail.answered}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Kiểm tra
-                  </Button>
-                )}
+                <Button
+                  onClick={handleSubmitAnswer}
+                  variant="contained"
+                  disabled={blockDetail.answered}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
             </Box>
           )}
         </div>
-        <div className="flex-1">
+        <div className="flex-1 mt-6">
+          {blockDetail?.meta_data?.image && (
+            <div>
+              <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
+                Hình ảnh
+              </Typography>
+              <div className="max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
+                <img
+                  src={blockDetail?.meta_data?.image}
+                  alt="block detail"
+                  className="w-full max-h-[400px] object-contain rounded-lg"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex-1 mt-6">
           <div className="flex-col">
             <Ranking ranks={ranks} rows={rows} />
           </div>
