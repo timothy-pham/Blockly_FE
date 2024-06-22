@@ -45,18 +45,43 @@ export const Play = () => {
   const { user } = JSON.parse(info);
 
   const [timeLeft, setTimeLeft] = useState();
+
+  const saveToLocalStorage = (questions, current, index) => {
+    localStorage.setItem("questions", JSON.stringify(questions));
+    localStorage.setItem("current", JSON.stringify(current));
+    localStorage.setItem("index", JSON.stringify(index));
+  }
+
+  const checkLocalStorage = () => {
+    let haveData = false;
+    const questions = JSON.parse(localStorage.getItem("questions"));
+    const current = JSON.parse(localStorage.getItem("current"));
+    const index = JSON.parse(localStorage.getItem("index"));
+    if (questions && current) {
+      setRows(questions);
+      setBlockDetail(current);
+      setCurrentQuestionIndex(index);
+      haveData = true;
+    }
+    return haveData;
+  }
+
   const fetchCollection = async () => {
     try {
-      const res = await apiGet(`blocks/random?room_id=${id}`);
-      if (res) {
-        const data = res.map((item) => ({
-          ...item,
-          answered: false,
-        }));
-        setRows(data);
-        if (data.length > 0) {
-          const initialBlockDetail = data[0];
-          setBlockDetail(initialBlockDetail);
+      const haveData = checkLocalStorage();
+      if (!haveData) {
+        const res = await apiGet(`blocks/random?room_id=${id}`);
+        if (res) {
+          const data = res.map((item) => ({
+            ...item,
+            answered: false,
+          }));
+          setRows(data);
+          if (data.length > 0) {
+            const initialBlockDetail = data[0];
+            setBlockDetail(initialBlockDetail);
+          }
+          saveToLocalStorage(data, data[0], 0);
         }
       }
     } catch (e) {
@@ -68,6 +93,10 @@ export const Play = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
+        if (res?.status !== 'playing') {
+          navigate(`/rooms`);
+          return;
+        }
         setRoomDetail(res);
       }
     } catch (e) {
@@ -88,6 +117,7 @@ export const Play = () => {
     if (nextIndex < rows.length) {
       setCurrentQuestionIndex(nextIndex);
       setBlockDetail(rows[nextIndex]);
+      saveToLocalStorage(rows, rows[nextIndex], nextIndex);
     }
   };
 
@@ -244,19 +274,6 @@ export const Play = () => {
       }}
     >
       <div className="flex justify-between">
-        <ToastContainer
-          position="top-left"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          stacked={true}
-        />
         <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
         {!isNaN(timeLeft) && (
           <Typography variant="h4">
@@ -293,15 +310,15 @@ export const Play = () => {
                     blockDetail.level === 1
                       ? "success"
                       : blockDetail.level === 2
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                   label={
                     blockDetail.level === 1
                       ? "Dễ"
                       : blockDetail.level === 2
-                      ? "Bình thường"
-                      : "Khó"
+                        ? "Bình thường"
+                        : "Khó"
                   }
                   sx={{ width: "fit-content" }}
                 />
@@ -318,15 +335,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  variant="contained"
-                  disabled={blockDetail.answered}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    variant="contained"
+                    disabled={blockDetail.answered}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Kiểm tra
+                  </Button>
+                )}
             </Box>
           )}
         </div>

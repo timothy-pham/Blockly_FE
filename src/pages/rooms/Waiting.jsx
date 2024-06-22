@@ -117,8 +117,15 @@ export const Waiting = () => {
     });
   };
 
+  const deleteOldQuestions = async () => {
+    localStorage.removeItem("questions");
+    localStorage.removeItem("current");
+    localStorage.removeItem("index");
+  }
+
   const startGame = (data) => {
     if (data?.status === "playing") {
+      deleteOldQuestions();
       setCooldown(5);
       const countdown = setInterval(() => {
         setCooldown((prev) => {
