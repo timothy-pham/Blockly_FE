@@ -218,7 +218,14 @@ export const Waiting = () => {
                 {userList.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell component="th" scope="row">
-                      {row?.user_data.name}
+                      <div className="flex items-center ">
+                        <img
+                          src={row?.user_data?.meta_data?.avatar}
+                          // alt={initials}
+                          className="w-8 h-8 rounded-full  object-cover mr-2"
+                        />
+                        <div>{row?.user_data.name}</div>
+                      </div>
                     </TableCell>
                     <TableCell>
                       {row?.is_ready ? (

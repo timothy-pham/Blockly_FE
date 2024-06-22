@@ -44,3 +44,7 @@ img {
 svg[display="none"] {
   display: none;
 }
+
+.play-img {
+  object-fit: contain !important;
+}

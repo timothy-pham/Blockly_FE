@@ -39,8 +39,6 @@ export const EndGame = () => {
     rankingUpdate(location?.state);
   }, []);
 
-  console.log("ranks ==========>", ranks, ranks[2]);
-
   return (
     <>
       <div className="flex-1">
@@ -52,7 +50,7 @@ export const EndGame = () => {
               sx={{
                 height: 150,
                 aspectRatio: 1,
-                objectFit: "contain",
+                objectFit: "contain !important",
                 margin: "auto",
               }}
               component="img"
@@ -76,7 +74,7 @@ export const EndGame = () => {
               sx={{
                 height: 150,
                 aspectRatio: 1,
-                objectFit: "contain",
+                objectFit: "contain !important",
                 margin: "auto",
               }}
               component="img"
@@ -101,7 +99,7 @@ export const EndGame = () => {
               sx={{
                 height: 150,
                 aspectRatio: 1,
-                objectFit: "contain",
+                objectFit: "contain !important",
                 margin: "auto",
               }}
               component="img"
@@ -150,7 +148,14 @@ export const EndGame = () => {
                           user.user_id == row.user_id && { fontWeight: "bold" }
                         }
                       >
-                        {row?.user_data.name}
+                        <div className="flex items-center ">
+                          <img
+                            src={row?.user_data?.meta_data?.avatar}
+                            // alt={initials}
+                            className="w-8 h-8 rounded-full  object-cover mr-2"
+                          />
+                          <div>{row?.user_data.name}</div>
+                        </div>
                       </TableCell>
                       <TableCell
                         sx={

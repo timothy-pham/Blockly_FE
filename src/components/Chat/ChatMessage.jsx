@@ -12,6 +12,7 @@ const getInitials = (name) => {
 
 const ChatMessage = ({ message, isUser, avatar }) => {
   const initials = getInitials(message?.user?.name);
+  console.log("message?.user", message?.user);
 
   // Check if the message is a special "has joined" message
 
@@ -19,14 +20,14 @@ const ChatMessage = ({ message, isUser, avatar }) => {
     if (avatar) {
       return (
         <img
-          src={avatar}
+          src={message?.user?.meta_data?.avatar}
           alt={initials}
-          className="w-8 h-8 rounded-full mr-2 object-cover"
+          className="w-8 h-8 rounded-full  object-cover"
         />
       );
     } else {
       return (
-        <div className="w-8 h-8 rounded-full mr-2 bg-gray-300 flex items-center justify-center text-white font-bold">
+        <div className="w-8 h-8 rounded-full  bg-gray-300 flex items-center justify-center text-white font-bold">
           {initials}
         </div>
       );

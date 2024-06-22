@@ -41,7 +41,14 @@ const Ranking = ({ ranks, rows }) => {
           >
             <div className={styles.cell}>
               <div className={styles.details}>
-                <div>{item.user_data.name}</div>
+                <div className="flex items-center ">
+                  <img
+                    src={item?.user_data?.meta_data?.avatar}
+                    // alt={initials}
+                    className="w-8 h-8 rounded-full  object-cover mr-2"
+                  />
+                  <div>{item.user_data.name}</div>
+                </div>
                 <div>
                   {item.score}/{rows.length}
                 </div>

@@ -353,11 +353,11 @@ export const Play = () => {
               <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
                 Hình ảnh
               </Typography>
-              <div className="max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
+              <div className=" max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
                 <img
                   src={blockDetail?.meta_data?.image}
                   alt="block detail"
-                  className="w-full max-h-[400px] object-contain rounded-lg"
+                  className="play-img w-full max-h-[400px] rounded-lg "
                 />
               </div>
             </div>
