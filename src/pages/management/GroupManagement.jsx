@@ -71,7 +71,6 @@ export const GroupManagement = () => {
   const fetchCollection = async () => {
     try {
       const res = await apiGet("collections");
-      console.log("res", res);
       if (res) {
         setCollection(res);
       }
@@ -117,7 +116,7 @@ export const GroupManagement = () => {
           meta_data: {
             description: dataForm.get("description"),
             timer: Number(dataForm.get("timer")),
-            image: !preview.includes("blob") ? preview : imageUrl,
+            image: !preview?.includes("blob") ? preview : imageUrl,
           },
         });
       }

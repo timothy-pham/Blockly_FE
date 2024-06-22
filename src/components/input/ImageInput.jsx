@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 export const ImageInput = (props) => {
   const { setPreview, setSelectedImage, preview, defaultValue } = props;
-  console.log("defaultValue===", defaultValue);
   useEffect(() => {
     if (defaultValue) {
       setPreview(defaultValue);
