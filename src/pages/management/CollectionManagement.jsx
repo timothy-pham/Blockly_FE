@@ -48,7 +48,6 @@ const COLLECTION_TYPE = {
 };
 
 export const CollectionManagement = () => {
-  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [openPopup, setOpenPopup] = useState(false);
@@ -59,6 +58,7 @@ export const CollectionManagement = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
+  const [temp, setTemp] = useState([]);
 
   const fetchCollection = async () => {
     try {
@@ -66,6 +66,7 @@ export const CollectionManagement = () => {
       console.log("res", res);
       if (res) {
         setRows(res);
+        setTemp(res);
       }
     } catch (e) {
       console.log("can not fetch collection");
@@ -201,9 +202,22 @@ export const CollectionManagement = () => {
         console.log(err);
       });
   };
+  const handleNameFilterChange = (e) => {
+    const name = e.target.value;
+    const filteredBlocks = temp.filter((tem) =>
+      tem.name.toLowerCase().includes(name.toLowerCase())
+    );
+    setRows(filteredBlocks);
+  };
 
   return (
     <>
+      <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
+        <TextField
+          label="Lọc theo tên danh mục"
+          onChange={handleNameFilterChange}
+        />
+      </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí danh mục</Typography>

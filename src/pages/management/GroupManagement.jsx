@@ -53,6 +53,7 @@ export const GroupManagement = () => {
   const [preview, setPreview] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
   const fileInputRef = useRef(null);
+  const [temp, setTemp] = useState([]);
 
   const fetchGroup = async () => {
     try {
@@ -60,6 +61,7 @@ export const GroupManagement = () => {
       console.log("res", res);
       if (res) {
         setRows(res);
+        setTemp(res);
       }
     } catch (e) {
       console.log("can not fetch groups");
@@ -207,8 +209,33 @@ export const GroupManagement = () => {
       });
   };
 
+  const handleNameFilterChange = (e) => {
+    const name = e.target.value;
+    const filteredBlocks = temp.filter((tem) =>
+      tem?.name.toLowerCase().includes(name.toLowerCase())
+    );
+    setRows(filteredBlocks);
+  };
+
+  const handleNameCollectionFilterChange = (e) => {
+    const name = e.target.value;
+    const filteredBlocks = temp.filter((tem) =>
+      tem?.collection?.name.toLowerCase().includes(name.toLowerCase())
+    );
+    setRows(filteredBlocks);
+  };
   return (
     <>
+      <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
+        <TextField
+          label="Lọc theo tên bài tập"
+          onChange={handleNameFilterChange}
+        />
+        <TextField
+          label="Lọc theo tên danh mục"
+          onChange={handleNameCollectionFilterChange}
+        />
+      </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí bài tập</Typography>

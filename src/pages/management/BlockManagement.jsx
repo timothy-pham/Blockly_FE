@@ -42,6 +42,7 @@ export const BlockManagement = () => {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
+  const [temp, setTemp] = useState([]);
 
   const [refresh, setRefresh] = React.useState(false);
 
@@ -56,6 +57,7 @@ export const BlockManagement = () => {
       const res = await apiGet("blocks");
       if (res) {
         sortBlocks(res);
+        setTemp(res);
       }
     } catch (e) {
       console.log("can not fetch groups");
@@ -144,8 +146,30 @@ export const BlockManagement = () => {
       });
   };
 
+  const handleNameFilterChange = (e) => {
+    const name = e.target.value;
+    const filteredBlocks = temp.filter((block) =>
+      block?.question.toLowerCase().includes(name.toLowerCase())
+    );
+    setRows(filteredBlocks);
+  };
+
+  const handleNameGroupFilterChange = (e) => {
+    const name = e.target.value;
+    const filteredBlocks = temp.filter((block) =>
+      block?.group?.name.toLowerCase().includes(name.toLowerCase())
+    );
+    setRows(filteredBlocks);
+  };
   return (
     <>
+      <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
+        <TextField label="Lọc theo câu hỏi" onChange={handleNameFilterChange} />
+        <TextField
+          label="Lọc theo tên bài tập"
+          onChange={handleNameGroupFilterChange}
+        />
+      </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí câu hỏi</Typography>
@@ -218,15 +242,15 @@ export const BlockManagement = () => {
                       row?.level === 1
                         ? "success"
                         : row?.level === 2
-                          ? "warning"
-                          : "error"
+                        ? "warning"
+                        : "error"
                     }
                     label={
                       row?.level === 1
                         ? "Dễ"
                         : row?.level === 2
-                          ? "Bình thường"
-                          : "Khó"
+                        ? "Bình thường"
+                        : "Khó"
                     }
                     sx={{ width: "fit-content" }}
                   />
