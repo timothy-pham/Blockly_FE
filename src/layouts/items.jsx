@@ -106,7 +106,7 @@ export const items = [
   {
     title: "Quản lí người dùng",
     path: "/userManagement",
-    permission: [Role.ADMIN, Role.TEACHER],
+    permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />

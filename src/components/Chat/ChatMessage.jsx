@@ -45,7 +45,7 @@ const ChatMessage = ({ message, isUser, avatar }) => {
     <div className={`flex items-center mb-2 ${isUser ? "justify-end" : ""}`}>
       {!isUser && renderAvatar()}
       <div
-        className={`rounded-lg p-2 shadow mb-2 max-w-sm ${
+        className={`rounded-lg p-2 shadow mb-2 max-w-sm mx-2 ${
           isUser ? "bg-blue-500 text-white" : "bg-white"
         }`}
       >

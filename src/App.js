@@ -106,7 +106,7 @@ function App() {
                 element={
                   <PrivateRoute
                     element={UserManagement}
-                    permission={[Role.ADMIN, Role.TEACHER]}
+                    permission={[Role.ADMIN]}
                   />
                 }
               />
