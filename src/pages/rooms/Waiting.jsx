@@ -238,6 +238,7 @@ export const Waiting = () => {
             messages={messages}
             onSendMessage={handleSendMessage}
             userId={user?.user_id}
+            avatar={user?.meta_data?.avatar}
             roomId={id}
           />
         </div>

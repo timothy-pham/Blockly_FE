@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 
-export const ChatBox = ({ messages, onSendMessage, userId }) => {
+export const ChatBox = ({ messages, onSendMessage, userId, avatar }) => {
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
 
@@ -29,6 +29,7 @@ export const ChatBox = ({ messages, onSendMessage, userId }) => {
               key={index}
               message={message}
               isUser={message.user_id == userId}
+              avatar={avatar}
             />
           ))}
           <div ref={messagesEndRef} />
