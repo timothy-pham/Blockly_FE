@@ -233,7 +233,7 @@ export const EditBlock = () => {
           </div>
 
           <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Luư
+            Lưu
           </Button>
         </Box>
       )}

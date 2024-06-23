@@ -43,6 +43,12 @@ export const BlockManagement = () => {
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
   const [temp, setTemp] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [collection, setCollection] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [filteredGroups, setFilteredGroups] = useState([]);
+  const [group, setGroup] = useState(null);
+  const [search, setSearch] = useState("");
 
   const [refresh, setRefresh] = React.useState(false);
 
@@ -64,6 +70,29 @@ export const BlockManagement = () => {
     }
   };
 
+  const fetchGroups = async () => {
+    try {
+      const res = await apiGet("groups");
+      if (res) {
+        setGroups(res);
+        setFilteredGroups(res);
+      }
+    } catch (e) {
+      console.log("can not fetch groups");
+    }
+  }
+
+  const fetchCollections = async () => {
+    try {
+      const res = await apiGet("collections");
+      if (res) {
+        setCollections(res);
+      }
+    } catch (e) {
+      console.log("can not fetch collections");
+    }
+  }
+
   const sortBlocks = (data) => {
     const sortedBlocks = data.sort((a, b) => {
       return new Date(a.created_at) - new Date(b.created_at);
@@ -73,6 +102,8 @@ export const BlockManagement = () => {
 
   useEffect(() => {
     fetchBlocks();
+    fetchGroups();
+    fetchCollections();
   }, [refresh]);
 
   const handleChangePage = (event, newPage) => {
@@ -147,28 +178,90 @@ export const BlockManagement = () => {
   };
 
   const handleNameFilterChange = (e) => {
+    if (e.target.value === "") {
+      setSearch("");
+      return;
+    }
     const name = e.target.value;
-    const filteredBlocks = temp.filter((block) =>
-      block?.question.toLowerCase().includes(name.toLowerCase())
-    );
-    setRows(filteredBlocks);
+    setSearch(name);
   };
 
-  const handleNameGroupFilterChange = (e) => {
-    const name = e.target.value;
-    const filteredBlocks = temp.filter((block) =>
-      block?.group?.name.toLowerCase().includes(name.toLowerCase())
-    );
-    setRows(filteredBlocks);
+  const handleGroupFilterChange = (e, value) => {
+    if (value === null) {
+      setGroup(null);
+      return;
+    }
+    const group = value;
+    setGroup(group);
   };
+
+  const handleCollectionFilterChange = (e, value) => {
+    if (value === null) {
+      setCollection(null);
+      return;
+    }
+    const collection = value;
+    setCollection(collection);
+  }
+
+  useEffect(() => {
+    let filteredRows = temp;
+    if (collection) {
+      filteredRows = filteredRows.filter((row) => {
+        return row?.group?.collection?.collection_id === collection.collection_id;
+      });
+      let filteredGroups = groups.filter((group) => {
+        return group?.collection?.collection_id === collection.collection_id;
+      });
+      if (group && !filteredGroups.find((g) => g.group_id === group.group_id)) {
+        setGroup(null);
+      }
+      setFilteredGroups(filteredGroups);
+    } else {
+      setFilteredGroups(groups);
+    }
+    if (group) {
+      filteredRows = filteredRows.filter((row) => {
+        return row?.group?.group_id === group.group_id;
+      });
+    }
+    if (search) {
+      filteredRows = filteredRows.filter((row) => {
+        return row.question.toLowerCase().includes(search.toLowerCase());
+      });
+    }
+    setRows(filteredRows);
+  }, [search, group, collection]);
+
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
-        <TextField label="Lọc theo câu hỏi" onChange={handleNameFilterChange} />
-        <TextField
-          label="Lọc theo tên bài tập"
-          onChange={handleNameGroupFilterChange}
-        />
+        {
+          collections.length > 0 && (
+            <Autocomplete
+              value={collection}
+              options={collections}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300 }}
+              onChange={handleCollectionFilterChange}
+              renderInput={(params) => <TextField {...params} label="Danh mục" />}
+            />
+          )
+        }
+        {
+          groups.length > 0 && (
+            <Autocomplete
+              value={group}
+              options={filteredGroups}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300 }}
+              onChange={handleGroupFilterChange}
+              renderInput={(params) => <TextField {...params} label="Nhóm" />}
+            />
+          )
+        }
+        <TextField label="Tìm theo câu hỏi" onChange={handleNameFilterChange} />
+
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
@@ -242,15 +335,15 @@ export const BlockManagement = () => {
                       row?.level === 1
                         ? "success"
                         : row?.level === 2
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                     label={
                       row?.level === 1
                         ? "Dễ"
                         : row?.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                          ? "Bình thường"
+                          : "Khó"
                     }
                     sx={{ width: "fit-content" }}
                   />
