@@ -18,7 +18,7 @@ import {
   Chip,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +34,19 @@ import { saveAs } from "file-saver";
 import { getCurrentDateTime } from "../../utils/generate";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
+import { getColor, getLabel } from "../../utils/levelParse";
 
+const orderByOptions = [
+  { value: "name", label: "Tên" },
+  { value: "level", label: "Độ khó" },
+  { value: "created_at", label: "Ngày tạo" },
+  { value: "updated_at", label: "Lần sửa cuối" },
+];
+const sortOptions = [
+  { value: "asc", label: "Tăng dần" },
+  { value: "desc", label: "Giảm dần" },
+
+]
 export const BlockManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
@@ -49,6 +61,8 @@ export const BlockManagement = () => {
   const [filteredGroups, setFilteredGroups] = useState([]);
   const [group, setGroup] = useState(null);
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState(sortOptions[0]);
+  const [orderBy, setOrderBy] = useState(orderByOptions[0]);
 
   const [refresh, setRefresh] = React.useState(false);
 
@@ -205,33 +219,47 @@ export const BlockManagement = () => {
   }
 
   useEffect(() => {
-    let filteredRows = temp;
-    if (collection) {
-      filteredRows = filteredRows.filter((row) => {
-        return row?.group?.collection?.collection_id === collection.collection_id;
-      });
-      let filteredGroups = groups.filter((group) => {
-        return group?.collection?.collection_id === collection.collection_id;
-      });
-      if (group && !filteredGroups.find((g) => g.group_id === group.group_id)) {
-        setGroup(null);
+    const applyFiltersAndSort = () => {
+      let filteredRows = temp;
+      if (collection) {
+        filteredRows = filteredRows.filter((row) => {
+          return row?.group?.collection?.collection_id === collection.collection_id;
+        });
+        let filteredGroups = groups.filter((group) => {
+          return group?.collection?.collection_id === collection.collection_id;
+        });
+        if (group && !filteredGroups.find((g) => g.group_id === group.group_id)) {
+          setGroup(null);
+        }
+        setFilteredGroups(filteredGroups);
+      } else {
+        setFilteredGroups(groups);
       }
-      setFilteredGroups(filteredGroups);
-    } else {
-      setFilteredGroups(groups);
-    }
-    if (group) {
-      filteredRows = filteredRows.filter((row) => {
-        return row?.group?.group_id === group.group_id;
-      });
-    }
-    if (search) {
-      filteredRows = filteredRows.filter((row) => {
-        return row.question.toLowerCase().includes(search.toLowerCase());
-      });
-    }
-    setRows(filteredRows);
-  }, [search, group, collection]);
+      if (group) {
+        filteredRows = filteredRows.filter((row) => {
+          return row?.group?.group_id === group.group_id;
+        });
+      }
+      if (search) {
+        filteredRows = filteredRows.filter((row) => {
+          return row.question.toLowerCase().includes(search.toLowerCase());
+        });
+      }
+
+      if (orderBy) {
+        filteredRows = filteredRows.sort((a, b) => {
+          if (sort.value === "asc") {
+            return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
+          } else {
+            return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
+          }
+        });
+      }
+      setRows([...filteredRows]); // Make sure to create a new array to force a re-render
+    };
+
+    applyFiltersAndSort();
+  }, [collection, group, search, sort, orderBy, temp, groups]);
 
   return (
     <>
@@ -261,7 +289,25 @@ export const BlockManagement = () => {
           )
         }
         <TextField label="Tìm theo câu hỏi" onChange={handleNameFilterChange} />
-
+        {/* sắp xếp */}
+        <Autocomplete
+          value={orderBy}
+          options={orderByOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setOrderBy(value)}
+          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          disableClearable
+        />
+        <Autocomplete
+          value={sort}
+          options={sortOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setSort(value)}
+          renderInput={(params) => <TextField {...params} label="Thứ tự" />}
+          disableClearable
+        />
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
@@ -331,21 +377,13 @@ export const BlockManagement = () => {
                 <TableCell>{row?.group.name}</TableCell>
                 <TableCell>
                   <Chip
-                    color={
-                      row?.level === 1
-                        ? "success"
-                        : row?.level === 2
-                          ? "warning"
-                          : "error"
-                    }
-                    label={
-                      row?.level === 1
-                        ? "Dễ"
-                        : row?.level === 2
-                          ? "Bình thường"
-                          : "Khó"
-                    }
-                    sx={{ width: "fit-content" }}
+                    label={getLabel(row?.level)}
+                    style={{
+                      backgroundColor: getColor(row?.level),
+                      color: 'black',
+                      fontWeight: 'bold',
+                    }}
+                    sx={{ width: 'fit-content' }}
                   />
                 </TableCell>
                 <TableCell>
