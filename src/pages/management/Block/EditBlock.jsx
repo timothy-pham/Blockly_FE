@@ -163,6 +163,7 @@ export const EditBlock = () => {
                     {...params}
                     label="Loại câu hỏi"
                     name="type"
+                    margin="normal"
                     id="type"
                   />
                 )}
@@ -182,7 +183,7 @@ export const EditBlock = () => {
                 )}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
-                  <TextField {...params} label="Danh Mục" id="group_id" />
+                  <TextField {...params} label="Thuộc bài tập" id="group_id" margin="normal" />
                 )}
                 onChange={(e, val) => setCategoryValue(val?.group_id)}
                 renderOption={(props, option) => (

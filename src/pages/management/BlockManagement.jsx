@@ -30,6 +30,7 @@ import {
   apiDelete,
   getToken,
 } from "../../utils/dataProvider";
+import moment from "moment";
 import { saveAs } from "file-saver";
 import { getCurrentDateTime } from "../../utils/generate";
 import { toast } from "react-toastify";
@@ -39,7 +40,7 @@ import { getColor, getLabel } from "../../utils/levelParse";
 const orderByOptions = [
   { value: "name", label: "Tên" },
   { value: "level", label: "Độ khó" },
-  { value: "created_at", label: "Ngày tạo" },
+  { value: "timestamp", label: "Ngày tạo" },
   { value: "updated_at", label: "Lần sửa cuối" },
 ];
 const sortOptions = [
@@ -247,13 +248,31 @@ export const BlockManagement = () => {
       }
 
       if (orderBy) {
-        filteredRows = filteredRows.sort((a, b) => {
-          if (sort.value === "asc") {
-            return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
-          } else {
-            return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
-          }
-        });
+        if (orderBy.value === 'updated_at') {
+          filteredRows = filteredRows.sort((a, b) => {
+            const dateA = new Date(a.updated_at);
+            const dateB = new Date(b.updated_at);
+
+            // Chuyển đổi thời gian về múi giờ +07:00
+            dateA.setHours(dateA.getHours() + 7);
+            dateB.setHours(dateB.getHours() + 7);
+
+            if (sort.value === "asc") {
+              return dateA - dateB;
+            } else {
+              return dateB - dateA;
+            }
+          });
+        } else {
+          filteredRows = filteredRows.sort((a, b) => {
+            if (sort.value === "asc") {
+              return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
+            } else {
+              return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
+            }
+          });
+        }
+
       }
       setRows([...filteredRows]); // Make sure to create a new array to force a re-render
     };

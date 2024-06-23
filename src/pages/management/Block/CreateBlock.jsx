@@ -7,8 +7,8 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import React, { useState } from "react";
-import { apiPost } from "../../../utils/dataProvider";
+import React, { useState, useEffect } from "react";
+import { apiPost, apiGet } from "../../../utils/dataProvider";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { uploadImage } from "../../../utils/firebase";
 import { ImageInput } from "../../../components/input/ImageInput";
@@ -22,7 +22,24 @@ export const CreateBlock = () => {
   const [showAnswers, setShowAnswers] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [groupValue, setGroupValue] = useState();
   const navigate = useNavigate();
+
+  const fetchGroups = async () => {
+    try {
+      const res = await apiGet("groups");
+      if (res) {
+        setGroups(res);
+      }
+    } catch (e) {
+      console.log("can not fetch groups");
+    }
+  };
+
+  useEffect(() => {
+    fetchGroups();
+  }, []);
 
   const handlePreviewClick = (e) => {
     e.preventDefault();
@@ -49,6 +66,7 @@ export const CreateBlock = () => {
         type: dataForm.get("type"),
         data: dataBlock?.data,
         answers: transformCodeBlockly(answers),
+        group_id: groupValue,
         meta_data: {
           description: dataForm.get("description"),
           image: imageUrl,
@@ -96,12 +114,24 @@ export const CreateBlock = () => {
 
             <Autocomplete
               disablePortal
+              id="group_id"
+              fullWidth
+              options={groups}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => (
+                <TextField {...params} label="Nhóm" name="group_id" margin="normal" />
+              )}
+              onChange={(e, value) => setGroupValue(value?.id)}
+            />
+
+            <Autocomplete
+              disablePortal
               id="type"
               fullWidth
               options={[{ id: "all" }, { id: "include" }]}
               getOptionLabel={(option) => option.id}
               renderInput={(params) => (
-                <TextField {...params} label="Loại câu hỏi" name="type" />
+                <TextField {...params} label="Loại câu hỏi" name="type" margin="normal" />
               )}
               renderOption={(props, option) => (
                 <div {...props}>
