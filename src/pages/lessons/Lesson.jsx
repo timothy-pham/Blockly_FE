@@ -16,7 +16,7 @@ export const Lessons = () => {
       if (res) {
         setRows(res.sort((a, b) => a.created_at - b.created_at));
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const fetchStatistics = async () => {
@@ -26,13 +26,19 @@ export const Lessons = () => {
         console.log("res", res, id);
         setStatistics(res?.find((v) => v.collection_id == id).listGroup);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useEffect(() => {
     fetchCollection();
     fetchStatistics();
   }, []);
 
+  const checkStatistics = (group_id) => {
+    if (statistics) {
+      return statistics.find((v) => v.group_id == group_id);
+    }
+    return false;
+  }
   return (
     <>
       <Typography variant="h6">Bài tập</Typography>
@@ -49,15 +55,14 @@ export const Lessons = () => {
                 }}
               >
                 <div
-                  className={`relative ${
-                    statistics?.find((v) => v.group_id == val.group_id)
-                      ? ` shadow-green-lg`
-                      : `shadow-lg`
-                  } max-w-full flex flex-col items-center p-[25px] bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300`}
+                  className={`relative max-w-full flex flex-col items-center p-[25px] bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300`}
                   style={{
                     backgroundImage: `url(${val?.meta_data?.image})`,
+                    backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
+                    borderWidth: checkStatistics(val.group_id) ? "5px" : "0px",
+                    borderColor: 'springgreen'
                   }}
                 >
                   <div className="absolute inset-0 bg-black bg-opacity-50 rounded-[25px]"></div>{" "}
