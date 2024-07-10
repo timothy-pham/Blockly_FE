@@ -46,8 +46,8 @@ const orderByOptions = [
 const sortOptions = [
   { value: "asc", label: "Tăng dần" },
   { value: "desc", label: "Giảm dần" },
-
 ]
+
 export const BlockManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
@@ -243,7 +243,7 @@ export const BlockManagement = () => {
       }
       if (search) {
         filteredRows = filteredRows.filter((row) => {
-          return row.question.toLowerCase().includes(search.toLowerCase());
+          return row.question.toLowerCase().includes(search.toLowerCase()) || row.name.toLowerCase().includes(search.toLowerCase());
         });
       }
 

@@ -52,7 +52,7 @@ export const SideNav = ({ open, setOpenNav }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const userRole = authToken?.user?.role;
   const { pathname } = useLocation();
-  console.log("pathname ====>", pathname);
+  // console.log("pathname ====>", pathname);
   const content = (
     <Scrollbar
       sx={{

@@ -36,7 +36,16 @@ import { toastOptions } from "../../constant/toast";
 import { toast } from "react-toastify";
 import { ImageInput } from "../../components/input/ImageInput";
 import { uploadImage } from "../../utils/firebase";
-
+const orderByOptions = [
+  { value: "name", label: "Tên" },
+  // { value: "level", label: "Độ khó" },
+  { value: "timestamp", label: "Ngày tạo" },
+  { value: "updated_at", label: "Lần sửa cuối" },
+];
+const sortOptions = [
+  { value: "asc", label: "Tăng dần" },
+  { value: "desc", label: "Giảm dần" },
+]
 export const GroupManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
@@ -44,7 +53,6 @@ export const GroupManagement = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState([]);
-  const [collection, setCollection] = useState([]);
   const [collectionValue, setCollectionValue] = useState();
   const [data, setData] = useState({ name: "", description: "" });
   const [type, setType] = useState("");
@@ -55,10 +63,16 @@ export const GroupManagement = () => {
   const fileInputRef = useRef(null);
   const [temp, setTemp] = useState([]);
 
+  const [collections, setCollections] = useState([]);
+  const [collection, setCollection] = useState(null);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState(sortOptions[0]);
+  const [orderBy, setOrderBy] = useState(orderByOptions[0]);
+
   const fetchGroup = async () => {
     try {
       const res = await apiGet("groups");
-      console.log("res", res);
+      // console.log("res", res);
       if (res) {
         setRows(res);
         setTemp(res);
@@ -72,7 +86,7 @@ export const GroupManagement = () => {
     try {
       const res = await apiGet("collections");
       if (res) {
-        setCollection(res);
+        setCollections(res);
       }
     } catch (e) {
       console.log("can not fetch collection");
@@ -129,8 +143,7 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -209,30 +222,107 @@ export const GroupManagement = () => {
   };
 
   const handleNameFilterChange = (e) => {
+    if (e.target.value === "") {
+      setSearch("");
+      return;
+    }
     const name = e.target.value;
-    const filteredBlocks = temp.filter((tem) =>
-      tem?.name.toLowerCase().includes(name.toLowerCase())
-    );
-    setRows(filteredBlocks);
+    setSearch(name);
   };
 
-  const handleNameCollectionFilterChange = (e) => {
-    const name = e.target.value;
-    const filteredBlocks = temp.filter((tem) =>
-      tem?.collection?.name.toLowerCase().includes(name.toLowerCase())
-    );
-    setRows(filteredBlocks);
-  };
+  const handleCollectionFilterChange = (e, value) => {
+    if (value === null) {
+      setCollection(null);
+      return;
+    }
+    const collection = value;
+    setCollection(collection);
+  }
+
+  useEffect(() => {
+    const applyFiltersAndSort = () => {
+      let filteredRows = temp;
+      if (collection) {
+        filteredRows = filteredRows.filter((row) => {
+          return row?.collection?.collection_id === collection.collection_id;
+        });
+      }
+
+      if (search) {
+        filteredRows = filteredRows.filter((row) => {
+          return row.name.toLowerCase().includes(search.toLowerCase());
+        });
+      }
+
+      if (orderBy) {
+        if (orderBy.value === 'updated_at') {
+          filteredRows = filteredRows.sort((a, b) => {
+            const dateA = new Date(a.updated_at);
+            const dateB = new Date(b.updated_at);
+
+            // Chuyển đổi thời gian về múi giờ +07:00
+            dateA.setHours(dateA.getHours() + 7);
+            dateB.setHours(dateB.getHours() + 7);
+
+            if (sort.value === "asc") {
+              return dateA - dateB;
+            } else {
+              return dateB - dateA;
+            }
+          });
+        } else {
+          filteredRows = filteredRows.sort((a, b) => {
+            if (sort.value === "asc") {
+              return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
+            } else {
+              return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
+            }
+          });
+        }
+
+      }
+      setRows([...filteredRows]); // Make sure to create a new array to force a re-render
+    };
+
+    applyFiltersAndSort();
+  }, [collection, search, sort, orderBy, temp]);
+
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
+        {
+          collections.length > 0 && (
+            <Autocomplete
+              value={collection}
+              options={collections}
+              getOptionLabel={(option) => option.name}
+              style={{ width: 300 }}
+              onChange={handleCollectionFilterChange}
+              renderInput={(params) => <TextField {...params} label="Danh mục" />}
+            />
+          )
+        }
         <TextField
-          label="Lọc theo tên bài tập"
+          label="Tìm theo tên bài tập"
           onChange={handleNameFilterChange}
         />
-        <TextField
-          label="Lọc theo tên danh mục"
-          onChange={handleNameCollectionFilterChange}
+        <Autocomplete
+          value={orderBy}
+          options={orderByOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setOrderBy(value)}
+          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          disableClearable
+        />
+        <Autocomplete
+          value={sort}
+          options={sortOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setSort(value)}
+          renderInput={(params) => <TextField {...params} label="Thứ tự" />}
+          disableClearable
         />
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
@@ -397,7 +487,7 @@ export const GroupManagement = () => {
               onChange={(e) => {
                 if (e.target.value) {
                   setType(
-                    collection.find((v) => v.collection_id == e.target.value)
+                    collections.find((v) => v.collection_id == e.target.value)
                       ?.type
                   );
                 }
@@ -410,28 +500,28 @@ export const GroupManagement = () => {
             >
               <option value={""}></option>
 
-              {collection.map((row) => (
+              {collections.map((row) => (
                 <option value={row.collection_id}>{row.name}</option>
               ))}
             </Select>
           )}
           {(type === "multiplayer" ||
-            collection.find(
+            collections.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-            <TextField
-              margin="normal"
-              type="number"
-              required
-              fullWidth
-              id="timer"
-              label="Thời gian"
-              placeholder="Số phút"
-              name="timer"
-              defaultValue={data?.meta_data?.timer}
-              autoFocus
-            />
-          )}
+              <TextField
+                margin="normal"
+                type="number"
+                required
+                fullWidth
+                id="timer"
+                label="Thời gian"
+                placeholder="Số phút"
+                name="timer"
+                defaultValue={data?.meta_data?.timer}
+                autoFocus
+              />
+            )}
           <TextField
             margin="normal"
             fullWidth

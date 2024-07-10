@@ -20,11 +20,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const email = process.env.REACT_APP_FIREBASE_EMAIL;
 const password = process.env.REACT_APP_FIREBASE_PASSWORD;
-console.log("FBA - Email: ", email)
+// console.log("FBA - Email: ", email)
 
 signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-        console.log("FBA - Successfully")
+        // console.log("FBA - Successfully")
     })
     .catch((error) => {
         const errorCode = error.code;

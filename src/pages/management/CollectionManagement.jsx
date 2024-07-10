@@ -12,6 +12,7 @@ import {
   TablePagination,
   TableRow,
   Typography,
+  Autocomplete,
   Box,
   TextField,
   Select,
@@ -47,6 +48,17 @@ const COLLECTION_TYPE = {
   multiplayer: "Nhiều người chơi",
 };
 
+const orderByOptions = [
+  { value: "name", label: "Tên" },
+  // { value: "level", label: "Độ khó" },
+  { value: "timestamp", label: "Ngày tạo" },
+  { value: "updated_at", label: "Lần sửa cuối" },
+];
+const sortOptions = [
+  { value: "asc", label: "Tăng dần" },
+  { value: "desc", label: "Giảm dần" },
+]
+
 export const CollectionManagement = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -59,6 +71,9 @@ export const CollectionManagement = () => {
   const [preview, setPreview] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
   const [temp, setTemp] = useState([]);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState(sortOptions[0]);
+  const [orderBy, setOrderBy] = useState(orderByOptions[0]);
 
   const fetchCollection = async () => {
     try {
@@ -115,8 +130,7 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${
-            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -124,8 +138,7 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -210,12 +223,73 @@ export const CollectionManagement = () => {
     setRows(filteredBlocks);
   };
 
+  useEffect(() => {
+    const applyFiltersAndSort = () => {
+      let filteredRows = temp;
+
+      if (search) {
+        filteredRows = filteredRows.filter((row) => {
+          return row.name.toLowerCase().includes(search.toLowerCase());
+        });
+      }
+
+      if (orderBy) {
+        if (orderBy.value === 'updated_at') {
+          filteredRows = filteredRows.sort((a, b) => {
+            const dateA = new Date(a.updated_at);
+            const dateB = new Date(b.updated_at);
+
+            // Chuyển đổi thời gian về múi giờ +07:00
+            dateA.setHours(dateA.getHours() + 7);
+            dateB.setHours(dateB.getHours() + 7);
+
+            if (sort.value === "asc") {
+              return dateA - dateB;
+            } else {
+              return dateB - dateA;
+            }
+          });
+        } else {
+          filteredRows = filteredRows.sort((a, b) => {
+            if (sort.value === "asc") {
+              return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
+            } else {
+              return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
+            }
+          });
+        }
+
+      }
+      setRows([...filteredRows]); // Make sure to create a new array to force a re-render
+    };
+
+    applyFiltersAndSort();
+  }, [search, sort, orderBy, temp]);
+
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
         <TextField
-          label="Lọc theo tên danh mục"
+          label="Tìm theo tên danh mục"
           onChange={handleNameFilterChange}
+        />
+        <Autocomplete
+          value={orderBy}
+          options={orderByOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setOrderBy(value)}
+          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          disableClearable
+        />
+        <Autocomplete
+          value={sort}
+          options={sortOptions}
+          getOptionLabel={(option) => option.label}
+          style={{ width: 200 }}
+          onChange={(e, value) => setSort(value)}
+          renderInput={(params) => <TextField {...params} label="Thứ tự" />}
+          disableClearable
         />
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
