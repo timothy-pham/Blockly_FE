@@ -28,6 +28,7 @@ import LinearProgress, {
 import LinearWithValueLabel from "../../components/progress/Progress";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { getColor, getLabel } from "../../utils/levelParse";
 
 export const Play = () => {
   const { collection_id, id } = useParams();
@@ -264,6 +265,19 @@ export const Play = () => {
     return () => clearInterval(timer);
   }, [roomDetail]);
 
+  // handle enter key event
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSubmitAnswer();
+    }
+  };
+  // listen to keydown event
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
   return (
     <Paper
       sx={{
@@ -306,19 +320,11 @@ export const Play = () => {
               <div>
                 <Typography component="span">Mức độ: </Typography>
                 <Chip
-                  color={
-                    blockDetail.level === 1
-                      ? "success"
-                      : blockDetail.level === 2
-                        ? "warning"
-                        : "error"
-                  }
+                  style={{
+                    backgroundColor: getColor(blockDetail?.level),
+                  }}
                   label={
-                    blockDetail.level === 1
-                      ? "Dễ"
-                      : blockDetail.level === 2
-                        ? "Bình thường"
-                        : "Khó"
+                    getLabel(blockDetail?.level)
                   }
                   sx={{ width: "fit-content" }}
                 />

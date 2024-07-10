@@ -12,6 +12,7 @@ import { BlocklyLayout } from "../../../components/Blockly";
 import moment from "moment";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../../constant/toast";
+import { getColor, getLabel } from "../../../utils/levelParse";
 
 export const LessonsDetail = () => {
   const { collection_id, group_id } = useParams();
@@ -116,7 +117,7 @@ export const LessonsDetail = () => {
 
   const handleSubmitAnswer = async () => {
     const res = await apiPost("blocks/check-answer", {
-      id: blockDetail.block_id,
+      id: blockDetail?.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
     if (res && res.correct) {
@@ -137,6 +138,19 @@ export const LessonsDetail = () => {
       toast.error(`Tiếc quá! :<, bạn đã sai gòyyyy`, toastOptions);
     }
   };
+  // handle enter key event
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSubmitAnswer();
+    }
+  };
+  // listen to keydown event
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   return (
     <>
@@ -153,11 +167,10 @@ export const LessonsDetail = () => {
             <Button
               variant="contained"
               disabled={index > 0 && !rows[index - 1].answered}
-              className={`${
-                index === currentQuestionIndex
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-blue-500"
-              } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+              className={`${index === currentQuestionIndex
+                ? "bg-blue-500 text-white"
+                : "bg-white text-blue-500"
+                } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
               key={index}
               onClick={() => {
                 setCurrentQuestionIndex(index);
@@ -183,19 +196,11 @@ export const LessonsDetail = () => {
               Mức độ:{" "}
             </Typography>
             <Chip
-              color={
-                blockDetail?.level === 1
-                  ? "success"
-                  : blockDetail?.level === 2
-                  ? "warning"
-                  : "error"
-              }
+              style={{
+                backgroundColor: getColor(blockDetail?.level),
+              }}
               label={
-                blockDetail?.level === 1
-                  ? "Dễ"
-                  : blockDetail?.level === 2
-                  ? "Bình thường"
-                  : "Khó"
+                getLabel(blockDetail?.level)
               }
               sx={{
                 width: "fit-content",
@@ -231,14 +236,14 @@ export const LessonsDetail = () => {
           </div>
           {currentQuestionIndex ===
             rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
-            <Button
-              onClick={handleSubmitAnswer}
-              variant="contained"
-              sx={{ mt: 1 }}
-            >
-              Kiểm tra
-            </Button>
-          )}
+              <Button
+                onClick={handleSubmitAnswer}
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Kiểm tra
+              </Button>
+            )}
         </Box>
       </div>
     </>
