@@ -13,9 +13,12 @@ import {
   TableRow,
   Typography,
   Autocomplete,
+  InputLabel,
+  MenuItem,
   Box,
   TextField,
   Select,
+  FormControl,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useRef, useState } from "react";
@@ -412,7 +415,7 @@ export const CollectionManagement = () => {
 
       <Dialog
         sx={{
-          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: 435 },
+          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: '80%' },
         }}
         maxWidth="md"
         open={openPopup}
@@ -453,8 +456,11 @@ export const CollectionManagement = () => {
             multiline
             rows={4}
           />
-          <Select
+
+          <TextField
+            sx={{ my: 2 }}
             native
+            select
             fullWidth
             inputProps={{
               name: "type",
@@ -463,9 +469,10 @@ export const CollectionManagement = () => {
             defaultValue={data.type || "normal"}
           >
             {types.map((row) => (
-              <option value={row.value}>{row.label}</option>
+              <MenuItem value={row.value}>{row.label}</MenuItem>
             ))}
-          </Select>
+          </TextField>
+
           <ImageInput
             setPreview={setPreview}
             setSelectedImage={setSelectedImage}

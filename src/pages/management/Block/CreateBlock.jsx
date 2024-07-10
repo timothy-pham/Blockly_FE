@@ -121,7 +121,7 @@ export const CreateBlock = () => {
               renderInput={(params) => (
                 <TextField {...params} label="Nhóm" name="group_id" margin="normal" />
               )}
-              onChange={(e, value) => setGroupValue(value?.id)}
+              onChange={(e, value) => setGroupValue(value?.group_id)}
             />
 
             <Autocomplete

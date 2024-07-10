@@ -11,6 +11,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  MenuItem,
   Typography,
   Box,
   TextField,
@@ -86,6 +87,7 @@ export const GroupManagement = () => {
     try {
       const res = await apiGet("collections");
       if (res) {
+        setCollectionValue(res[0].collection_id);
         setCollections(res);
       }
     } catch (e) {
@@ -118,6 +120,7 @@ export const GroupManagement = () => {
       if (!data?.group_id) {
         res = await apiPost("groups", {
           name: dataForm.get("name"),
+          collection_id: dataForm.get("collection_id"),
           meta_data: {
             description: dataForm.get("description"),
             image: imageUrl,
@@ -450,7 +453,7 @@ export const GroupManagement = () => {
 
       <Dialog
         sx={{
-          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: 435 },
+          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: '80%' },
         }}
         maxWidth="md"
         open={openPopup}
@@ -461,7 +464,7 @@ export const GroupManagement = () => {
           setOpenPopup(false);
         }}
       >
-        {!data.group_id ? `Tạo bài tập` : `Chỉnh sửa bài tập ${data.name}`}
+        {!data.group_id ? `Tạo bài tập` : `Chỉnh sửa bài tập`}
         <Box
           className="flex flex-col items-center"
           component="form"
@@ -479,32 +482,32 @@ export const GroupManagement = () => {
             defaultValue={data.name}
             autoFocus
           />
-          {data?.group_id && (
-            <Select
-              native
-              fullWidth
-              // value={data?.type}
-              onChange={(e) => {
-                if (e.target.value) {
-                  setType(
-                    collections.find((v) => v.collection_id == e.target.value)
-                      ?.type
-                  );
-                }
-              }}
-              inputProps={{
-                name: "collection_id",
-                id: "collection_id",
-              }}
-              defaultValue={data?.collection?.collection_id}
-            >
-              <option value={""}></option>
+          <TextField
+            sx={{ my: 2 }}
+            select
+            native
+            label="Danh mục"
+            fullWidth
+            // value={data?.type}
+            onChange={(e) => {
+              if (e.target.value) {
+                setType(
+                  collections.find((v) => v.collection_id == e.target.value)
+                    ?.type
+                );
+              }
+            }}
+            inputProps={{
+              name: "collection_id",
+              id: "collection_id",
+            }}
+            defaultValue={data?.collection?.collection_id || collectionValue}
+          >
 
-              {collections.map((row) => (
-                <option value={row.collection_id}>{row.name}</option>
-              ))}
-            </Select>
-          )}
+            {collections.map((row) => (
+              <MenuItem key={row.collection_id} value={row.collection_id}>{row.name}</MenuItem>
+            ))}
+          </TextField>
           {(type === "multiplayer" ||
             collections.find(
               (v) => v.collection_id == data?.collection?.collection_id
