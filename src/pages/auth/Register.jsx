@@ -12,6 +12,15 @@ const Register = () => {
     var password = document.getElementById("password").value;
     var name = document.getElementById("name").value;
 
+    if (username.length < 6 || username.length > 20) {
+      setError("Tài khoản phải từ 6 đến 20 kí tự");
+      return;
+    }
+    if (password.length < 6 || password.length > 20) {
+      setError("Mật khẩu phải từ 6 đến 20 kí tự");
+      return;
+    }
+
     try {
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/auth/register`,
