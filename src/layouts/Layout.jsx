@@ -173,6 +173,7 @@ export const Layout = () => {
           <div>
             {avatar ? (
               <Avatar
+                className="cursor-pointer"
                 src={avatar}
                 aria-expanded={isUserDropdownOpen}
                 onClick={toggleUserDropdown}
