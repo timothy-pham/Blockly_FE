@@ -131,7 +131,6 @@ export const CreateBlock = () => {
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               id="Position"
               type="number"

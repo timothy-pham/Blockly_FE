@@ -21,8 +21,9 @@ const AuthProvider = ({ children }) => {
         }
       );
 
+      const res = await response.json();
+
       if (response.ok) {
-        const res = await response.json();
         setIsAuthenticated(true);
         localStorage.setItem(
           "authToken",
@@ -33,8 +34,8 @@ const AuthProvider = ({ children }) => {
           })
         );
         return res;
-      } else if (response.status > 400) {
-        return "Sai tài khoản hoặc mật khẩu";
+      } else if (response.status >= 400) {
+        return res?.message;
       }
     } catch (error) {
       console.error("Login error:", error);

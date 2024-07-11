@@ -42,6 +42,7 @@ const orderByOptions = [
   // { value: "level", label: "Độ khó" },
   { value: "timestamp", label: "Ngày tạo" },
   { value: "updated_at", label: "Lần sửa cuối" },
+  { value: "meta_data.position", label: "Vị trí" },
 ];
 const sortOptions = [
   { value: "asc", label: "Tăng dần" },
@@ -245,6 +246,13 @@ export const GroupManagement = () => {
     setCollection(collection);
   };
 
+  const getNestedValue = (obj, path) => {
+    return (
+      path.includes(".") &&
+      path.split(".").reduce((acc, part) => acc && acc[part], obj)
+    );
+  };
+
   useEffect(() => {
     const applyFiltersAndSort = () => {
       let filteredRows = temp;
@@ -278,10 +286,16 @@ export const GroupManagement = () => {
           });
         } else {
           filteredRows = filteredRows.sort((a, b) => {
+            const aValue = getNestedValue(a, orderBy.value);
+            const bValue = getNestedValue(b, orderBy.value);
+
+            if (aValue === undefined) return 1;
+            if (bValue === undefined) return -1;
+
             if (sort.value === "asc") {
-              return a[orderBy.value] > b[orderBy.value] ? 1 : -1;
+              return aValue > bValue ? 1 : -1;
             } else {
-              return a[orderBy.value] < b[orderBy.value] ? 1 : -1;
+              return aValue < bValue ? 1 : -1;
             }
           });
         }
@@ -488,7 +502,6 @@ export const GroupManagement = () => {
           />
           <TextField
             margin="normal"
-            required
             fullWidth
             id="position"
             label="Vị trí"

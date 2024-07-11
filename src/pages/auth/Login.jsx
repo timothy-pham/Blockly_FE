@@ -4,17 +4,26 @@ import AuthContext from "./AuthContext/AuthContext";
 import { Typography } from "@mui/material";
 // import backgroundAuth from '/backgroundAuth.webp'
 
-
 const Login = () => {
   const navigate = useNavigate();
   const { isAuthenticated, login } = useContext(AuthContext);
   const [error, setError] = useState("");
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
     var username = document.getElementById("username").value;
     var password = document.getElementById("password").value;
+
+    if (username !== "admin") {
+      if (username.length < 6 || username.length > 20) {
+        setError("Tài khoản phải từ 6 đến 20 kí tự");
+        return;
+      }
+    }
+    if (password.length < 6 || password.length > 20) {
+      setError("Mật khẩu phải từ 6 đến 20 kí tự");
+      return;
+    }
     const res = await login({ username, password });
     if (typeof res === "string") {
       setError(res);

@@ -147,7 +147,6 @@ export const EditBlock = () => {
               />
               <TextField
                 margin="normal"
-                required
                 fullWidth
                 id="Position"
                 defaultValue={blockDetail?.meta_data?.position}
