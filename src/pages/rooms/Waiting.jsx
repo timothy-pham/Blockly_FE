@@ -163,7 +163,6 @@ export const Waiting = () => {
   };
 
   const handleReady = () => {
-    console.log("readyyyy", !ready);
     socket?.emit("user_ready", !ready);
     setReady(!ready);
   };
@@ -172,7 +171,6 @@ export const Waiting = () => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
   };
 
-  console.log("userList======>", userList);
   return (
     <Paper
       sx={{

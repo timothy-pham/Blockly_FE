@@ -66,18 +66,19 @@ export const Rooms = () => {
   const handleCreateRoom = async () => {
     try {
       let data = {
-        name: createRoom.name,
-        description: createRoom.description,
+        name: createRoom?.name,
+        description: createRoom?.description,
         meta_data: {
-          collection_id: createRoom.collection_id,
-          group_id: createRoom.group_id,
+          collection_id: createRoom?.collection_id,
+          group_id: createRoom?.group_id,
+          count: Number(createRoom?.count),
         },
       };
       const res = await apiPost("rooms", data);
       if (res) {
         setDialogCreateRoom(false);
         setCreateRoom({});
-        navigate("/rooms/" + res.room_id);
+        navigate("/rooms/" + res?.room_id);
       }
     } catch (error) {
       console.log("can not create room");
@@ -169,9 +170,24 @@ export const Rooms = () => {
               label="Tên phòng"
               variant="outlined"
               fullWidth
-              value={createRoom.name}
+              value={createRoom?.name}
               onChange={(e) =>
                 setCreateRoom({ ...createRoom, name: e.target.value })
+              }
+            />
+          </div>
+          <div className="mb-5 mt-3">
+            <TextField
+              label="Số câu hỏi"
+              type="number"
+              variant="outlined"
+              fullWidth
+              value={createRoom?.count}
+              onChange={(e) =>
+                setCreateRoom({
+                  ...createRoom,
+                  count: e.target.value,
+                })
               }
             />
           </div>
@@ -182,7 +198,7 @@ export const Rooms = () => {
               label="Mô tả"
               variant="outlined"
               fullWidth
-              value={createRoom.description}
+              value={createRoom?.description}
               onChange={(e) =>
                 setCreateRoom({ ...createRoom, description: e.target.value })
               }
@@ -192,19 +208,19 @@ export const Rooms = () => {
             <Select
               fullWidth
               defaultValue={collections[0]?.collection_id || ""}
-              value={createRoom.collection_id}
+              value={createRoom?.collection_id}
               onChange={(e) => {
                 setCreateRoom({ ...createRoom, collection_id: e.target.value });
                 fetchGroup(e.target.value);
               }}
               sx={{ fontWeight: "bold" }}
             >
-              {collections.map((collection) => (
+              {collections?.map((collection) => (
                 <MenuItem
-                  key={collection.collection_id}
-                  value={collection.collection_id}
+                  key={collection?.collection_id}
+                  value={collection?.collection_id}
                 >
-                  {collection.name}
+                  {collection?.name}
                 </MenuItem>
               ))}
             </Select>
@@ -213,15 +229,15 @@ export const Rooms = () => {
             <Select
               fullWidth
               defaultValue={groups[0]?.group_id || ""}
-              value={createRoom.group_id}
+              value={createRoom?.group_id}
               onChange={(e) =>
                 setCreateRoom({ ...createRoom, group_id: e.target.value })
               }
               sx={{ fontWeight: "bold" }}
             >
-              {groups.map((group) => (
-                <MenuItem key={group.group_id} value={group.group_id}>
-                  {group.name}
+              {groups?.map((group) => (
+                <MenuItem key={group?.group_id} value={group?.group_id}>
+                  {group?.name}
                 </MenuItem>
               ))}
             </Select>

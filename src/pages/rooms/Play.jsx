@@ -51,7 +51,7 @@ export const Play = () => {
     localStorage.setItem("questions", JSON.stringify(questions));
     localStorage.setItem("current", JSON.stringify(current));
     localStorage.setItem("index", JSON.stringify(index));
-  }
+  };
 
   const checkLocalStorage = () => {
     let haveData = false;
@@ -65,13 +65,15 @@ export const Play = () => {
       haveData = true;
     }
     return haveData;
-  }
+  };
 
-  const fetchCollection = async () => {
+  const fetchCollection = async (count) => {
     try {
       const haveData = checkLocalStorage();
       if (!haveData) {
-        const res = await apiGet(`blocks/random?room_id=${id}`);
+        console.log("sau", roomDetail);
+
+        const res = await apiGet(`blocks/random?room_id=${id}&count=${count}`);
         if (res) {
           const data = res.map((item) => ({
             ...item,
@@ -94,11 +96,12 @@ export const Play = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
-        if (res?.status !== 'playing') {
+        if (res?.status !== "playing") {
           navigate(`/rooms`);
           return;
         }
         setRoomDetail(res);
+        return res;
       }
     } catch (e) {
       console.log("can not fetch groups");
@@ -107,8 +110,12 @@ export const Play = () => {
 
   useEffect(() => {
     if (!hasFetched.current) {
-      fetchCollection();
-      fetchRoomData();
+      const fetchData = async () => {
+        const res = await fetchRoomData();
+        const count = res?.meta_data?.count || 5;
+        await fetchCollection(count);
+      };
+      fetchData();
       hasFetched.current = true; // Ensure it only runs once
     }
   }, []);
@@ -187,7 +194,6 @@ export const Play = () => {
     if (data) {
       navigate(`/rooms/${id}/end-game`, { state: data });
     }
-    console.log("endgame +++>", data);
   };
 
   const receiveMessages = (data) => {
@@ -323,9 +329,7 @@ export const Play = () => {
                   style={{
                     backgroundColor: getColor(blockDetail?.level),
                   }}
-                  label={
-                    getLabel(blockDetail?.level)
-                  }
+                  label={getLabel(blockDetail?.level)}
                   sx={{ width: "fit-content" }}
                 />
               </div>
@@ -341,15 +345,15 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    variant="contained"
-                    disabled={blockDetail.answered}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Kiểm tra
-                  </Button>
-                )}
+                <Button
+                  onClick={handleSubmitAnswer}
+                  variant="contained"
+                  disabled={blockDetail.answered}
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
             </Box>
           )}
         </div>
