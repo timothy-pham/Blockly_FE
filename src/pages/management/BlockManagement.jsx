@@ -46,7 +46,7 @@ const orderByOptions = [
 const sortOptions = [
   { value: "asc", label: "Tăng dần" },
   { value: "desc", label: "Giảm dần" },
-]
+];
 
 export const BlockManagement = () => {
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ export const BlockManagement = () => {
     } catch (e) {
       console.log("can not fetch groups");
     }
-  }
+  };
 
   const fetchCollections = async () => {
     try {
@@ -106,7 +106,7 @@ export const BlockManagement = () => {
     } catch (e) {
       console.log("can not fetch collections");
     }
-  }
+  };
 
   const sortBlocks = (data) => {
     const sortedBlocks = data.sort((a, b) => {
@@ -217,19 +217,24 @@ export const BlockManagement = () => {
     }
     const collection = value;
     setCollection(collection);
-  }
+  };
 
   useEffect(() => {
     const applyFiltersAndSort = () => {
       let filteredRows = temp;
       if (collection) {
         filteredRows = filteredRows.filter((row) => {
-          return row?.group?.collection?.collection_id === collection.collection_id;
+          return (
+            row?.group?.collection?.collection_id === collection.collection_id
+          );
         });
         let filteredGroups = groups.filter((group) => {
           return group?.collection?.collection_id === collection.collection_id;
         });
-        if (group && !filteredGroups.find((g) => g.group_id === group.group_id)) {
+        if (
+          group &&
+          !filteredGroups.find((g) => g.group_id === group.group_id)
+        ) {
           setGroup(null);
         }
         setFilteredGroups(filteredGroups);
@@ -243,12 +248,15 @@ export const BlockManagement = () => {
       }
       if (search) {
         filteredRows = filteredRows.filter((row) => {
-          return row.question.toLowerCase().includes(search.toLowerCase()) || row.name.toLowerCase().includes(search.toLowerCase());
+          return (
+            row.question.toLowerCase().includes(search.toLowerCase()) ||
+            row.name.toLowerCase().includes(search.toLowerCase())
+          );
         });
       }
 
       if (orderBy) {
-        if (orderBy.value === 'updated_at') {
+        if (orderBy.value === "updated_at") {
           filteredRows = filteredRows.sort((a, b) => {
             const dateA = new Date(a.updated_at);
             const dateB = new Date(b.updated_at);
@@ -272,7 +280,6 @@ export const BlockManagement = () => {
             }
           });
         }
-
       }
       setRows([...filteredRows]); // Make sure to create a new array to force a re-render
     };
@@ -283,30 +290,26 @@ export const BlockManagement = () => {
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
-        {
-          collections.length > 0 && (
-            <Autocomplete
-              value={collection}
-              options={collections}
-              getOptionLabel={(option) => option.name}
-              style={{ width: 300 }}
-              onChange={handleCollectionFilterChange}
-              renderInput={(params) => <TextField {...params} label="Danh mục" />}
-            />
-          )
-        }
-        {
-          groups.length > 0 && (
-            <Autocomplete
-              value={group}
-              options={filteredGroups}
-              getOptionLabel={(option) => option.name}
-              style={{ width: 300 }}
-              onChange={handleGroupFilterChange}
-              renderInput={(params) => <TextField {...params} label="Nhóm" />}
-            />
-          )
-        }
+        {collections.length > 0 && (
+          <Autocomplete
+            value={collection}
+            options={collections}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 300 }}
+            onChange={handleCollectionFilterChange}
+            renderInput={(params) => <TextField {...params} label="Danh mục" />}
+          />
+        )}
+        {groups.length > 0 && (
+          <Autocomplete
+            value={group}
+            options={filteredGroups}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 300 }}
+            onChange={handleGroupFilterChange}
+            renderInput={(params) => <TextField {...params} label="Nhóm" />}
+          />
+        )}
         <TextField label="Tìm theo câu hỏi" onChange={handleNameFilterChange} />
         {/* sắp xếp */}
         <Autocomplete
@@ -315,7 +318,9 @@ export const BlockManagement = () => {
           getOptionLabel={(option) => option.label}
           style={{ width: 200 }}
           onChange={(e, value) => setOrderBy(value)}
-          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Sắp xếp theo" />
+          )}
           disableClearable
         />
         <Autocomplete
@@ -380,6 +385,7 @@ export const BlockManagement = () => {
               <TableCell>Tên bài tập</TableCell>
               <TableCell>Cấp độ</TableCell>
               <TableCell>Hình ảnh</TableCell>
+              <TableCell>Vị trí</TableCell>
               <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -399,10 +405,10 @@ export const BlockManagement = () => {
                     label={getLabel(row?.level)}
                     style={{
                       backgroundColor: getColor(row?.level),
-                      color: 'black',
-                      fontWeight: 'bold',
+                      color: "black",
+                      fontWeight: "bold",
                     }}
-                    sx={{ width: 'fit-content' }}
+                    sx={{ width: "fit-content" }}
                   />
                 </TableCell>
                 <TableCell>
@@ -413,6 +419,7 @@ export const BlockManagement = () => {
                     alt=""
                   />
                 </TableCell>
+                <TableCell>{row?.meta_data?.position}</TableCell>
                 <TableCell>
                   <IconButton
                     onClick={() =>

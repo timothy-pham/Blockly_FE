@@ -46,7 +46,7 @@ const orderByOptions = [
 const sortOptions = [
   { value: "asc", label: "Tăng dần" },
   { value: "desc", label: "Giảm dần" },
-]
+];
 export const GroupManagement = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
@@ -123,6 +123,7 @@ export const GroupManagement = () => {
           collection_id: dataForm.get("collection_id"),
           meta_data: {
             description: dataForm.get("description"),
+            position: dataForm.get("position"),
             image: imageUrl,
           },
         });
@@ -132,6 +133,7 @@ export const GroupManagement = () => {
           collection_id: dataForm.get("collection_id"),
           meta_data: {
             description: dataForm.get("description"),
+            position: dataForm.get("position"),
             timer: Number(dataForm.get("timer")),
             image: !preview?.includes("blob") ? preview : imageUrl,
           },
@@ -146,7 +148,8 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -240,7 +243,7 @@ export const GroupManagement = () => {
     }
     const collection = value;
     setCollection(collection);
-  }
+  };
 
   useEffect(() => {
     const applyFiltersAndSort = () => {
@@ -258,7 +261,7 @@ export const GroupManagement = () => {
       }
 
       if (orderBy) {
-        if (orderBy.value === 'updated_at') {
+        if (orderBy.value === "updated_at") {
           filteredRows = filteredRows.sort((a, b) => {
             const dateA = new Date(a.updated_at);
             const dateB = new Date(b.updated_at);
@@ -282,7 +285,6 @@ export const GroupManagement = () => {
             }
           });
         }
-
       }
       setRows([...filteredRows]); // Make sure to create a new array to force a re-render
     };
@@ -293,18 +295,16 @@ export const GroupManagement = () => {
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
-        {
-          collections.length > 0 && (
-            <Autocomplete
-              value={collection}
-              options={collections}
-              getOptionLabel={(option) => option.name}
-              style={{ width: 300 }}
-              onChange={handleCollectionFilterChange}
-              renderInput={(params) => <TextField {...params} label="Danh mục" />}
-            />
-          )
-        }
+        {collections.length > 0 && (
+          <Autocomplete
+            value={collection}
+            options={collections}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 300 }}
+            onChange={handleCollectionFilterChange}
+            renderInput={(params) => <TextField {...params} label="Danh mục" />}
+          />
+        )}
         <TextField
           label="Tìm theo tên bài tập"
           onChange={handleNameFilterChange}
@@ -315,7 +315,9 @@ export const GroupManagement = () => {
           getOptionLabel={(option) => option.label}
           style={{ width: 200 }}
           onChange={(e, value) => setOrderBy(value)}
-          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Sắp xếp theo" />
+          )}
           disableClearable
         />
         <Autocomplete
@@ -380,6 +382,7 @@ export const GroupManagement = () => {
               <TableCell>Thể loại</TableCell>
               <TableCell>Thời gian</TableCell>
               <TableCell>Hình ảnh</TableCell>
+              <TableCell>Vị trí</TableCell>
               <TableCell>Hành động</TableCell>
             </TableRow>
           </TableHead>
@@ -405,6 +408,7 @@ export const GroupManagement = () => {
                     alt=""
                   />
                 </TableCell>
+                <TableCell>{row?.meta_data?.position}</TableCell>
                 <TableCell>
                   <IconButton
                     onClick={() => {
@@ -453,7 +457,7 @@ export const GroupManagement = () => {
 
       <Dialog
         sx={{
-          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: '80%' },
+          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: "80%" },
         }}
         maxWidth="md"
         open={openPopup}
@@ -483,6 +487,16 @@ export const GroupManagement = () => {
             autoFocus
           />
           <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="position"
+            label="Vị trí"
+            name="position"
+            defaultValue={data?.meta_data?.position}
+            autoFocus
+          />
+          <TextField
             sx={{ my: 2 }}
             select
             native
@@ -503,28 +517,29 @@ export const GroupManagement = () => {
             }}
             defaultValue={data?.collection?.collection_id || collectionValue}
           >
-
             {collections.map((row) => (
-              <MenuItem key={row.collection_id} value={row.collection_id}>{row.name}</MenuItem>
+              <MenuItem key={row.collection_id} value={row.collection_id}>
+                {row.name}
+              </MenuItem>
             ))}
           </TextField>
           {(type === "multiplayer" ||
             collections.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-              <TextField
-                margin="normal"
-                type="number"
-                required
-                fullWidth
-                id="timer"
-                label="Thời gian"
-                placeholder="Số phút"
-                name="timer"
-                defaultValue={data?.meta_data?.timer}
-                autoFocus
-              />
-            )}
+            <TextField
+              margin="normal"
+              type="number"
+              required
+              fullWidth
+              id="timer"
+              label="Thời gian"
+              placeholder="Số phút"
+              name="timer"
+              defaultValue={data?.meta_data?.timer}
+              autoFocus
+            />
+          )}
           <TextField
             margin="normal"
             fullWidth

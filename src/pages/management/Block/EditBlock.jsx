@@ -89,6 +89,7 @@ export const EditBlock = () => {
         answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
+          position: dataForm.get("position"),
           image: preview?.includes("blob") ? preview : imageUrl,
         },
       });
@@ -144,6 +145,15 @@ export const EditBlock = () => {
                 margin="normal"
                 required
                 fullWidth
+                id="Position"
+                type="number"
+                label="Vị trí"
+                name="position"
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 defaultValue={blockDetail?.level}
                 id="Level"
                 type="number"
@@ -183,7 +193,12 @@ export const EditBlock = () => {
                 )}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => (
-                  <TextField {...params} label="Thuộc bài tập" id="group_id" margin="normal" />
+                  <TextField
+                    {...params}
+                    label="Thuộc bài tập"
+                    id="group_id"
+                    margin="normal"
+                  />
                 )}
                 onChange={(e, val) => setCategoryValue(val?.group_id)}
                 renderOption={(props, option) => (

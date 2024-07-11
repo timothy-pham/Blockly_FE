@@ -69,6 +69,7 @@ export const CreateBlock = () => {
         group_id: groupValue,
         meta_data: {
           description: dataForm.get("description"),
+          position: dataForm.get("position"),
           image: imageUrl,
         },
       });
@@ -119,11 +120,24 @@ export const CreateBlock = () => {
               options={groups}
               getOptionLabel={(option) => option.name}
               renderInput={(params) => (
-                <TextField {...params} label="Nhóm" name="group_id" margin="normal" />
+                <TextField
+                  {...params}
+                  label="Nhóm"
+                  name="group_id"
+                  margin="normal"
+                />
               )}
               onChange={(e, value) => setGroupValue(value?.group_id)}
             />
-
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="Position"
+              type="number"
+              label="Vị trí"
+              name="position"
+            />
             <Autocomplete
               disablePortal
               id="type"
@@ -131,7 +145,12 @@ export const CreateBlock = () => {
               options={[{ id: "all" }, { id: "include" }]}
               getOptionLabel={(option) => option.id}
               renderInput={(params) => (
-                <TextField {...params} label="Loại câu hỏi" name="type" margin="normal" />
+                <TextField
+                  {...params}
+                  label="Loại câu hỏi"
+                  name="type"
+                  margin="normal"
+                />
               )}
               renderOption={(props, option) => (
                 <div {...props}>

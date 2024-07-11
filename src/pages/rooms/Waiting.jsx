@@ -121,7 +121,7 @@ export const Waiting = () => {
     localStorage.removeItem("questions");
     localStorage.removeItem("current");
     localStorage.removeItem("index");
-  }
+  };
 
   const startGame = (data) => {
     if (data?.status === "playing") {
@@ -172,6 +172,7 @@ export const Waiting = () => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
   };
 
+  console.log("userList======>", userList);
   return (
     <Paper
       sx={{
