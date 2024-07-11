@@ -64,7 +64,7 @@ export const EditBlock = () => {
     e.preventDefault();
     setShowAnswers(true);
     setAnswers(dataBlock?.code); // Set answers based on Blockly data
-    setHasChangeAnswers(true)
+    setHasChangeAnswers(true);
   };
 
   const handleAnswersChange = (e) => {
@@ -90,11 +90,11 @@ export const EditBlock = () => {
         meta_data: {
           description: dataForm.get("description"),
           position: dataForm.get("position"),
-          image: preview?.includes("blob") ? preview : imageUrl,
+          image: imageUrl ? imageUrl : preview,
         },
-      }
+      };
       if (hasChangeAnswers) {
-        body.answers = transformCodeBlockly(answers)
+        body.answers = transformCodeBlockly(answers);
       }
       const res = await apiPatch("blocks", id, body);
       console.log("res=====>", res);
