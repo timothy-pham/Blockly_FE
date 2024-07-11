@@ -26,7 +26,7 @@ export const EditBlock = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState(null);
   const [preview, setPreview] = useState(null);
-
+  const [hasChangeAnswers, setHasChangeAnswers] = useState(false);
   const fetchCategory = async () => {
     try {
       const res = await apiGet("groups");
@@ -64,6 +64,7 @@ export const EditBlock = () => {
     e.preventDefault();
     setShowAnswers(true);
     setAnswers(dataBlock?.code); // Set answers based on Blockly data
+    setHasChangeAnswers(true)
   };
 
   const handleAnswersChange = (e) => {
@@ -79,20 +80,23 @@ export const EditBlock = () => {
     }
 
     try {
-      const res = await apiPatch("blocks", id, {
+      let body = {
         name: dataForm.get("name"),
         question: dataForm.get("question"),
         level: dataForm.get("level"),
         type: dataForm.get("type"),
         group_id: categoryValue,
         data: dataBlock.data,
-        answers: transformCodeBlockly(answers),
         meta_data: {
           description: dataForm.get("description"),
           position: dataForm.get("position"),
           image: preview?.includes("blob") ? preview : imageUrl,
         },
-      });
+      }
+      if (hasChangeAnswers) {
+        body.answers = transformCodeBlockly(answers)
+      }
+      const res = await apiPatch("blocks", id, body);
       console.log("res=====>", res);
       if (res) {
         toast.success("Chỉnh sửa câu hỏi thành công.", toastOptions);
@@ -146,6 +150,7 @@ export const EditBlock = () => {
                 required
                 fullWidth
                 id="Position"
+                defaultValue={blockDetail?.meta_data?.position}
                 type="number"
                 label="Vị trí"
                 name="position"
