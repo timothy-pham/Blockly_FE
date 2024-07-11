@@ -97,7 +97,6 @@ export const EditBlock = () => {
         body.answers = transformCodeBlockly(answers);
       }
       const res = await apiPatch("blocks", id, body);
-      console.log("res=====>", res);
       if (res) {
         toast.success("Chỉnh sửa câu hỏi thành công.", toastOptions);
         navigate("/blockManagement");
