@@ -19,6 +19,8 @@ import { socket } from "../../socket";
 import { apiGet, apiGetDetail } from "../../utils/dataProvider";
 import { ChatBox } from "../../components/Chat/ChatBox";
 import CooldownDialog from "../../components/CooldownDialog";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../constant/toast";
 
 export const Waiting = () => {
   const navigate = useNavigate();
@@ -99,12 +101,17 @@ export const Waiting = () => {
       startGame(data);
     });
 
+    socket.on("kick_user", (data) => {
+      kickUser(data);
+    });
+
     return () => {
       socket.off("user_joined");
       socket.off("user_ready");
       socket.off("user_left");
       socket.off("receive_messages");
       socket.off("start_game");
+      socket.off("kick_user");
     };
   }, [socket]);
 
@@ -171,6 +178,19 @@ export const Waiting = () => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
   };
 
+  const kickUser = (data) => {
+    const { room_data, userKicked } = data;
+    if (userKicked.user_id === user.user_id) {
+      toast.error(
+        `Bạn đã bị chủ phòng đá ra khỏi phòng!`,
+        toastOptions
+      );
+      navigate("/rooms");
+    } else {
+      setUserList(room_data?.users.filter((v) => v.is_connected));
+    }
+  }
+
   return (
     <Paper
       sx={{
@@ -211,6 +231,7 @@ export const Waiting = () => {
                   <TableCell>Sẵn sàng</TableCell>
                   <TableCell>Điểm tích lũy </TableCell>
                   <TableCell>Số trận đã đấu</TableCell>
+                  <TableCell>Hành động</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -239,6 +260,22 @@ export const Waiting = () => {
                     </TableCell>
                     <TableCell>
                       {row?.user_data?.meta_data?.matches || 0}
+                    </TableCell>
+                    <TableCell>
+                      {checkHost(user, userList) && row.user_id !== user.user_id && (
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => {
+                            socket?.emit("kick_user", {
+                              room_id: id,
+                              user_id: row.user_id,
+                            });
+                          }}
+                        >
+                          Kick
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
