@@ -152,7 +152,6 @@ export const Play = () => {
   // };
 
   const rankingUpdate = (data) => {
-    console.log("RAKING", data)
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
       (a, b) => {
         if (a.score !== b.score) {
@@ -211,7 +210,7 @@ export const Play = () => {
       }
     );
     setRanks(sortedRanks);
-  }
+  };
 
   const endGame = (data) => {
     if (data) {
@@ -267,7 +266,7 @@ export const Play = () => {
         if (index === currentQuestionIndex) {
           const answered_wrong = v.answered_wrong ? v.answered_wrong + 1 : 1;
           count = answered_wrong;
-          return { ...v, data: dataBlock.data, answered_wrong }
+          return { ...v, data: dataBlock.data, answered_wrong };
         }
         return v;
       });
@@ -299,7 +298,7 @@ export const Play = () => {
     setRows(answeredQuestion);
     handleNextQuestion();
     setShowDeleteDialog(false);
-  }
+  };
 
   useEffect(() => {
     let timefromNow = moment().diff(roomDetail?.meta_data?.started_at);
@@ -335,8 +334,11 @@ export const Play = () => {
 
   const checkFinished = useMemo(() => {
     if (currentQuestionIndex === rows.length - 1) {
-      const is_done = rows[currentQuestionIndex].answered || rows[currentQuestionIndex].answered_wrong === 3;
+      const is_done =
+        rows[currentQuestionIndex].answered ||
+        rows[currentQuestionIndex].answered_wrong === 3;
       if (is_done) {
+        console.log("==========>done");
         socket.emit("user_finish", {
           wrong_answers: rows.filter((v) => v.answered_wrong === 3).length,
         });
@@ -355,7 +357,7 @@ export const Play = () => {
       }
     });
     return `${score}/${rows.length}`;
-  }
+  };
 
   return (
     <Paper
@@ -375,17 +377,31 @@ export const Play = () => {
         )}
       </div>
       <div className="border-b border-solid border-gray-300 pb-10 my-5">
-        <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
+        <Typography variant="subtitle1" className="text-lg mb-4">
           Câu hỏi
         </Typography>
 
-        <div className="flex-cols">
-          <div style={{ width: "100%" }}>
-            <LinearWithValueLabel
-              numberQuestions={rows.length}
-              currentQuestionIndex={currentQuestionIndex}
-            />
-          </div>
+        <div className="flex gap-3 flex-wrap">
+          {rows.map((val, index) => (
+            <Button
+              variant="contained"
+              className={`${
+                index === currentQuestionIndex
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-blue-500"
+              } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+              key={index}
+              color={
+                val.answered_wrong === 3
+                  ? "error"
+                  : val.answered
+                  ? "success"
+                  : "primary"
+              }
+            >
+              {index + 1}
+            </Button>
+          ))}
         </div>
       </div>
       <div className="flex">
@@ -410,23 +426,32 @@ export const Play = () => {
               <div className="my-2">
                 {checkFinished ? (
                   <div>
-                    <Typography >Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối đa!</Typography>
-                    <Typography >Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!</Typography>
-                    <Typography >Kết quả sẽ được hiển thị sau khi kết thúc bài thi!</Typography>
-                    <Typography >Số điểm của bạn: {getScore()}</Typography>
+                    <Typography>
+                      Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
+                      đa!
+                    </Typography>
+                    <Typography>
+                      Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
+                    </Typography>
+                    <Typography>
+                      Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
+                    </Typography>
+                    <Typography>Số điểm của bạn: {getScore()}</Typography>
                   </div>
-                ) : (<BlocklyLayout
-                  setDataBlocks={setDataBlocks}
-                  data={blockDetail.data}
-                  isEdit={false}
-                />)}
-
+                ) : (
+                  <BlocklyLayout
+                    setDataBlocks={setDataBlocks}
+                    data={blockDetail.data}
+                    isEdit={false}
+                  />
+                )}
               </div>
-              {!checkFinished && (<div>
-                {currentQuestionIndex ===
-                  rows.findIndex(
-                    (row) => row.block_id === blockDetail.block_id
-                  ) && (
+              {!checkFinished && (
+                <div>
+                  {currentQuestionIndex ===
+                    rows.findIndex(
+                      (row) => row.block_id === blockDetail.block_id
+                    ) && (
                     <Button
                       onClick={handleSubmitAnswer}
                       variant="contained"
@@ -436,17 +461,19 @@ export const Play = () => {
                       Kiểm tra
                     </Button>
                   )}
-                <Button
-                  onClick={() => setShowDeleteDialog(true)}
-                  variant="contained"
-                  disabled={blockDetail?.answered || blockDetail?.answered_wrong === 3}
-                  sx={{ ml: 3, mt: 3, mb: 2 }}
-                  color="error"
-                >
-                  Bỏ qua
-                </Button>
-              </div>)}
-
+                  <Button
+                    onClick={() => setShowDeleteDialog(true)}
+                    variant="contained"
+                    disabled={
+                      blockDetail?.answered || blockDetail?.answered_wrong === 3
+                    }
+                    sx={{ ml: 3, mt: 3, mb: 2 }}
+                    color="error"
+                  >
+                    Bỏ qua
+                  </Button>
+                </div>
+              )}
             </Box>
           )}
         </div>
@@ -477,15 +504,23 @@ export const Play = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Bạn chắc chắn muốn bỏ qua câu hỏi này chứ?</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          Bạn chắc chắn muốn bỏ qua câu hỏi này chứ?
+        </DialogTitle>
         <DialogContent>
-          <Typography>Nếu bỏ qua, bạn sẽ không thể trả lời lại câu này nữa!</Typography>
+          <Typography>
+            Nếu bỏ qua, bạn sẽ không thể trả lời lại câu này nữa!
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleSkipAnswer} color="primary">
             Đồng ý
           </Button>
-          <Button onClick={() => setShowDeleteDialog(false)} color="primary" autoFocus>
+          <Button
+            onClick={() => setShowDeleteDialog(false)}
+            color="primary"
+            autoFocus
+          >
             Hủy
           </Button>
         </DialogActions>

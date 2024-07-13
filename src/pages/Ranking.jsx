@@ -120,7 +120,15 @@ export const RankingPage = () => {
   );
 };
 
-const User = ({ name, rank, username, points, matches, currentUser, userData }) => {
+const User = ({
+  name,
+  rank,
+  username,
+  points,
+  matches,
+  currentUser,
+  userData,
+}) => {
   const getInitials = (name) => {
     if (!name) return "";
     const names = name.split(" ");
@@ -148,9 +156,21 @@ const User = ({ name, rank, username, points, matches, currentUser, userData }) 
         border: "1px solid rgba(0,0,0,.2)",
       }}
     >
-      <div style={{ paddingLeft: "6px", width: "12.5%", display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
+      <div
+        style={{
+          paddingLeft: "6px",
+          width: "12.5%",
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          alignItems: "center",
+        }}
+      >
         <h4>{rank}</h4>
-        <img src={userData?.avatar ? userData?.avatar : '/default_avatar.png'} className="w-20 h-20 rounded-full ms-2 object-cover" />
+        <img
+          src={userData?.avatar ? userData?.avatar : "/default_avatar.png"}
+          className="w-20 h-20 rounded-full ms-2 object-cover"
+        />
       </div>
       <div
         style={{

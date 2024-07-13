@@ -12,7 +12,6 @@ const getInitials = (name) => {
 
 const ChatMessage = ({ message, isUser, avatar }) => {
   const initials = getInitials(message?.user?.name);
-  console.log("message?.user", message?.user);
 
   // Check if the message is a special "has joined" message
 

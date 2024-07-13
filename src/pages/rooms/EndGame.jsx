@@ -31,7 +31,8 @@ export const EndGame = () => {
         return a.end_timestamp - b.end_timestamp;
       }
     });
-    setAllQuestions(data?.meta_data?.blocks.length);
+
+    setAllQuestions(data?.meta_data?.count);
     setRanks(sortedRanks);
   };
 
@@ -128,7 +129,6 @@ export const EndGame = () => {
                     <TableCell>Hạng</TableCell>
                     <TableCell>Tên</TableCell>
                     <TableCell>Điểm </TableCell>
-                    <TableCell>Thời gian làm </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -163,13 +163,6 @@ export const EndGame = () => {
                         }
                       >
                         {row?.score}/{allQuestions}
-                      </TableCell>
-                      <TableCell
-                        sx={
-                          user.user_id == row.user_id && { fontWeight: "bold" }
-                        }
-                      >
-                        {milisecondToSecondMinute(row?.end_time)}
                       </TableCell>
                     </TableRow>
                   ))}

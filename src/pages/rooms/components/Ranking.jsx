@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import styles from "./styles.module.css";
 import { useTransition, animated } from "@react-spring/web";
-
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 const Ranking = ({ ranks, rows }) => {
   let height = 0;
   const [sortedData, setSortedData] = useState([]);
@@ -42,7 +42,6 @@ const Ranking = ({ ranks, rows }) => {
             <div className={styles.cell}>
               <div className={styles.details}>
                 <div className="flex items-center ">
-
                   <img
                     src={item?.user_data?.meta_data?.avatar}
                     // alt={initials}
@@ -59,22 +58,32 @@ const Ranking = ({ ranks, rows }) => {
                     gap: 4,
                   }}
                 >
-                  {
-                    item.status === 'finished' && (<div sx={{
-                      ml: 2,
-                    }}>Đã xong</div>)
-                  }
-                  <div>
-                    {item.score}/{rows.length}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 4,
+                    }}
+                  >
+                    {item.status === "finished" && (
+                      <div
+                        sx={{
+                          ml: 2,
+                        }}
+                      >
+                        <CheckCircleOutlineIcon variant="outline" />
+                      </div>
+                    )}
+                    <span style={{ display: "flex" }}>
+                      {item.score}/{rows.length}
+                    </span>
                   </div>
-
                 </div>
               </div>
             </div>
           </animated.div>
         ))}
       </div>
-    </div >
+    </div>
   );
 };
 
