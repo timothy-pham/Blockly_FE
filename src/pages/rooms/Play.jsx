@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Table,
@@ -152,6 +152,7 @@ export const Play = () => {
   // };
 
   const rankingUpdate = (data) => {
+    console.log("RAKING", data)
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
       (a, b) => {
         if (a.score !== b.score) {
@@ -186,13 +187,31 @@ export const Play = () => {
       endGame(data);
     });
 
+    socket.on("user_finish", (data) => {
+      userFinish(data);
+    });
+
     return () => {
       socket.off("ranking_update");
       socket.off("receive_messages");
       socket.off("end_game");
       socket.off("user_joined");
+      socket.off("user_finish");
     };
   }, [socket]);
+
+  const userFinish = (data) => {
+    const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
+      (a, b) => {
+        if (a.score !== b.score) {
+          return b.score - a.score;
+        } else {
+          return a.end_timestamp - b.end_timestamp;
+        }
+      }
+    );
+    setRanks(sortedRanks);
+  }
 
   const endGame = (data) => {
     if (data) {
@@ -313,6 +332,31 @@ export const Play = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleKeyDown]);
+
+  const checkFinished = useMemo(() => {
+    if (currentQuestionIndex === rows.length - 1) {
+      const is_done = rows[currentQuestionIndex].answered || rows[currentQuestionIndex].answered_wrong === 3;
+      if (is_done) {
+        socket.emit("user_finish", {
+          wrong_answers: rows.filter((v) => v.answered_wrong === 3).length,
+        });
+      }
+      return is_done;
+    } else {
+      return false;
+    }
+  }, [rows]);
+
+  const getScore = () => {
+    let score = 0;
+    rows.forEach((row) => {
+      if (row.answered) {
+        score++;
+      }
+    });
+    return `${score}/${rows.length}`;
+  }
+
   return (
     <Paper
       sx={{
@@ -364,39 +408,50 @@ export const Play = () => {
               </div>
 
               <div className="my-2">
-                <BlocklyLayout
+                {checkFinished ? (
+                  <div>
+                    <Typography >Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối đa!</Typography>
+                    <Typography >Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!</Typography>
+                    <Typography >Kết quả sẽ được hiển thị sau khi kết thúc bài thi!</Typography>
+                    <Typography >Số điểm của bạn: {getScore()}</Typography>
+                  </div>
+                ) : (<BlocklyLayout
                   setDataBlocks={setDataBlocks}
                   data={blockDetail.data}
                   isEdit={false}
-                />
+                />)}
+
               </div>
-              {currentQuestionIndex ===
-                rows.findIndex(
-                  (row) => row.block_id === blockDetail.block_id
-                ) && (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    variant="contained"
-                    disabled={blockDetail.answered}
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Kiểm tra
-                  </Button>
-                )}
-              <Button
-                onClick={() => setShowDeleteDialog(true)}
-                variant="contained"
-                disabled={blockDetail?.answered || blockDetail?.answered_wrong === 3}
-                sx={{ ml: 3, mt: 3, mb: 2 }}
-                color="error"
-              >
-                Bỏ qua
-              </Button>
+              {!checkFinished && (<div>
+                {currentQuestionIndex ===
+                  rows.findIndex(
+                    (row) => row.block_id === blockDetail.block_id
+                  ) && (
+                    <Button
+                      onClick={handleSubmitAnswer}
+                      variant="contained"
+                      disabled={blockDetail.answered}
+                      sx={{ mt: 3, mb: 2 }}
+                    >
+                      Kiểm tra
+                    </Button>
+                  )}
+                <Button
+                  onClick={() => setShowDeleteDialog(true)}
+                  variant="contained"
+                  disabled={blockDetail?.answered || blockDetail?.answered_wrong === 3}
+                  sx={{ ml: 3, mt: 3, mb: 2 }}
+                  color="error"
+                >
+                  Bỏ qua
+                </Button>
+              </div>)}
+
             </Box>
           )}
         </div>
         <div className="flex-1 mt-6">
-          {blockDetail?.meta_data?.image && (
+          {blockDetail?.meta_data?.image && !checkFinished && (
             <div>
               <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
                 Hình ảnh

@@ -42,6 +42,7 @@ const Ranking = ({ ranks, rows }) => {
             <div className={styles.cell}>
               <div className={styles.details}>
                 <div className="flex items-center ">
+
                   <img
                     src={item?.user_data?.meta_data?.avatar}
                     // alt={initials}
@@ -49,15 +50,31 @@ const Ranking = ({ ranks, rows }) => {
                   />
                   <div>{item.user_data.name}</div>
                 </div>
-                <div>
-                  {item.score}/{rows.length}
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 4,
+                  }}
+                >
+                  {
+                    item.status === 'finished' && (<div sx={{
+                      ml: 2,
+                    }}>Đã xong</div>)
+                  }
+                  <div>
+                    {item.score}/{rows.length}
+                  </div>
+
                 </div>
               </div>
             </div>
           </animated.div>
         ))}
       </div>
-    </div>
+    </div >
   );
 };
 
