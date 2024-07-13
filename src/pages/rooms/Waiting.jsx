@@ -205,20 +205,52 @@ export const Waiting = () => {
         <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
           {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
         </Button>
-        <Button
-          onClick={() => {
-            socket?.emit("start_game", { room_id: id });
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          disabled={
-            !userList.every((v) => v.is_ready) ||
-            !checkHost(user, userList) ||
-            !(userList.length > 1)
-          }
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
         >
-          Bắt đầu
-        </Button>
+          <Button
+            onClick={() => {
+              alert("Chức năng này chưa được hỗ trợ");
+            }}
+            variant="contained"
+            sx={{ mt: 3, mb: 2, mr: 2 }}
+          >
+            Mời mọi người
+          </Button>
+          <Button
+            onClick={() => {
+              alert("Chức năng này chưa được hỗ trợ");
+            }}
+            variant="contained"
+            sx={{ mt: 3, mb: 2, mr: 2 }}
+          >
+            Thêm máy
+          </Button>
+          <Button
+            onClick={() => {
+              socket?.emit("start_game", { room_id: id });
+            }}
+            disabled={
+              !userList.every((v) => v.is_ready) ||
+              !checkHost(user, userList) ||
+              !(userList.length > 1)
+            }
+            variant="contained"
+            sx={{
+              mt: 3, mb: 2,
+              display: !userList.every((v) => v.is_ready) ||
+                !checkHost(user, userList) ||
+                !(userList.length > 1) ? "none" : "block"
+            }}
+          >
+            Bắt đầu
+          </Button>
+        </div>
       </div>
 
       <div className="flex">

@@ -12,6 +12,10 @@ import {
   Button,
   Chip,
   Typography,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
 } from "@mui/material";
 import {
   milisecondToSecondMinute,
@@ -41,7 +45,7 @@ export const Play = () => {
   const hasFetched = useRef(false);
   const [ranks, setRanks] = useState([]);
   const [messages, setMessages] = useState([]);
-
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
 
@@ -239,6 +243,19 @@ export const Play = () => {
         type: "success",
       });
     } else {
+      let count = 0;
+      const answeredQuestion = rows.map((v, index) => {
+        if (index === currentQuestionIndex) {
+          const answered_wrong = v.answered_wrong ? v.answered_wrong + 1 : 1;
+          count = answered_wrong;
+          return { ...v, data: dataBlock.data, answered_wrong }
+        }
+        return v;
+      });
+      setRows(answeredQuestion);
+      if (count === 3) {
+        handleNextQuestion();
+      }
       toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
         position: "top-left",
         autoClose: 1000,
@@ -252,6 +269,18 @@ export const Play = () => {
       });
     }
   };
+
+  const handleSkipAnswer = () => {
+    const answeredQuestion = rows.map((v, index) => {
+      if (index === currentQuestionIndex) {
+        return { ...v, answered_wrong: 3 };
+      }
+      return v;
+    });
+    setRows(answeredQuestion);
+    handleNextQuestion();
+    setShowDeleteDialog(false);
+  }
 
   useEffect(() => {
     let timefromNow = moment().diff(roomDetail?.meta_data?.started_at);
@@ -345,15 +374,24 @@ export const Play = () => {
                 rows.findIndex(
                   (row) => row.block_id === blockDetail.block_id
                 ) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  variant="contained"
-                  disabled={blockDetail.answered}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    variant="contained"
+                    disabled={blockDetail.answered}
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Kiểm tra
+                  </Button>
+                )}
+              <Button
+                onClick={() => setShowDeleteDialog(true)}
+                variant="contained"
+                disabled={blockDetail?.answered || blockDetail?.answered_wrong === 3}
+                sx={{ ml: 3, mt: 3, mb: 2 }}
+                color="error"
+              >
+                Bỏ qua
+              </Button>
             </Box>
           )}
         </div>
@@ -379,6 +417,24 @@ export const Play = () => {
           </div>
         </div>
       </div>
+      <Dialog
+        open={showDeleteDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Bạn chắc chắn muốn bỏ qua câu hỏi này chứ?</DialogTitle>
+        <DialogContent>
+          <Typography>Nếu bỏ qua, bạn sẽ không thể trả lời lại câu này nữa!</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleSkipAnswer} color="primary">
+            Đồng ý
+          </Button>
+          <Button onClick={() => setShowDeleteDialog(false)} color="primary" autoFocus>
+            Hủy
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };
