@@ -140,7 +140,7 @@ export const LessonsDetail = () => {
   };
   // handle enter key event
   const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && rows[currentQuestionIndex].answered === false) {
       handleSubmitAnswer();
     }
   };
@@ -166,7 +166,10 @@ export const LessonsDetail = () => {
           {rows.map((val, index) => (
             <Button
               variant="contained"
-              disabled={index > 0 && !rows[index - 1].answered}
+              style={{
+                backgroundColor: val.answered && "#4caf50"
+              }}
+              // disabled={index > 0 && !rows[index - 1].answered}
               className={`${index === currentQuestionIndex
                 ? "bg-blue-500 text-white"
                 : "bg-white text-blue-500"
@@ -238,6 +241,7 @@ export const LessonsDetail = () => {
             rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
               <Button
                 onClick={handleSubmitAnswer}
+                disabled={rows[currentQuestionIndex].answered}
                 variant="contained"
                 sx={{ mt: 1 }}
               >
