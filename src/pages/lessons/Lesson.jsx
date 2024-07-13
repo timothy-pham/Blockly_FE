@@ -32,7 +32,6 @@ export const Lessons = () => {
     try {
       const res = await apiGet(`histories/statistics`);
       if (res) {
-        console.log("res", res, id);
         setStatistics(res?.find((v) => v.collection_id == id).listGroup);
       }
     } catch (e) {}
