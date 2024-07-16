@@ -181,7 +181,7 @@ export const CollectionManagement = () => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
-          await handleImport(JSON.parse(e.target.result));
+          await handleImport(e.target.result);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         } finally {
@@ -194,7 +194,9 @@ export const CollectionManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await apiPost("collections/import", file);
+      await apiPost("collections/import", {
+        data: file
+      });
     } catch (err) {
       console.log("can not create block");
     } finally {
@@ -212,7 +214,7 @@ export const CollectionManagement = () => {
       .then((response) => response.blob())
       .then((blob) => {
         var _url = window.URL.createObjectURL(blob);
-        saveAs(_url, `collectionData-${getCurrentDateTime()}.json`);
+        saveAs(_url, `collectionData-${getCurrentDateTime()}.txt`);
       })
       .catch((err) => {
         console.log(err);
@@ -313,7 +315,7 @@ export const CollectionManagement = () => {
                 onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Nhập JSON
+                Nhập dữ liệu
               </Button>
             </>
             <Button
@@ -325,7 +327,7 @@ export const CollectionManagement = () => {
               target="_blank"
               sx={{ marginRight: 2 }}
             >
-              Xuất Json
+              Xuất dữ liệu
             </Button>
             <Button
               color="primary"

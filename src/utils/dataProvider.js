@@ -105,6 +105,7 @@ export async function apiPatch(resource, id, data) {
 
 export async function apiPost(resource, data) {
   try {
+    console.log(`Payload size: ${JSON.stringify(data).length} bytes`);
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
       {

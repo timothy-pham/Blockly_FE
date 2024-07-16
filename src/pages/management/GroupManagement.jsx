@@ -149,8 +149,7 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -190,7 +189,7 @@ export const GroupManagement = () => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
-          await handleImport(JSON.parse(e.target.result));
+          await handleImport(e.target.result);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         } finally {
@@ -203,7 +202,9 @@ export const GroupManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      await apiPost("groups/import", file);
+      await apiPost("groups/import", {
+        data: file
+      });
     } catch (err) {
       console.log("can not create block");
     } finally {
@@ -221,7 +222,7 @@ export const GroupManagement = () => {
       .then((response) => response.blob())
       .then((blob) => {
         var _url = window.URL.createObjectURL(blob);
-        saveAs(_url, `groupData-${getCurrentDateTime()}.json`);
+        saveAs(_url, `groupData-${getCurrentDateTime()}.text`);
       })
       .catch((err) => {
         console.log(err);
@@ -362,7 +363,7 @@ export const GroupManagement = () => {
                 onClick={handleButtonClick}
                 sx={{ marginRight: 2 }}
               >
-                Nhập JSON
+                Nhập dữ liệu
               </Button>
             </>
             <Button
@@ -374,7 +375,7 @@ export const GroupManagement = () => {
               target="_blank"
               sx={{ marginRight: 2 }}
             >
-              Xuất Json
+              Xuất dữ liệu
             </Button>
             <Button
               color="primary"
@@ -540,19 +541,19 @@ export const GroupManagement = () => {
             collections.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-            <TextField
-              margin="normal"
-              type="number"
-              required
-              fullWidth
-              id="timer"
-              label="Thời gian"
-              placeholder="Số phút"
-              name="timer"
-              defaultValue={data?.meta_data?.timer}
-              autoFocus
-            />
-          )}
+              <TextField
+                margin="normal"
+                type="number"
+                required
+                fullWidth
+                id="timer"
+                label="Thời gian"
+                placeholder="Số phút"
+                name="timer"
+                defaultValue={data?.meta_data?.timer}
+                autoFocus
+              />
+            )}
           <TextField
             margin="normal"
             fullWidth
