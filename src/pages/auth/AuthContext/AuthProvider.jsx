@@ -38,7 +38,27 @@ const AuthProvider = ({ children }) => {
         return res?.message;
       }
     } catch (error) {
-      console.error("Login error:", error);
+      return error?.message;
+    }
+  };
+
+  const loginWithGoogle = async (credentialResponse) => {
+    try {
+      const res = await apiPost("auth/login-google", credentialResponse);
+      if (res) {
+        setIsAuthenticated(true);
+        localStorage.setItem(
+          "authToken",
+          JSON.stringify({
+            token: res.token,
+            refreshToken: res.refreshToken,
+            user: res.user,
+          })
+        );
+        return res;
+      }
+    } catch (error) {
+      return error?.message;
     }
   };
 
@@ -52,8 +72,6 @@ const AuthProvider = ({ children }) => {
     if (authToken) {
       setIsAuthenticated(true);
     } else {
-      console.log("fasle");
-
       setIsAuthenticated(false);
     }
   }, []);
@@ -65,6 +83,7 @@ const AuthProvider = ({ children }) => {
         // currentUser: JSON.parse(localStorage.getItem("authToken")),
         login,
         logout,
+        loginWithGoogle,
       }}
     >
       {children}

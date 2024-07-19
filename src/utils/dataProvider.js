@@ -99,13 +99,12 @@ export async function apiPatch(resource, id, data) {
     return result;
   } catch (error) {
     console.error("Error fetching data:", error);
-    return null;
+    return error;
   }
 }
 
 export async function apiPost(resource, data) {
   try {
-    console.log(`Payload size: ${JSON.stringify(data).length} bytes`);
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
       {
@@ -117,16 +116,13 @@ export async function apiPost(resource, data) {
         },
       }
     );
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    if (response.status > 400) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
     const result = await response.json();
+    if (response.status >= 400) {
+      throw new Error(result.message);
+    }
+
     return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
-    return null;
+    throw new Error(error?.message);
   }
 }
