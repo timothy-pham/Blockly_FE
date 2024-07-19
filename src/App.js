@@ -14,6 +14,7 @@ import { LessonsDetail } from "./pages/lessons/LessonDetail/LessonDetail";
 import { Rooms } from "./pages/rooms/Room";
 import { History } from "./pages/History";
 import { Waiting } from "./pages/rooms/Waiting";
+import { Watch } from "./pages/rooms/Watch";
 import { Play } from "./pages/rooms/Play";
 import { AlertProvider } from "./components/alert/AlertProvider";
 import { EndGame } from "./pages/rooms/EndGame";
@@ -30,6 +31,7 @@ import { LoaderProvider } from "./components/progress/LoaderContext";
 import { Loader } from "./components/progress/Loader";
 import ClassHome from "./pages/class/ClassHome";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import React from "react";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -153,6 +155,10 @@ function App() {
                 <Route
                   path="/rooms/:id/play"
                   element={<PrivateRoute element={Play} />}
+                />
+                <Route
+                  path="/rooms/:id/watch"
+                  element={<PrivateRoute element={Watch} />}
                 />
                 <Route
                   path="/rooms/:id/end-game"

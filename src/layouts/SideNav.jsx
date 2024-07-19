@@ -14,7 +14,8 @@ import * as React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { apiGetDetail } from "../utils/dataProvider";
+import { useEffect } from "react";
 const Logo = () => {
   const navigate = useNavigate();
   return (
@@ -52,7 +53,33 @@ export const SideNav = ({ open, setOpenNav }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const userRole = authToken?.user?.role;
   const { pathname } = useLocation();
-  // console.log("pathname ====>", pathname);
+
+  const reloadInfo = async () => {
+    try {
+      const { user } = JSON.parse(localStorage.getItem("authToken"));
+      const res = await apiGetDetail("users", user.user_id);
+      const oldUser = JSON.parse(localStorage.getItem("authToken"));
+      localStorage.setItem(
+        "authToken",
+        JSON.stringify({
+          token: oldUser.token,
+          refreshToken: oldUser.refreshToken,
+          user: res,
+        })
+      );
+    } catch (error) {
+      console.log("RELOAD INFO ERROR", error);
+    }
+  };
+
+  useEffect(() => {
+    window.onload = reloadInfo;
+
+    return () => {
+      window.onload = null;
+    };
+  }, []);
+
   const content = (
     <Scrollbar
       sx={{

@@ -32,7 +32,7 @@ export const EndGame = () => {
       }
     });
 
-    setAllQuestions(data?.meta_data?.count);
+    setAllQuestions(data?.meta_data?.count ? data?.meta_data?.count : data?.meta_data?.blocks.length);
     setRanks(sortedRanks);
   };
 

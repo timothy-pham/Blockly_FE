@@ -7,10 +7,12 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  Chip
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { apiPost, apiGet } from "../../utils/dataProvider";
-
+import { getRoomColor, getRoomStatus } from "../../utils/roomParse";
+import { socket } from "../../socket";
 export const Rooms = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -63,6 +65,16 @@ export const Rooms = () => {
     fetchCollection();
   }, []);
 
+  useEffect(() => {
+    socket.on("refresh_rooms", () => {
+      fetchRoom();
+    });
+
+    return () => {
+      socket.off("refresh_rooms");
+    };
+  }, [socket]);
+
   const handleCreateRoom = async () => {
     try {
       let data = {
@@ -85,6 +97,7 @@ export const Rooms = () => {
       alert("can not create room");
     }
   };
+
   return (
     <Paper
       sx={{
@@ -125,6 +138,7 @@ export const Rooms = () => {
             <tr>
               <th className="border px-4 py-2">Tên phòng</th>
               <th className="border px-4 py-2">Mô tả</th>
+              <th className="border px-4 py-2">Trạng thái</th>
               <th className="border px-4 py-2">Hành động</th>
             </tr>
           </thead>
@@ -133,15 +147,35 @@ export const Rooms = () => {
               <tr key={room.room_id}>
                 <td className="border px-4 py-2">{room.name}</td>
                 <td className="border px-4 py-2">{room.description}</td>
-                <td className="border px-4 py-2">
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ fontWeight: "bold" }}
-                    onClick={() => navigate("/rooms/" + room.room_id)}
-                  >
-                    Tham gia
-                  </Button>
+                <td className="border px-4 py-2 text-center">
+                  <Chip
+                    label={getRoomStatus(room.status)}
+                    style={{
+                      margin: 2,
+                      backgroundColor: getRoomColor(room.status),
+                      fontWeight: "bold",
+                    }}
+                  />
+                </td>
+                <td className="border px-2 py-2  text-center">
+                  {room.status === "waiting" ?
+                    (<Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ fontWeight: "bold" }}
+                      onClick={() => navigate("/rooms/" + room.room_id)}
+                    >
+                      Tham gia
+                    </Button>)
+                    : (<Button
+                      variant="contained"
+                      color="primary"
+                      sx={{ fontWeight: "bold" }}
+                      onClick={() => navigate("/rooms/" + room.room_id + "/watch")}
+                    >
+                      Theo dõi trận đấu
+                    </Button>)
+                  }
                 </td>
               </tr>
             ))}

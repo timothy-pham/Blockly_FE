@@ -9,8 +9,8 @@ const Ranking = ({ ranks, rows }) => {
   // const sortedData = ranks.sort((a, b) => b.score - a.score || b.end_timestamp - a.end_timestamp);
 
   useEffect(() => {
-    console.log("RANKS");
-    const sortedRanks = [...ranks].sort((a, b) => {
+    const filterData = ranks.filter((rank) => rank.status === "playing" || rank.status === "finished");
+    const sortedRanks = filterData.sort((a, b) => {
       if (a.score !== b.score) {
         return b.score - a.score;
       } else {
@@ -43,8 +43,7 @@ const Ranking = ({ ranks, rows }) => {
               <div className={styles.details}>
                 <div className="flex items-center ">
                   <img
-                    src={item?.user_data?.meta_data?.avatar}
-                    // alt={initials}
+                    src={item?.user_data?.meta_data?.avatar ? item?.user_data?.meta_data?.avatar : "/default_avatar.png"}
                     className="w-8 h-8 rounded-full  object-cover mr-2"
                   />
                   <div>{item.user_data.name}</div>

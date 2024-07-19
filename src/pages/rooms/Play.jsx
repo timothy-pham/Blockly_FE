@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Table,
@@ -57,7 +57,7 @@ export const Play = () => {
     localStorage.setItem("index", JSON.stringify(index));
   };
 
-  const checkLocalStorage = () => {
+  const checkLocalStorage = (room) => {
     let haveData = false;
     const questions = JSON.parse(localStorage.getItem("questions"));
     const current = JSON.parse(localStorage.getItem("current"));
@@ -66,20 +66,21 @@ export const Play = () => {
       setRows(questions);
       setBlockDetail(current);
       setCurrentQuestionIndex(index);
+      checkCurrentQuestion(room.users, current?.block_id);
       haveData = true;
     }
     return haveData;
   };
 
-  const fetchCollection = async (count) => {
-    try {
-      const haveData = checkLocalStorage();
-      if (!haveData) {
-        console.log("sau", roomDetail);
 
-        const res = await apiGet(`blocks/random?room_id=${id}&count=${count}`);
-        if (res) {
-          const data = res.map((item) => ({
+
+  const fetchCollection = async (room) => {
+    try {
+      const haveData = checkLocalStorage(room);
+      if (!haveData) {
+        const blocks = room?.meta_data?.blocks
+        if (blocks) {
+          const data = blocks.map((item) => ({
             ...item,
             answered: false,
           }));
@@ -87,10 +88,12 @@ export const Play = () => {
           if (data.length > 0) {
             const initialBlockDetail = data[0];
             setBlockDetail(initialBlockDetail);
+            checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
           }
           saveToLocalStorage(data, data[0], 0);
         }
       }
+
     } catch (e) {
       console.error(e);
     }
@@ -100,9 +103,17 @@ export const Play = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
+        // check status room
         if (res?.status !== "playing") {
           navigate(`/rooms`);
           return;
+        }
+        // check user in room and status = playing
+        const userInRoom = res.users.find(
+          (u) => u.user_id === user.user_id
+        );
+        if (!userInRoom || (userInRoom.status !== "playing" && userInRoom.status !== "finished")) {
+          navigate(`/rooms/${id}/watch`);
         }
         setRoomDetail(res);
         return res;
@@ -116,8 +127,8 @@ export const Play = () => {
     if (!hasFetched.current) {
       const fetchData = async () => {
         const res = await fetchRoomData();
-        const count = res?.meta_data?.count || 5;
-        await fetchCollection(count);
+        fetchCollection(res);
+        setRanks(res.users);
       };
       fetchData();
       hasFetched.current = true; // Ensure it only runs once
@@ -133,25 +144,11 @@ export const Play = () => {
     }
   };
 
-  // const updateHistory = async (blockDetail) => {
-  //   try {
-  //     const res = await apiPatch(
-  //       `histories/add-result`,
-  //       history?.histories_id,
-  //       {
-  //         block_id: blockDetail.block_id,
-  //         block_state: blockDetail.data,
-  //         start_time: history.created_at,
-  //         end_time: moment().toISOString(),
-  //         correct: true,
-  //       }
-  //     );
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
   const rankingUpdate = (data) => {
+    const is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
+    if (is_done) {
+      socket.emit("user_finish")
+    }
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
       (a, b) => {
         if (a.score !== b.score) {
@@ -162,7 +159,21 @@ export const Play = () => {
       }
     );
     setRanks(sortedRanks);
+    if (data.users && blockDetail?.block_id) {
+      checkCurrentQuestion(data.users, blockDetail.block_id)
+    }
   };
+
+  const checkCurrentQuestion = (users, block_id) => {
+    const userIndex = users.findIndex((v) => v.user_id === user.user_id);
+    if (userIndex !== -1) {
+      const user = users[userIndex];
+      if (user.blocks?.includes(block_id) || user.wrong_answers?.[block_id] >= 3) {
+        handleNextQuestion();
+      }
+    }
+  }
+
   const connectToRoom = () => {
     socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
   };
@@ -197,7 +208,7 @@ export const Play = () => {
       socket.off("user_joined");
       socket.off("user_finish");
     };
-  }, [socket]);
+  }, [socket, roomDetail]);
 
   const userFinish = (data) => {
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
@@ -237,17 +248,10 @@ export const Play = () => {
       answers: transformCodeBlockly(dataBlock.code),
     });
     if (res && res.correct) {
-      const answeredQuestion = rows.map((v, index) => {
-        if (index === currentQuestionIndex) {
-          socket.emit("ranking_update", {
-            block_id: blockDetail.block_id,
-            answered: true,
-          });
-          return { ...v, data: dataBlock.data, answered: true };
-        }
-        return v;
+      socket.emit("ranking_update", {
+        block_id: blockDetail.block_id,
+        answered: true,
       });
-      setRows(answeredQuestion);
       handleNextQuestion();
       toast("Bạn giỏi wa!", {
         position: "top-left",
@@ -261,19 +265,11 @@ export const Play = () => {
         type: "success",
       });
     } else {
-      let count = 0;
-      const answeredQuestion = rows.map((v, index) => {
-        if (index === currentQuestionIndex) {
-          const answered_wrong = v.answered_wrong ? v.answered_wrong + 1 : 1;
-          count = answered_wrong;
-          return { ...v, data: dataBlock.data, answered_wrong };
-        }
-        return v;
+      socket.emit("ranking_update", {
+        block_id: blockDetail.block_id,
+        answered: true,
+        wrong: true
       });
-      setRows(answeredQuestion);
-      if (count === 3) {
-        handleNextQuestion();
-      }
       toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
         position: "top-left",
         autoClose: 1000,
@@ -289,13 +285,12 @@ export const Play = () => {
   };
 
   const handleSkipAnswer = () => {
-    const answeredQuestion = rows.map((v, index) => {
-      if (index === currentQuestionIndex) {
-        return { ...v, answered_wrong: 3 };
-      }
-      return v;
+    socket.emit("ranking_update", {
+      block_id: blockDetail.block_id,
+      answered: true,
+      wrong: true,
+      skip: true
     });
-    setRows(answeredQuestion);
     handleNextQuestion();
     setShowDeleteDialog(false);
   };
@@ -334,20 +329,12 @@ export const Play = () => {
 
   const checkFinished = useMemo(() => {
     if (currentQuestionIndex === rows.length - 1) {
-      const is_done =
-        rows[currentQuestionIndex].answered ||
-        rows[currentQuestionIndex].answered_wrong === 3;
-      if (is_done) {
-        console.log("==========>done");
-        socket.emit("user_finish", {
-          wrong_answers: rows.filter((v) => v.answered_wrong === 3).length,
-        });
-      }
+      const is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
       return is_done;
     } else {
       return false;
     }
-  }, [rows]);
+  }, [roomDetail, rows, ranks]);
 
   const getScore = () => {
     let score = 0;
@@ -358,6 +345,17 @@ export const Play = () => {
     });
     return `${score}/${rows.length}`;
   };
+
+  const checkWrongAnswer = (block_id) => {
+    const userIndex = ranks.findIndex((v) => v.user_id === user.user_id);
+    if (userIndex !== -1) {
+      const user = ranks[userIndex];
+      if (user.wrong_answers?.[block_id] >= 3) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   return (
     <Paper
@@ -382,26 +380,28 @@ export const Play = () => {
         </Typography>
 
         <div className="flex gap-3 flex-wrap">
-          {rows.map((val, index) => (
-            <Button
-              variant="contained"
-              className={`${
-                index === currentQuestionIndex
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-blue-500"
-              } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
-              key={index}
-              color={
-                val.answered_wrong === 3
-                  ? "error"
-                  : val.answered
-                  ? "success"
-                  : "primary"
-              }
-            >
-              {index + 1}
-            </Button>
-          ))}
+          {rows.map((val, index) => {
+            return (
+              <Button
+                variant="contained"
+
+                key={index}
+                color={
+                  checkWrongAnswer(val.block_id)
+                    ? "error"
+                    : val.answered
+                      ? "success"
+                      : "primary"
+                }
+                className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${index === currentQuestionIndex
+                  ? "opacity-100"
+                  : "opacity-50"
+                  }`}
+              >
+                {index + 1}
+              </Button>
+            )
+          })}
         </div>
       </div>
       <div className="flex">
@@ -452,20 +452,20 @@ export const Play = () => {
                     rows.findIndex(
                       (row) => row.block_id === blockDetail.block_id
                     ) && (
-                    <Button
-                      onClick={handleSubmitAnswer}
-                      variant="contained"
-                      disabled={blockDetail.answered}
-                      sx={{ mt: 3, mb: 2 }}
-                    >
-                      Kiểm tra
-                    </Button>
-                  )}
+                      <Button
+                        onClick={handleSubmitAnswer}
+                        variant="contained"
+                        disabled={blockDetail.answered}
+                        sx={{ mt: 3, mb: 2 }}
+                      >
+                        Kiểm tra
+                      </Button>
+                    )}
                   <Button
                     onClick={() => setShowDeleteDialog(true)}
                     variant="contained"
                     disabled={
-                      blockDetail?.answered || blockDetail?.answered_wrong === 3
+                      blockDetail.answered || checkWrongAnswer(blockDetail.block_id)
                     }
                     sx={{ ml: 3, mt: 3, mb: 2 }}
                     color="error"

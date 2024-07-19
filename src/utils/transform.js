@@ -16,8 +16,6 @@ export const transformCodeBlockly = (input) => {
     ?.filter((line) => containsOperator(line))
     .map((line) => line.trim().replace(";", ""));
 
-  console.log("lines===", output);
-
   return output;
 };
 
