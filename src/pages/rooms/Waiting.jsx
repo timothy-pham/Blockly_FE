@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import io from "socket.io-client";
 import {
   Paper,
   Button,
@@ -14,6 +13,7 @@ import {
   TableRow,
   Typography,
   Chip,
+  Dialog,
 } from "@mui/material";
 import { socket } from "../../socket";
 import { apiGet, apiGetDetail } from "../../utils/dataProvider";
@@ -32,7 +32,9 @@ export const Waiting = () => {
   const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
   const [roomDetail, setRoomDetail] = useState();
-
+  const [userOnlineList, setUserOnlineList] = useState([]);
+  const [showDialogInvite, setShowDialogInvite] = useState(false);
+  const [listInvited, setListInvited] = useState([]);
   // After Login
   const [userList, setUserList] = useState([]);
 
@@ -50,6 +52,30 @@ export const Waiting = () => {
       console.log("can not fetch rooms");
     }
   };
+
+  const fetchUserOnline = async () => {
+    try {
+      const res = await apiGet("rooms/users-online");
+      if (res) {
+        let temp = []
+        res.forEach((user) => {
+          let isValid = true;
+          roomDetail.users.forEach((roomUser) => {
+            if (user.user_id == roomUser.user_id) {
+              isValid = false;
+            }
+          })
+          if (isValid) {
+            temp.push(user);
+          }
+        })
+        setUserOnlineList(temp);
+        setShowDialogInvite(true);
+      }
+    } catch (e) {
+      console.log("can not fetch users online");
+    }
+  }
 
   const fetchRoom = async () => {
     try {
@@ -215,7 +241,7 @@ export const Waiting = () => {
         >
           <Button
             onClick={() => {
-              alert("Chức năng này chưa được hỗ trợ");
+              fetchUserOnline();
             }}
             variant="contained"
             sx={{ mt: 3, mb: 2, mr: 2 }}
@@ -236,9 +262,9 @@ export const Waiting = () => {
               socket?.emit("start_game", { room_id: id });
             }}
             disabled={
-              !userList.every((v) => v.is_ready) ||
+              !(userList && userList?.every((v) => v.is_ready)) ||
               !checkHost(user, userList) ||
-              !(userList.length > 1)
+              !(userList?.length > 1)
             }
             variant="contained"
             sx={{
@@ -254,7 +280,7 @@ export const Waiting = () => {
 
       <div className="flex">
         <div className="w-fullflex flex-col justify-center flex-1">
-          <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+          <TableContainer sx={{ boxShadow: "none" }}>
             <Table aria-label="simple table">
               <TableHead>
                 <TableRow className="[&>*]:font-bold">
@@ -325,6 +351,66 @@ export const Waiting = () => {
         </div>
       </div>
       <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
+      <Dialog
+        open={showDialogInvite}
+        onClose={() => {
+          setShowDialogInvite(false)
+          setListInvited([]);
+        }}
+      >
+        <div
+          className="p-4"
+        >
+          <Typography variant="h4">Danh sách người chơi online</Typography>
+          <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+            <Table aria-label="simple table">
+              <TableBody>
+                {userOnlineList.map((row, index) => {
+                  const data = row.user
+                  return (
+                    <TableRow key={index}>
+                      <TableCell component="th" scope="row">
+                        <div className="flex items-center ">
+                          <img
+                            src={data?.meta_data?.avatar || "/default_avatar.png"}
+                            className="w-8 h-8 rounded-full  object-cover mr-2"
+                          />
+                          <div>{data.name}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell style={{ width: '200px', textAlign: 'right' }}>
+                        <Button
+                          disabled={listInvited.includes(data.user_id)}
+                          variant="contained"
+                          onClick={() => {
+                            socket?.emit("invite_user", {
+                              room: roomDetail,
+                              user_id: data.user_id,
+                            });
+                            setListInvited([...listInvited, data.user_id]);
+                          }}
+                        >
+                          Mời
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button
+            className="mt-5 w-full"
+            variant="contained"
+            color="error"
+            onClick={() => {
+              setShowDialogInvite(false)
+              setListInvited([]);
+            }}>
+            Đóng
+          </Button>
+        </div>
+      </Dialog>
     </Paper>
   );
 };

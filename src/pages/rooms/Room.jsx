@@ -77,6 +77,7 @@ export const Rooms = () => {
 
   const handleCreateRoom = async () => {
     try {
+      const group_data = groups.find((group) => group.group_id === createRoom?.group_id);
       let data = {
         name: createRoom?.name,
         description: createRoom?.description,
@@ -84,6 +85,7 @@ export const Rooms = () => {
           collection_id: createRoom?.collection_id,
           group_id: createRoom?.group_id,
           count: Number(createRoom?.count),
+          group_data: group_data
         },
       };
       const res = await apiPost("rooms", data);
