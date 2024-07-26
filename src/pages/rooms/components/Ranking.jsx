@@ -41,7 +41,7 @@ const Ranking = ({ ranks, rows, onChangeUser }) => {
           >
             <div className={styles.cell}
               onClick={() => {
-                onChangeUser(item);
+                onChangeUser && onChangeUser(item);
               }}
             >
               <div className={styles.details}>
