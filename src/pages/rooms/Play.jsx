@@ -74,11 +74,10 @@ export const Play = () => {
 
 
 
-  const fetchCollection = async (room) => {
+  const setQuestions = async (blocks) => {
     try {
       const haveData = checkLocalStorage(room);
       if (!haveData) {
-        const blocks = room?.meta_data?.blocks
         if (blocks) {
           const data = blocks.map((item) => ({
             ...item,
@@ -127,7 +126,7 @@ export const Play = () => {
     if (!hasFetched.current) {
       const fetchData = async () => {
         const res = await fetchRoomData();
-        fetchCollection(res);
+        setQuestions(res?.meta_data?.blocks);
         setRanks(res.users);
       };
       fetchData();
@@ -373,6 +372,17 @@ export const Play = () => {
     return false;
   }
 
+  const checkTrueAnswer = (block_id) => {
+    const userIndex = ranks.findIndex((v) => v.user_id === user.user_id);
+    if (userIndex !== -1) {
+      const user = ranks[userIndex];
+      if (user.blocks?.includes(block_id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   return (
     <Paper
       sx={{
@@ -405,7 +415,7 @@ export const Play = () => {
                 color={
                   checkWrongAnswer(val.block_id)
                     ? "error"
-                    : val.answered
+                    : checkTrueAnswer(val.block_id)
                       ? "success"
                       : "primary"
                 }

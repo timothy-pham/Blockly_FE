@@ -72,13 +72,10 @@ export const Watch = () => {
         return haveData;
     };
 
-    const fetchCollection = async (count) => {
+    const setQuestions = async (res) => {
         try {
             const haveData = checkLocalStorage();
             if (!haveData) {
-
-
-                const res = await apiGet(`blocks/random?room_id=${id}&count=${count}`);
                 if (res) {
                     const data = res.map((item) => ({
                         ...item,
@@ -145,8 +142,7 @@ export const Watch = () => {
         if (!hasFetched.current) {
             const fetchData = async () => {
                 const res = await fetchRoomData();
-                const count = res?.meta_data?.count || 5;
-                await fetchCollection(count);
+                await setQuestions(res?.meta_data?.blocks);
             };
             fetchData();
             hasFetched.current = true; // Ensure it only runs once
@@ -190,12 +186,18 @@ export const Watch = () => {
                 }
             }
         );
+        setRoomDetail(data);
         setRanks(sortedRanks);
         updateUserFollowing(data, user?.user_id);
     };
 
+    const connectToRoom = () => {
+        socket.emit("join_room", { room_id: id, user_id: myData.user_id, myData });
+    };
+
     useEffect(() => {
         // for reload page
+        connectToRoom();
         socket.on("user_joined", (data) => {
             rankingUpdate(data);
         });
@@ -390,9 +392,33 @@ export const Watch = () => {
         });
         return `${score}/${rows.length}`;
     };
+
     const onChangeUser = (data) => {
         data?.user_id && updateUserFollowing(roomDetail, data?.user_id);
     }
+
+    const checkWrongAnswer = (block_id) => {
+        const userIndex = ranks.findIndex((v) => v.user_id === user.user_id);
+        if (userIndex !== -1) {
+            const user = ranks[userIndex];
+            if (user.wrong_answers?.[block_id] >= 3) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const checkTrueAnswer = (block_id) => {
+        const userIndex = ranks.findIndex((v) => v.user_id === user.user_id);
+        if (userIndex !== -1) {
+            const user = ranks[userIndex];
+            if (user.blocks?.includes(block_id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     return (
         <Paper
             sx={{
@@ -466,9 +492,9 @@ export const Watch = () => {
                                 }`}
                             key={index}
                             color={
-                                val.answered_wrong === 3
+                                checkWrongAnswer(val.block_id)
                                     ? "error"
-                                    : val.answered
+                                    : checkTrueAnswer(val.block_id)
                                         ? "success"
                                         : "primary"
                             }
