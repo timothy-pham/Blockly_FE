@@ -243,9 +243,8 @@ export const Waiting = () => {
             variant="contained"
             sx={{
               mt: 3, mb: 2,
-              display: !userList.every((v) => v.is_ready) ||
-                !checkHost(user, userList) ||
-                !(userList.length > 1) ? "none" : "block"
+              display:
+                !checkHost(user, userList) ? "none" : "block"
             }}
           >
             Bắt đầu

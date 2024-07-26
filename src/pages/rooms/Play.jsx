@@ -125,9 +125,8 @@ export const Play = () => {
     if (!hasFetched.current) {
       const fetchData = async () => {
         const res = await fetchRoomData();
-        console.log("res", res);
         await setQuestions(res?.meta_data?.blocks);
-        setRanks(res.users);
+        setRanks(res?.users);
       };
       fetchData();
       hasFetched.current = true; // Ensure it only runs once
@@ -152,7 +151,9 @@ export const Play = () => {
 
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
+    console.log("SKIP1", currentQuestionIndex);
     if (nextIndex < rows.length) {
+      console.log("SKIP2", nextIndex);
       setCurrentQuestionIndex(nextIndex);
       setBlockDetail(rows[nextIndex]);
       saveToLocalStorage(rows, rows[nextIndex], nextIndex);
@@ -175,20 +176,7 @@ export const Play = () => {
       }
     );
     setRanks(sortedRanks);
-    if (data.users && blockDetail?.block_id) {
-      checkCurrentQuestion(data.users, blockDetail.block_id)
-    }
   };
-
-  const checkCurrentQuestion = (users, block_id) => {
-    const userIndex = users.findIndex((v) => v.user_id === user.user_id);
-    if (userIndex !== -1) {
-      const user = users[userIndex];
-      if (user.blocks?.includes(block_id) || user.wrong_answers?.[block_id] >= 3) {
-        handleNextQuestion();
-      }
-    }
-  }
 
   const connectToRoom = () => {
     socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
@@ -307,6 +295,7 @@ export const Play = () => {
       wrong: true,
       skip: true
     });
+    console.log("SKIP");
     handleNextQuestion();
     setShowDeleteDialog(false);
   };

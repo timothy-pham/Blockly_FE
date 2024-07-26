@@ -38,7 +38,6 @@ export const Watch = () => {
     const { collection_id, id } = useParams();
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [blockDetail, setBlockDetail] = useState();
     const [dataBlock, setDataBlocks] = useState();
     const [roomDetail, setRoomDetail] = useState();
@@ -66,7 +65,6 @@ export const Watch = () => {
         if (questions && current) {
             setRows(questions);
             setBlockDetail(current);
-            setCurrentQuestionIndex(index);
             haveData = true;
         }
         return haveData;
@@ -103,7 +101,7 @@ export const Watch = () => {
                     return;
                 }
                 setRoomDetail(res);
-                setRanks(res.users);
+                setRanks(res?.users);
                 updateUserFollowing(res);
                 return res;
             }
@@ -117,8 +115,6 @@ export const Watch = () => {
         if (!res) return;
         const userFollowing = res?.users?.filter((v) => v.user_id === user_id)[0] || res.users[0];
         setUser(userFollowing?.user_data);
-        let currentQuestionIdx = userFollowing?.blocks?.length || 0;
-        setCurrentQuestionIndex(currentQuestionIdx);
         if (userFollowing && (userFollowing.user_id !== user?.user_id || user === null)) {
             handleFollowUser(userFollowing?.user_id);
         }
@@ -149,33 +145,6 @@ export const Watch = () => {
         }
     }, []);
 
-    const handleNextQuestion = () => {
-        const nextIndex = currentQuestionIndex + 1;
-        if (nextIndex < rows.length) {
-            setCurrentQuestionIndex(nextIndex);
-            setBlockDetail(rows[nextIndex]);
-            saveToLocalStorage(rows, rows[nextIndex], nextIndex);
-        }
-    };
-
-    // const updateHistory = async (blockDetail) => {
-    //   try {
-    //     const res = await apiPatch(
-    //       `histories/add-result`,
-    //       history?.histories_id,
-    //       {
-    //         block_id: blockDetail.block_id,
-    //         block_state: blockDetail.data,
-    //         start_time: history.created_at,
-    //         end_time: moment().toISOString(),
-    //         correct: true,
-    //       }
-    //     );
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // };
-
     const rankingUpdate = (data) => {
         const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
             (a, b) => {
@@ -188,7 +157,6 @@ export const Watch = () => {
         );
         setRoomDetail(data);
         setRanks(sortedRanks);
-        updateUserFollowing(data, user?.user_id);
     };
 
     const connectToRoom = () => {
@@ -256,84 +224,6 @@ export const Watch = () => {
         setMessages((oldMessages) => [...oldMessages, data]);
     };
 
-    const handleSendMessage = (text) => {
-        socket.emit("send_message", {
-            room_id: id,
-            user_id: user.user_id,
-            message: text,
-            user,
-        });
-    };
-
-    const handleSubmitAnswer = async () => {
-        const res = await apiPost("blocks/check-answer", {
-            id: blockDetail.block_id,
-            answers: transformCodeBlockly(dataBlock.code),
-        });
-        if (res && res.correct) {
-            const answeredQuestion = rows.map((v, index) => {
-                if (index === currentQuestionIndex) {
-                    socket.emit("ranking_update", {
-                        block_id: blockDetail.block_id,
-                        answered: true,
-                    });
-                    return { ...v, data: dataBlock.data, answered: true };
-                }
-                return v;
-            });
-            setRows(answeredQuestion);
-            handleNextQuestion();
-            toast("Bạn giỏi wa!", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                type: "success",
-            });
-        } else {
-            let count = 0;
-            const answeredQuestion = rows.map((v, index) => {
-                if (index === currentQuestionIndex) {
-                    const answered_wrong = v.answered_wrong ? v.answered_wrong + 1 : 1;
-                    count = answered_wrong;
-                    return { ...v, data: dataBlock.data, answered_wrong };
-                }
-                return v;
-            });
-            setRows(answeredQuestion);
-            if (count === 3) {
-                handleNextQuestion();
-            }
-            toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
-                position: "top-left",
-                autoClose: 1000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                type: "error",
-            });
-        }
-    };
-
-    const handleSkipAnswer = () => {
-        const answeredQuestion = rows.map((v, index) => {
-            if (index === currentQuestionIndex) {
-                return { ...v, answered_wrong: 3 };
-            }
-            return v;
-        });
-        setRows(answeredQuestion);
-        handleNextQuestion();
-        setShowDeleteDialog(false);
-    };
-
     useEffect(() => {
         let timefromNow = moment().diff(roomDetail?.meta_data?.started_at);
         let timeLeft = roomDetail?.meta_data?.timer * 60 * 1000 - timefromNow;
@@ -352,36 +242,13 @@ export const Watch = () => {
         return () => clearInterval(timer);
     }, [roomDetail]);
 
-    // handle enter key event
-    const handleKeyDown = (event) => {
-        if (event.key === "Enter") {
-            handleSubmitAnswer();
-        }
-    };
-    // listen to keydown event
-    useEffect(() => {
-        window.addEventListener("keydown", handleKeyDown);
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [handleKeyDown]);
-
     const checkFinished = useMemo(() => {
-        if (currentQuestionIndex === rows.length - 1) {
-            const is_done =
-                rows[currentQuestionIndex].answered ||
-                rows[currentQuestionIndex].answered_wrong === 3;
-            if (is_done) {
-                console.log("==========>done");
-                socket.emit("user_finish", {
-                    wrong_answers: rows.filter((v) => v.answered_wrong === 3).length,
-                });
-            }
-            return is_done;
-        } else {
-            return false;
-        }
-    }, [rows]);
+
+        let is_done = false;
+        is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
+        return is_done;
+
+    }, [roomDetail, rows, ranks]);
 
     const getScore = () => {
         let score = 0;
@@ -486,10 +353,7 @@ export const Watch = () => {
                     {rows.map((val, index) => (
                         <Button
                             variant="contained"
-                            className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${index === currentQuestionIndex
-                                ? "opacity-100"
-                                : "opacity-50"
-                                }`}
+                            className={`shadow-md rounded-md py-2 px-4 transition-all duration-300`}
                             key={index}
                             color={
                                 checkWrongAnswer(val.block_id)
