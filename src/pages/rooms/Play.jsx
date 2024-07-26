@@ -135,6 +135,22 @@ export const Play = () => {
     }
   }, []);
 
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      const position = { x: event.clientX, y: event.clientY };
+      setCursorPosition(position);
+      socket.emit('cursorPosition', { position, userId: user.user_id });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < rows.length) {

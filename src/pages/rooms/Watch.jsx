@@ -48,8 +48,8 @@ export const Watch = () => {
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const info = localStorage.getItem("authToken");
     const { user: myData } = JSON.parse(info);
-    const [user, setUser] = useState({});
-
+    const [user, setUser] = useState(null);
+    const [cursorPosition, setCursorPosition] = useState();
     const [timeLeft, setTimeLeft] = useState();
 
     const saveToLocalStorage = (questions, current, index) => {
@@ -115,12 +115,27 @@ export const Watch = () => {
         }
     };
 
+    // THEO DÕI con trỏ
     const updateUserFollowing = async (res, user_id) => {
         const userFollowing = res?.users?.filter((v) => v.user_id === user_id)[0] || res.users[0];
         setUser(userFollowing?.user_data);
         let currentQuestionIdx = userFollowing?.blocks?.length || 0;
         setCurrentQuestionIndex(currentQuestionIdx);
+        if (userFollowing && (userFollowing.user_id !== user?.user_id || user === null)) {
+            handleFollowUser(userFollowing?.user_id);
+        }
     }
+
+    const handleFollowUser = (newUserToFollow) => {
+        // Rời khỏi room hiện tại nếu đang theo dõi người dùng
+        if (user) {
+            socket.emit("unfollow_user", { user_to: user.user_id, room_id: id });
+        }
+
+        // Tham gia vào room mới
+        socket.emit("follow_user", { user_to: newUserToFollow, room_id: id });
+    };
+    // END THEO DÕI con trỏ
 
     useEffect(() => {
         localStorage.removeItem("questions");
@@ -177,12 +192,8 @@ export const Watch = () => {
         setRanks(sortedRanks);
         updateUserFollowing(data, user?.user_id);
     };
-    const connectToRoom = () => {
-        socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
-    };
 
     useEffect(() => {
-        connectToRoom();
         // for reload page
         socket.on("user_joined", (data) => {
             rankingUpdate(data);
@@ -202,6 +213,12 @@ export const Watch = () => {
 
         socket.on("user_finish", (data) => {
             userFinish(data);
+        });
+
+        socket.on("cursorPosition", (data) => {
+            if (data) {
+                setCursorPosition(data);
+            }
         });
 
         return () => {
@@ -382,6 +399,28 @@ export const Watch = () => {
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
             }}
         >
+            {/* cursor view */}
+
+            {cursorPosition && (
+                <div
+                    style={{
+                        position: "fixed",
+                        zIndex: 9999,
+                        top: cursorPosition.y,
+                        left: cursorPosition.x,
+                        width: "30px",
+                        height: "30px",
+                        borderRadius: "50%",
+                    }}
+                >
+                    <img
+                        src={"/cursor.png"}
+                        className="w-20 h-20 rounded-full  object-cover"
+                    />
+                </div>
+            )}
+
+
             <div className="flex justify-between">
                 <Typography variant="h4">Phòng: {roomDetail?.name}</Typography>
                 {!isNaN(timeLeft) && (
