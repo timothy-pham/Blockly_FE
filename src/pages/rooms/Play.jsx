@@ -57,7 +57,7 @@ export const Play = () => {
     localStorage.setItem("index", JSON.stringify(index));
   };
 
-  const checkLocalStorage = (room) => {
+  const checkLocalStorage = () => {
     let haveData = false;
     const questions = JSON.parse(localStorage.getItem("questions"));
     const current = JSON.parse(localStorage.getItem("current"));
@@ -66,7 +66,6 @@ export const Play = () => {
       setRows(questions);
       setBlockDetail(current);
       setCurrentQuestionIndex(index);
-      checkCurrentQuestion(room.users, current?.block_id);
       haveData = true;
     }
     return haveData;
@@ -76,7 +75,7 @@ export const Play = () => {
 
   const setQuestions = async (blocks) => {
     try {
-      const haveData = checkLocalStorage(room);
+      const haveData = checkLocalStorage();
       if (!haveData) {
         if (blocks) {
           const data = blocks.map((item) => ({
@@ -126,7 +125,8 @@ export const Play = () => {
     if (!hasFetched.current) {
       const fetchData = async () => {
         const res = await fetchRoomData();
-        setQuestions(res?.meta_data?.blocks);
+        console.log("res", res);
+        await setQuestions(res?.meta_data?.blocks);
         setRanks(res.users);
       };
       fetchData();
@@ -160,6 +160,7 @@ export const Play = () => {
   };
 
   const rankingUpdate = (data) => {
+    if (rows.length === 0 || ranks.length === 0) return;
     const is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
     if (is_done) {
       socket.emit("user_finish")
