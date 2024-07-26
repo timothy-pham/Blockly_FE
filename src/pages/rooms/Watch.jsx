@@ -117,6 +117,7 @@ export const Watch = () => {
 
     // THEO DÕI con trỏ
     const updateUserFollowing = async (res, user_id) => {
+        if (!res) return;
         const userFollowing = res?.users?.filter((v) => v.user_id === user_id)[0] || res.users[0];
         setUser(userFollowing?.user_data);
         let currentQuestionIdx = userFollowing?.blocks?.length || 0;
@@ -389,7 +390,9 @@ export const Watch = () => {
         });
         return `${score}/${rows.length}`;
     };
-
+    const onChangeUser = (data) => {
+        data?.user_id && updateUserFollowing(roomDetail, data?.user_id);
+    }
     return (
         <Paper
             sx={{
@@ -408,14 +411,19 @@ export const Watch = () => {
                         zIndex: 9999,
                         top: cursorPosition.y,
                         left: cursorPosition.x,
-                        width: "30px",
-                        height: "30px",
-                        borderRadius: "50%",
+                        width: "50px",
+                        height: "50px",
                     }}
                 >
                     <img
                         src={"/cursor.png"}
-                        className="w-20 h-20 rounded-full  object-cover"
+                        // style hình tròn
+                        className="w-10 h-10"
+                    />
+                    <img
+                        src={user?.meta_data?.avatar ? user?.meta_data?.avatar : "/default_avatar.png"}
+                        // style hình tròn
+                        className="w-10 h-10 rounded-full  object-cover"
                     />
                 </div>
             )}
@@ -533,7 +541,7 @@ export const Watch = () => {
                 </div>
                 <div className="flex-1 mt-6">
                     <div className="flex-col">
-                        <Ranking ranks={ranks} rows={rows} />
+                        <Ranking ranks={ranks} rows={rows} onChangeUser={onChangeUser} />
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import styles from "./styles.module.css";
 import { useTransition, animated } from "@react-spring/web";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-const Ranking = ({ ranks, rows }) => {
+const Ranking = ({ ranks, rows, onChangeUser }) => {
   let height = 0;
   const [sortedData, setSortedData] = useState([]);
   // const sortedData = ranks.sort((a, b) => b.score - a.score || b.end_timestamp - a.end_timestamp);
@@ -39,7 +39,11 @@ const Ranking = ({ ranks, rows }) => {
             className={styles.card}
             style={{ zIndex: sortedData.length - index, ...style }}
           >
-            <div className={styles.cell}>
+            <div className={styles.cell}
+              onClick={() => {
+                onChangeUser(item);
+              }}
+            >
               <div className={styles.details}>
                 <div className="flex items-center ">
                   <img
