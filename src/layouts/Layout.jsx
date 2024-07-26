@@ -185,7 +185,7 @@ export const Layout = () => {
                 style={{ backgroundColor: "#1976d2" }}
                 className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white font-bold select-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-600"
               >
-                {getName(user.name)}
+                {getName(user?.name)}
               </div>
             )}
 
@@ -198,10 +198,10 @@ export const Layout = () => {
             >
               <div className="px-4 py-3">
                 <span className="block text-sm text-gray-900 dark:text-white">
-                  {user.name}
+                  {user?.name}
                 </span>
                 <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                  {user.username}
+                  {user?.username}
                 </span>
               </div>
               <ul className="py-2" aria-labelledby="user-menu-button">

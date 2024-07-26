@@ -105,7 +105,7 @@ export const Profile = () => {
         setLoading(true);
         let imageUrl = await uploadImage(file, "users");
 
-        const res = await apiPatch(`users`, user.user_id, {
+        const res = await apiPatch(`users`, user?.user_id, {
           meta_data: { avatar: imageUrl },
         });
 

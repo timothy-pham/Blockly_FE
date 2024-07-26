@@ -113,7 +113,7 @@ export const RankingPage = () => {
           matches={user?.matches}
           username={user?.username}
           currentUser={username}
-          userData={user.meta_data}
+          userData={user?.meta_data}
         />
       ))}
     </div>
