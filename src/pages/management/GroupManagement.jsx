@@ -17,6 +17,7 @@ import {
   TextField,
   Autocomplete,
   Select,
+  Checkbox,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useRef, useState } from "react";
@@ -71,6 +72,7 @@ export const GroupManagement = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(sortOptions[0]);
   const [orderBy, setOrderBy] = useState(orderByOptions[0]);
+  const [selected, setSelected] = useState([]);
 
   const fetchGroup = async () => {
     try {
@@ -214,23 +216,6 @@ export const GroupManagement = () => {
     }
   };
 
-  const handleExport = async (url) => {
-    fetch(`${process.env.REACT_APP_API_URL}/groups/export`, {
-      headers: {
-        Authorization: getToken(),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        var _url = window.URL.createObjectURL(blob);
-        saveAs(_url, `groupData-${getCurrentDateTime()}.text`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const handleNameFilterChange = (e) => {
     if (e.target.value === "") {
       setSearch("");
@@ -309,22 +294,53 @@ export const GroupManagement = () => {
     applyFiltersAndSort();
   }, [collection, search, sort, orderBy, temp]);
 
-  const handleExportMenu1 = (type) => {
-    console.log("type ===> con JSON");
+  const handleExport = async (selects) => {
+    fetch(`${process.env.REACT_APP_API_URL}/groups/export`, {
+      method: "POST",
+      headers: {
+        Authorization: getToken(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: selects, raw_data: false }),
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        var _url = window.URL.createObjectURL(blob);
+        saveAs(_url, `groupsData-${getCurrentDateTime()}.txt`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const handleExportMenu2 = (type) => {
-    console.log("type ===> Ecel");
+  //Select rows
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const handleClick = (id) => {
+    const newSelected = isSelected(id)
+      ? selected.filter((item) => item !== id)
+      : [...selected, id];
+    setSelected(newSelected);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((n) => n.group_id);
+      console.log("newSelected", newSelected);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
   };
 
   const downloadMenuItems = [
     {
-      label: "JSON",
-      handleClick: () => handleExportMenu1(),
+      label: "Xuất tất cả",
+      handleClick: () => handleExport([]),
     },
     {
-      label: "Excel",
-      handleClick: () => handleExportMenu2(),
+      label: "Xuất các dữ liệu đã chọn",
+      handleClick: () => handleExport(selected),
+      disabled: selected.length === 0,
     },
   ];
 
@@ -369,26 +385,10 @@ export const GroupManagement = () => {
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí bài tập</Typography>
-          <ExportExcelMenuButton items={downloadMenuItems} />
 
-          <div>
-            <>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                onClick={handleButtonClick}
-                sx={{ marginRight: 2 }}
-              >
-                Nhập dữ liệu
-              </Button>
-            </>
+          <div className="flex">
+            <ExportExcelMenuButton items={downloadMenuItems} />
+
             <Button
               color="primary"
               variant="contained"
@@ -415,6 +415,19 @@ export const GroupManagement = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow className="[&>*]:font-bold">
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  checked={rows.length > 0 && selected.length === rows.length}
+                  onChange={handleSelectAllClick}
+                  inputProps={{
+                    "aria-label": "select all desserts",
+                  }}
+                />
+              </TableCell>
               <TableCell>Tên</TableCell>
               <TableCell>Mô tả</TableCell>
               <TableCell>Thể loại</TableCell>
@@ -428,46 +441,61 @@ export const GroupManagement = () => {
             {(rowsPerPage > 0
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
-            ).map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row?.name}
-                </TableCell>
-                <TableCell>{row?.meta_data?.description}</TableCell>
-                <TableCell>{row?.collection?.name}</TableCell>
-                <TableCell>
-                  {row?.meta_data?.timer ? `${row?.meta_data?.timer} phút` : ""}
-                </TableCell>
-                <TableCell>
-                  <img
-                    src={row?.meta_data?.image || "/noImage.jpg"}
-                    height={100}
-                    width={100}
-                    alt=""
-                  />
-                </TableCell>
-                <TableCell>{row?.meta_data?.position}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => {
-                      setOpenPopup(true);
-                      setCollectionValue(row?.collection_id);
-                      setData(row);
-                    }}
-                  >
-                    <ModeEditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      setData(row);
-                      setOpen(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            ).map((row, index) => {
+              const isItemSelected = isSelected(row.group_id);
+              return (
+                <TableRow key={index}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent row click event
+                        handleClick(row.group_id); // Handle checkbox click
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row?.name}
+                  </TableCell>
+                  <TableCell>{row?.meta_data?.description}</TableCell>
+                  <TableCell>{row?.collection?.name}</TableCell>
+                  <TableCell>
+                    {row?.meta_data?.timer
+                      ? `${row?.meta_data?.timer} phút`
+                      : ""}
+                  </TableCell>
+                  <TableCell>
+                    <img
+                      src={row?.meta_data?.image || "/noImage.jpg"}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
+                  </TableCell>
+                  <TableCell>{row?.meta_data?.position}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => {
+                        setOpenPopup(true);
+                        setCollectionValue(row?.collection_id);
+                        setData(row);
+                      }}
+                    >
+                      <ModeEditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setData(row);
+                        setOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>

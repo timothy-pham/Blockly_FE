@@ -16,6 +16,7 @@ import {
   TextField,
   Autocomplete,
   Chip,
+  Checkbox,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState, useRef, useCallback } from "react";
@@ -36,6 +37,7 @@ import { getCurrentDateTime } from "../../utils/generate";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
 import { getColor, getLabel } from "../../utils/levelParse";
+import { ExportExcelMenuButton } from "../../components/ExportButton";
 
 const orderByOptions = [
   { value: "name", label: "Tên" },
@@ -66,6 +68,7 @@ export const BlockManagement = () => {
   const [orderBy, setOrderBy] = useState(orderByOptions[0]);
 
   const [refresh, setRefresh] = React.useState(false);
+  const [selected, setSelected] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -92,9 +95,9 @@ export const BlockManagement = () => {
 
   const handleImport = async (file) => {
     try {
-      console.log("FILE:", file)
+      console.log("FILE:", file);
       await apiPost("blocks/import", {
-        data: file
+        data: file,
       });
     } catch (err) {
       console.log("can not import blocks");
@@ -176,26 +179,6 @@ export const BlockManagement = () => {
       setRefresh(!refresh);
       setOpen(false);
     }
-  };
-
-
-
-  const handleExport = async (url) => {
-    fetch(`${process.env.REACT_APP_API_URL}/blocks/export`, {
-      headers: {
-        Authorization: getToken(),
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        var _url = window.URL.createObjectURL(blob);
-        saveAs(_url, `blockData-${getCurrentDateTime()}.txt`);
-        // window.open(_url, "_blank").focus(); // window.open + focus
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const handleNameFilterChange = (e) => {
@@ -293,6 +276,56 @@ export const BlockManagement = () => {
     applyFiltersAndSort();
   }, [collection, group, search, sort, orderBy, temp, groups]);
 
+  const handleExport = async (selects) => {
+    console.log("selects===>", selects);
+    fetch(`${process.env.REACT_APP_API_URL}/blocks/export`, {
+      method: "POST",
+      headers: {
+        Authorization: getToken(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: selects, raw_data: false }),
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        var _url = window.URL.createObjectURL(blob);
+        saveAs(_url, `blocksData-${getCurrentDateTime()}.txt`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //Select rows
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const handleClick = (id) => {
+    const newSelected = isSelected(id)
+      ? selected.filter((item) => item !== id)
+      : [...selected, id];
+    setSelected(newSelected);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((n) => n.block_id);
+      console.log("newSelected", newSelected);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const downloadMenuItems = [
+    {
+      label: "Xuất tất cả",
+      handleClick: () => handleExport([]),
+    },
+    {
+      label: "Xuất các dữ liệu đã chọn",
+      handleClick: () => handleExport(selected),
+      disabled: selected.length === 0,
+    },
+  ];
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
@@ -342,24 +375,8 @@ export const BlockManagement = () => {
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí câu hỏi</Typography>
-          <div>
-            <>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                onClick={handleButtonClick}
-                sx={{ marginRight: 2 }}
-              >
-                Nhập dữ liệu
-              </Button>
-            </>
+          <div className="flex">
+            <ExportExcelMenuButton items={downloadMenuItems} />
             <Button
               color="primary"
               variant="contained"
@@ -386,6 +403,19 @@ export const BlockManagement = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow className="[&>*]:font-bold">
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  checked={rows.length > 0 && selected.length === rows.length}
+                  onChange={handleSelectAllClick}
+                  inputProps={{
+                    "aria-label": "select all desserts",
+                  }}
+                />
+              </TableCell>
               <TableCell>Tên Block</TableCell>
               <TableCell>Câu hỏi</TableCell>
               <TableCell>Tên bài tập</TableCell>
@@ -399,52 +429,65 @@ export const BlockManagement = () => {
             {(rowsPerPage > 0
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
-            ).map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row?.name}
-                </TableCell>
-                <TableCell>{row?.question}</TableCell>
-                <TableCell>{row?.group.name}</TableCell>
-                <TableCell>
-                  <Chip
-                    label={getLabel(row?.level)}
-                    style={{
-                      backgroundColor: getColor(row?.level),
-                      color: "black",
-                      fontWeight: "bold",
-                    }}
-                    sx={{ width: "fit-content" }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <img
-                    src={row?.meta_data?.image || "/noImage.jpg"}
-                    height={100}
-                    width={100}
-                    alt=""
-                  />
-                </TableCell>
-                <TableCell>{row?.meta_data?.position}</TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() =>
-                      navigate(`/blockManagement/${row.block_id}/edit`)
-                    }
-                  >
-                    <ModeEditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      setData(row);
-                      setOpen(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            ).map((row, index) => {
+              const isItemSelected = isSelected(row.block_id);
+              return (
+                <TableRow key={index}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent row click event
+                        handleClick(row.block_id); // Handle checkbox click
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row?.name}
+                  </TableCell>
+                  <TableCell>{row?.question}</TableCell>
+                  <TableCell>{row?.group.name}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={getLabel(row?.level)}
+                      style={{
+                        backgroundColor: getColor(row?.level),
+                        color: "black",
+                        fontWeight: "bold",
+                      }}
+                      sx={{ width: "fit-content" }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <img
+                      src={row?.meta_data?.image || "/noImage.jpg"}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
+                  </TableCell>
+                  <TableCell>{row?.meta_data?.position}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() =>
+                        navigate(`/blockManagement/${row.block_id}/edit`)
+                      }
+                    >
+                      <ModeEditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setData(row);
+                        setOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>

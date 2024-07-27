@@ -19,6 +19,7 @@ import {
   TextField,
   Select,
   FormControl,
+  Checkbox,
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useRef, useState } from "react";
@@ -39,6 +40,7 @@ import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
 import { ImageInput } from "../../components/input/ImageInput";
 import { uploadImage } from "../../utils/firebase";
+import { ExportExcelMenuButton } from "../../components/ExportButton";
 
 const types = [
   { value: "solo", label: "Thi đấu trực tuyến" },
@@ -60,7 +62,7 @@ const orderByOptions = [
 const sortOptions = [
   { value: "asc", label: "Tăng dần" },
   { value: "desc", label: "Giảm dần" },
-]
+];
 
 export const CollectionManagement = () => {
   const [page, setPage] = React.useState(0);
@@ -77,6 +79,7 @@ export const CollectionManagement = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState(sortOptions[0]);
   const [orderBy, setOrderBy] = useState(orderByOptions[0]);
+  const [selected, setSelected] = useState([]);
 
   const fetchCollection = async () => {
     try {
@@ -133,7 +136,8 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${
+            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -141,7 +145,8 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -195,7 +200,7 @@ export const CollectionManagement = () => {
   const handleImport = async (file) => {
     try {
       await apiPost("collections/import", {
-        data: file
+        data: file,
       });
     } catch (err) {
       console.log("can not create block");
@@ -204,24 +209,6 @@ export const CollectionManagement = () => {
     }
   };
 
-  const handleExport = async (url) => {
-    fetch(`${process.env.REACT_APP_API_URL}/collections/export`, {
-      method: "POST",
-      headers: {
-        Authorization: getToken(),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ ids: [] }),
-    })
-      .then((response) => response.blob())
-      .then((blob) => {
-        var _url = window.URL.createObjectURL(blob);
-        saveAs(_url, `collectionData-${getCurrentDateTime()}.txt`);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   const handleNameFilterChange = (e) => {
     const name = e.target.value;
     const filteredBlocks = temp.filter((tem) =>
@@ -241,7 +228,7 @@ export const CollectionManagement = () => {
       }
 
       if (orderBy) {
-        if (orderBy.value === 'updated_at') {
+        if (orderBy.value === "updated_at") {
           filteredRows = filteredRows.sort((a, b) => {
             const dateA = new Date(a.updated_at);
             const dateB = new Date(b.updated_at);
@@ -265,13 +252,62 @@ export const CollectionManagement = () => {
             }
           });
         }
-
       }
       setRows([...filteredRows]); // Make sure to create a new array to force a re-render
     };
 
     applyFiltersAndSort();
   }, [search, sort, orderBy, temp]);
+
+  const handleExport = async (selects) => {
+    fetch(`${process.env.REACT_APP_API_URL}/collections/export`, {
+      method: "POST",
+      headers: {
+        Authorization: getToken(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ids: selects, raw_data: false }),
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        var _url = window.URL.createObjectURL(blob);
+        saveAs(_url, `collectionsData-${getCurrentDateTime()}.txt`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  //Select rows
+  const isSelected = (id) => selected.indexOf(id) !== -1;
+  const handleClick = (id) => {
+    const newSelected = isSelected(id)
+      ? selected.filter((item) => item !== id)
+      : [...selected, id];
+    setSelected(newSelected);
+  };
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelected = rows.map((n) => n.collection_id);
+      console.log("newSelected", newSelected);
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const downloadMenuItems = [
+    {
+      label: "Xuất tất cả",
+      handleClick: () => handleExport([]),
+    },
+    {
+      label: "Xuất các dữ liệu đã chọn",
+      handleClick: () => handleExport(selected),
+      disabled: selected.length === 0,
+    },
+  ];
 
   return (
     <>
@@ -286,7 +322,9 @@ export const CollectionManagement = () => {
           getOptionLabel={(option) => option.label}
           style={{ width: 200 }}
           onChange={(e, value) => setOrderBy(value)}
-          renderInput={(params) => <TextField {...params} label="Sắp xếp theo" />}
+          renderInput={(params) => (
+            <TextField {...params} label="Sắp xếp theo" />
+          )}
           disableClearable
         />
         <Autocomplete
@@ -302,24 +340,9 @@ export const CollectionManagement = () => {
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí danh mục</Typography>
-          <div>
-            <>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileChange}
-              />
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                onClick={handleButtonClick}
-                sx={{ marginRight: 2 }}
-              >
-                Nhập dữ liệu
-              </Button>
-            </>
+          <div className="flex">
+            <ExportExcelMenuButton items={downloadMenuItems} />
+
             <Button
               color="primary"
               variant="contained"
@@ -346,6 +369,19 @@ export const CollectionManagement = () => {
         <Table aria-label="simple table">
           <TableHead>
             <TableRow className="[&>*]:font-bold">
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  indeterminate={
+                    selected.length > 0 && selected.length < rows.length
+                  }
+                  checked={rows.length > 0 && selected.length === rows.length}
+                  onChange={handleSelectAllClick}
+                  inputProps={{
+                    "aria-label": "select all desserts",
+                  }}
+                />
+              </TableCell>
               <TableCell>Tên</TableCell>
               <TableCell>Mô tả</TableCell>
               <TableCell>Thể loại</TableCell>
@@ -357,41 +393,54 @@ export const CollectionManagement = () => {
             {(rowsPerPage > 0
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
-            ).map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row?.name}
-                </TableCell>
-                <TableCell>{row?.meta_data?.description}</TableCell>
-                <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
-                <TableCell>
-                  <img
-                    src={row?.meta_data?.image || "/noImage.jpg"}
-                    height={100}
-                    width={100}
-                    alt=""
-                  />
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() => {
-                      setOpenPopup(true);
-                      setData(row);
-                    }}
-                  >
-                    <ModeEditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      setData(row);
-                      setOpen(true);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            ).map((row, index) => {
+              const isItemSelected = isSelected(row.collection_id);
+              return (
+                <TableRow key={index}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      color="primary"
+                      checked={isItemSelected}
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent row click event
+                        handleClick(row.collection_id); // Handle checkbox click
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row?.name}
+                  </TableCell>
+                  <TableCell>{row?.meta_data?.description}</TableCell>
+                  <TableCell>{COLLECTION_TYPE[row?.type]}</TableCell>
+                  <TableCell>
+                    <img
+                      src={row?.meta_data?.image || "/noImage.jpg"}
+                      height={100}
+                      width={100}
+                      alt=""
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() => {
+                        setOpenPopup(true);
+                        setData(row);
+                      }}
+                    >
+                      <ModeEditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setData(row);
+                        setOpen(true);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>
@@ -419,7 +468,7 @@ export const CollectionManagement = () => {
 
       <Dialog
         sx={{
-          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: '80%' },
+          "& .MuiDialog-paper": { width: "80%", padding: 5, maxHeight: "80%" },
         }}
         maxWidth="md"
         open={openPopup}
