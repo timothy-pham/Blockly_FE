@@ -6,7 +6,14 @@ import React, {
   useRef,
 } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Avatar, Dialog, IconButton, Table, TableBody, TableCell, TableContainer, TableRow, Toolbar, Typography, Button, styled, DialogContent, Badge } from "@mui/material";
+import {
+  Avatar,
+  IconButton,
+  Toolbar,
+  Badge,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AuthContext from "../pages/auth/AuthContext/AuthContext";
 import MuiAppBar from "@mui/material/AppBar";
@@ -14,6 +21,11 @@ import { SideNav } from "./SideNav";
 import { get, set } from "lodash";
 import { ContactButton } from "../components/ContactButton/ContactButton";
 import { socket } from "../socket";
+import EmailIcon from "@mui/icons-material/Email";
+import { styled } from "@mui/material/styles";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
+
 const drawerWidth = 280;
 const appBarHeight = 64;
 
@@ -50,8 +62,9 @@ const AppBar = styled(MuiAppBar, {
   zIndex: 50,
   width: "100%",
   backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#ffffff",
-  borderBottom: `1px solid ${theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
-    }`,
+  borderBottom: `1px solid ${
+    theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
+  }`,
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -117,7 +130,7 @@ export const Layout = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0;i < prev.length;i++) {
+        for (let i = 0; i < prev.length; i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -126,15 +139,16 @@ export const Layout = () => {
         if (isExist) {
           return prev;
         }
-        prev.push(data);
-        localStorage.setItem("inviteData", JSON.stringify(prev));
-        return prev;
+
+        const updatedInviteData = [...prev, data];
+        localStorage.setItem("inviteData", JSON.stringify(updatedInviteData));
+        return updatedInviteData;
       });
     });
 
     return () => {
       socket.off("invite_user");
-    }
+    };
   }, [socket]);
 
   const toggleUserDropdown = () => {
@@ -184,104 +198,19 @@ export const Layout = () => {
     return initials.join("");
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event?.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <AppBar position="fixed" open={openNav}>
-        <Dialog
-          open={openInvite}
-          onClose={() => setOpenInvite(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          maxWidth="lg"
-        >
-          <DialogContent style={{ width: 800 }}>
-            <Typography variant="h6" id="alert-dialog-title">
-              Danh sách lời mời
-            </Typography>
-            <TableContainer
-              sx={{
-                height: '100%',
-              }}
-            >
-              <Table aria-label="simple table">
-                <TableBody >
-                  {inviteData.map((row, index) => {
-                    const room = row.room
-                    const user_from = row.user_from
-                    return (
-                      <TableRow key={index}>
-                        <TableCell component="th" scope="row">
-                          <div className="flex items-center ">
-                            <img
-                              src={user_from?.meta_data?.avatar || "/default_avatar.png"}
-                              className="w-8 h-8 rounded-full  object-cover mr-2"
-                            />
-                            <div
-                              className="font-bold"
-                            >{user_from.name}</div>
-                            <div className="ms-1">
-                              mời bạn tham gia phòng
-                            </div>
-                            <div className="ms-1 font-bold">
-                              {room.name}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="mt-1 text-center">
-                            Chủ đề: {room.meta_data?.group_data?.name}
-                          </div>
-                        </TableCell>
-                        <TableCell style={{ width: '20%', alignItems: 'right' }}>
-                          <div
-                            className="flex gap-2"
-                          >
-                            <Button
-                              variant="contained"
-                              onClick={() => {
-                                navigate(`/rooms/${room.room_id}`);
-                                setInviteData((prev) => {
-                                  const newData = prev.filter((item) => item.room.room_id !== room.room_id);
-                                  localStorage.setItem("inviteData", JSON.stringify(newData));
-                                  return newData;
-                                });
-                                setOpenInvite(false);
-                              }}
-                            >
-                              Vào
-                            </Button>
-                            <Button
-                              color="error"
-                              variant="contained"
-                              onClick={() => {
-                                setInviteData((prev) => {
-                                  const newData = prev.filter((item) => item.room.room_id !== room.room_id);
-                                  localStorage.setItem("inviteData", JSON.stringify(newData));
-                                  return newData;
-                                });
-                              }}
-                            >
-                              Xóa
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Button
-              onClick={() => setOpenInvite(false)}
-              className="mt-auto w-full"
-              variant="contained"
-              color="error"
-            >
-              Đóng
-            </Button>
-
-          </DialogContent>
-        </Dialog>
         <Toolbar
           sx={{
             display: "flex",
@@ -296,34 +225,91 @@ export const Layout = () => {
           >
             <MenuIcon color="primary" />
           </IconButton>
-          <div className="me-3"
-            style={
-              {
-                backgroundColor: "#1976d2",
-                width: "fit-content",
-                display: "flex",
-              }
-            }
-            onClick={() => {
-              setOpenInvite(true);
+
+          <Badge
+            badgeContent={inviteData.length}
+            color="error"
+            sx={{
+              fontSize: 12,
+              fontWeight: "bold",
+              marginRight: 1,
+              "& .MuiBadge-badge": {
+                right: 5,
+                top: 8,
+              },
             }}
           >
-            <Badge
-              badgeContent={inviteData.length}
-              color="error"
-              sx={{
-                fontSize: 12,
-                fontWeight: "bold",
-              }}
+            <IconButton aria-label="Mời" onClick={handleClick}>
+              <EmailIcon />
+            </IconButton>
+          </Badge>
+
+          {inviteData.length > 0 && (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
             >
-            </Badge>
-            <Typography variant="h6" noWrap color={'black'} className="p-1">
-              Lời mời
-            </Typography>
-
-          </div>
+              {inviteData.map((row, index) => {
+                const room = row.room;
+                const user_from = row.user_from;
+                return (
+                  <MenuItem>
+                    <div className="flex items-center ">
+                      <img
+                        src={
+                          user_from?.meta_data?.avatar || "/default_avatar.png"
+                        }
+                        className="w-8 h-8 rounded-full  object-cover mr-2"
+                      />
+                      <div className="font-bold">{user_from.name}</div>
+                      <div className="ms-1">mời bạn tham gia phòng</div>
+                      <div className="ms-1 font-bold">{room.name}</div>
+                    </div>
+                    <div className="flex ml-2">
+                      <IconButton
+                        color="success"
+                        onClick={() => {
+                          navigate(`/rooms/${room.room_id}`);
+                          setInviteData((prev) => {
+                            const newData = prev.filter(
+                              (item) => item.room.room_id !== room.room_id
+                            );
+                            localStorage.setItem(
+                              "inviteData",
+                              JSON.stringify(newData)
+                            );
+                            return newData;
+                          });
+                          setOpenInvite(false);
+                        }}
+                      >
+                        <CheckIcon />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        onClick={() => {
+                          setInviteData((prev) => {
+                            const newData = prev.filter(
+                              (item) => item.room.room_id !== room.room_id
+                            );
+                            localStorage.setItem(
+                              "inviteData",
+                              JSON.stringify(newData)
+                            );
+                            return newData;
+                          });
+                        }}
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </div>
+                  </MenuItem>
+                );
+              })}
+            </Menu>
+          )}
           <div>
-
             {avatar ? (
               <Avatar
                 className="cursor-pointer"
@@ -344,8 +330,9 @@ export const Layout = () => {
 
             <div
               ref={dropdownRef} // Attach ref to the dropdown
-              className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
-                } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+              className={`z-50 ${
+                isUserDropdownOpen ? "" : "hidden"
+              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
               id="user-dropdown"
             >
               <div className="px-4 py-3">
