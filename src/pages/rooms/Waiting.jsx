@@ -14,6 +14,8 @@ import {
   Typography,
   Chip,
   Dialog,
+  Autocomplete,
+  TextField
 } from "@mui/material";
 import { socket } from "../../socket";
 import { apiGet, apiGetDetail } from "../../utils/dataProvider";
@@ -35,6 +37,11 @@ export const Waiting = () => {
   const [userOnlineList, setUserOnlineList] = useState([]);
   const [showDialogInvite, setShowDialogInvite] = useState(false);
   const [listInvited, setListInvited] = useState([]);
+  // BOT
+  const [botConfig, setBotConfig] = useState(null);
+  const [showChooseBot, setShowChooseBot] = useState(false);
+  const [botLevel, setBotLevel] = useState(null);
+  // END BOT
   // After Login
   const [userList, setUserList] = useState([]);
 
@@ -77,6 +84,18 @@ export const Waiting = () => {
     }
   }
 
+
+  const fetchBotconfig = async () => {
+    try {
+      const res = await apiGet("rooms/bot-config");
+      if (res) {
+        setBotConfig(res);
+      }
+    } catch (e) {
+      console.log("can not fetch bot config");
+    }
+  };
+
   const fetchRoom = async () => {
     try {
       const res = await apiGet(`rooms/${id}`);
@@ -97,7 +116,7 @@ export const Waiting = () => {
       fetchRoom();
       fetchRoomData();
       connectToRoom();
-
+      fetchBotconfig();
       socket.on("disconnect", () => {
         console.log("Disconnected from server");
       });
@@ -141,6 +160,20 @@ export const Waiting = () => {
     };
   }, [socket]);
 
+  const addBot = () => {
+    if (botLevel) {
+      socket.emit("add_bot", {
+        room_id: id,
+        bot_level: botLevel
+      });
+      setShowChooseBot(false);
+    } else {
+      toast.error(
+        `Vui lòng chọn độ khó cho máy!`,
+        toastOptions
+      );
+    }
+  }
   const handleSendMessage = (text) => {
     socket.emit("send_message", {
       room_id: id,
@@ -250,7 +283,7 @@ export const Waiting = () => {
           </Button>
           <Button
             onClick={() => {
-              alert("Chức năng này chưa được hỗ trợ");
+              setShowChooseBot(true);
             }}
             variant="contained"
             sx={{ mt: 3, mb: 2, mr: 2 }}
@@ -351,6 +384,7 @@ export const Waiting = () => {
         </div>
       </div>
       <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
+
       <Dialog
         open={showDialogInvite}
         onClose={() => {
@@ -411,6 +445,73 @@ export const Waiting = () => {
           </Button>
         </div>
       </Dialog>
+
+      <Dialog
+        open={showChooseBot}
+        onClose={() => {
+          setShowChooseBot(false);
+        }}
+        fullWidth
+      >
+        <div
+          className="p-4"
+          style={{
+            minHeight: "600px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between"
+          }}
+        >
+          <div
+            className="text-center"
+          >
+            <Typography variant="h4">Chọn độ khó cho máy</Typography>
+            <Autocomplete
+              disablePortal
+              id="bot_level"
+              fullWidth
+              options={botConfig}
+              getOptionLabel={(option) => option.name}
+              style={{
+                fontSize: "50px"
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Độ khó"
+                  name="bot_level"
+                  margin="normal"
+                />
+              )}
+              onChange={(e, value) => setBotLevel(value.level)}
+            />
+          </div>
+          <div>
+            <Button
+              className="mt-5 w-full"
+              variant="contained"
+              color="success"
+              onClick={() => {
+                addBot();
+              }}>
+              Thêm máy
+            </Button>
+            <Button
+              style={{
+                marginTop: "15px"
+              }}
+              className="w-full"
+              variant="contained"
+              color="error"
+              onClick={() => {
+                setShowChooseBot(false);
+              }}>
+              Đóng
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
     </Paper>
   );
 };
