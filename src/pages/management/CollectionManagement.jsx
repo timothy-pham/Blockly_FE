@@ -343,17 +343,23 @@ export const CollectionManagement = () => {
           <div className="flex">
             <ExportExcelMenuButton items={downloadMenuItems} />
 
-            <Button
-              color="primary"
-              variant="contained"
-              size="small"
-              component="a"
-              onClick={handleExport}
-              target="_blank"
-              sx={{ marginRight: 2 }}
-            >
-              Xuất dữ liệu
-            </Button>
+            <>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                onClick={handleButtonClick}
+                sx={{ marginRight: 2 }}
+              >
+                Nhập dữ liệu
+              </Button>
+            </>
             <Button
               color="primary"
               variant="contained"

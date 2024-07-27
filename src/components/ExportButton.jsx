@@ -13,7 +13,7 @@ export const ExportExcelMenuButton = (props) => {
         />
       </svg>
     ),
-    label = "Xuất dữ liệu (1)",
+    label = "Xuất dữ liệu",
     color = "success",
     items,
   } = props;
