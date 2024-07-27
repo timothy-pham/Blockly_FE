@@ -73,6 +73,37 @@ export const BlockManagement = () => {
     fileInputRef.current.click();
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          await handleImport(e.target.result);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        } finally {
+          event.target.value = "";
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const handleImport = async (file) => {
+    try {
+      console.log("FILE:", file)
+      await apiPost("blocks/import", {
+        data: file
+      });
+    } catch (err) {
+      console.log("can not import blocks");
+      console.log(err);
+    } finally {
+      setRefresh(!refresh);
+    }
+  };
+
   const fetchBlocks = async () => {
     try {
       const res = await apiGet("blocks");
@@ -147,34 +178,7 @@ export const BlockManagement = () => {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          await handleImport(e.target.result);
-        } catch (error) {
-          console.error("Error parsing JSON:", error);
-        } finally {
-          event.target.value = "";
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
 
-  const handleImport = async (file) => {
-    try {
-      await apiPost("blocks/import", {
-        data: file
-      });
-    } catch (err) {
-      console.log("can not create block");
-    } finally {
-      setRefresh(!refresh);
-    }
-  };
 
   const handleExport = async (url) => {
     fetch(`${process.env.REACT_APP_API_URL}/blocks/export`, {

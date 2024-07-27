@@ -125,6 +125,7 @@ export const Rooms = () => {
             Làm mới
           </Button>
           <Button
+            sx={{ fontWeight: "bold" }}
             variant="contained"
             color="primary"
             onClick={() => setDialogCreateRoom(true)}

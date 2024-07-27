@@ -206,10 +206,12 @@ export const CollectionManagement = () => {
 
   const handleExport = async (url) => {
     fetch(`${process.env.REACT_APP_API_URL}/collections/export`, {
+      method: "POST",
       headers: {
         Authorization: getToken(),
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ ids: [] }),
     })
       .then((response) => response.blob())
       .then((blob) => {
