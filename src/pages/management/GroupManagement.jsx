@@ -37,6 +37,7 @@ import { toastOptions } from "../../constant/toast";
 import { toast } from "react-toastify";
 import { ImageInput } from "../../components/input/ImageInput";
 import { uploadImage } from "../../utils/firebase";
+import { ExportExcelMenuButton } from "../../components/ExportButton";
 const orderByOptions = [
   { value: "name", label: "Tên" },
   // { value: "level", label: "Độ khó" },
@@ -149,7 +150,8 @@ export const GroupManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.group_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.group_id ? "thêm mới" : "chỉnh sửa"
         } bài tập. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -203,7 +205,7 @@ export const GroupManagement = () => {
   const handleImport = async (file) => {
     try {
       await apiPost("groups/import", {
-        data: file
+        data: file,
       });
     } catch (err) {
       console.log("can not create block");
@@ -307,6 +309,25 @@ export const GroupManagement = () => {
     applyFiltersAndSort();
   }, [collection, search, sort, orderBy, temp]);
 
+  const handleExportMenu1 = (type) => {
+    console.log("type ===> con JSON");
+  };
+
+  const handleExportMenu2 = (type) => {
+    console.log("type ===> Ecel");
+  };
+
+  const downloadMenuItems = [
+    {
+      label: "JSON",
+      handleClick: () => handleExportMenu1(),
+    },
+    {
+      label: "Excel",
+      handleClick: () => handleExportMenu2(),
+    },
+  ];
+
   return (
     <>
       <Paper sx={{ padding: 3, marginBottom: 5, display: "flex", gap: 3 }}>
@@ -348,6 +369,8 @@ export const GroupManagement = () => {
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
           <Typography variant="h6">Quản lí bài tập</Typography>
+          <ExportExcelMenuButton items={downloadMenuItems} />
+
           <div>
             <>
               <input
@@ -541,19 +564,19 @@ export const GroupManagement = () => {
             collections.find(
               (v) => v.collection_id == data?.collection?.collection_id
             )?.type === "multiplayer") && (
-              <TextField
-                margin="normal"
-                type="number"
-                required
-                fullWidth
-                id="timer"
-                label="Thời gian"
-                placeholder="Số phút"
-                name="timer"
-                defaultValue={data?.meta_data?.timer}
-                autoFocus
-              />
-            )}
+            <TextField
+              margin="normal"
+              type="number"
+              required
+              fullWidth
+              id="timer"
+              label="Thời gian"
+              placeholder="Số phút"
+              name="timer"
+              defaultValue={data?.meta_data?.timer}
+              autoFocus
+            />
+          )}
           <TextField
             margin="normal"
             fullWidth
