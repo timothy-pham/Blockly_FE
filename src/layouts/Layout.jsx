@@ -226,24 +226,6 @@ export const Layout = () => {
             <MenuIcon color="primary" />
           </IconButton>
 
-          <Badge
-            badgeContent={inviteData.length}
-            color="error"
-            sx={{
-              fontSize: 12,
-              fontWeight: "bold",
-              marginRight: 1,
-              "& .MuiBadge-badge": {
-                right: 5,
-                top: 8,
-              },
-            }}
-          >
-            <IconButton aria-label="Mời" onClick={handleClick}>
-              <EmailIcon />
-            </IconButton>
-          </Badge>
-
           {inviteData.length > 0 && (
             <Menu
               anchorEl={anchorEl}
@@ -309,7 +291,24 @@ export const Layout = () => {
               })}
             </Menu>
           )}
-          <div>
+          <div className="flex">
+            <Badge
+              badgeContent={inviteData.length}
+              color="error"
+              sx={{
+                fontSize: 12,
+                fontWeight: "bold",
+                marginRight: 1,
+                "& .MuiBadge-badge": {
+                  right: 5,
+                  top: 8,
+                },
+              }}
+            >
+              <IconButton aria-label="Mời" onClick={handleClick}>
+                <EmailIcon />
+              </IconButton>
+            </Badge>
             {avatar ? (
               <Avatar
                 className="cursor-pointer"
