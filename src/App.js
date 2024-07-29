@@ -32,6 +32,7 @@ import { Loader } from "./components/progress/Loader";
 import ClassHome from "./pages/class/ClassHome";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from "react";
+import RequestAdmin from "./pages/RequestAdmin";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -168,6 +169,11 @@ function App() {
                 <Route
                   path="/ranking"
                   element={<PrivateRoute element={RankingPage} />}
+                />
+
+                <Route
+                  path="/request-admin"
+                  element={<PrivateRoute element={RequestAdmin} />}
                 />
               </Route>
             </Routes>
