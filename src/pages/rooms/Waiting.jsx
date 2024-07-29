@@ -23,7 +23,7 @@ import { ChatBox } from "../../components/Chat/ChatBox";
 import CooldownDialog from "../../components/CooldownDialog";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
-
+const MAX_BOT = 4;
 export const Waiting = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -250,6 +250,10 @@ export const Waiting = () => {
     }
   }
 
+  const countBot = (userList) => {
+    return userList.filter((v) => v.is_bot).length;
+  }
+
   return (
     <Paper
       sx={{
@@ -287,6 +291,7 @@ export const Waiting = () => {
             }}
             variant="contained"
             sx={{ mt: 3, mb: 2, mr: 2 }}
+            disabled={countBot(userList) >= MAX_BOT}
           >
             Thêm máy
           </Button>
@@ -332,7 +337,7 @@ export const Waiting = () => {
                         <img
                           src={row?.user_data?.meta_data?.avatar}
                           // alt={initials}
-                          className="w-8 h-8 rounded-full  object-cover mr-2"
+                          className="w-16 h-16 rounded-full  object-cover mr-2"
                         />
                         <div>{row?.user_data.name}</div>
                       </div>
@@ -471,7 +476,7 @@ export const Waiting = () => {
               id="bot_level"
               fullWidth
               options={botConfig}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => option?.name}
               style={{
                 fontSize: "50px"
               }}
@@ -483,7 +488,7 @@ export const Waiting = () => {
                   margin="normal"
                 />
               )}
-              onChange={(e, value) => setBotLevel(value.level)}
+              onChange={(e, value) => setBotLevel(value?.level)}
             />
           </div>
           <div>
