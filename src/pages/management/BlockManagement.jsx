@@ -99,9 +99,9 @@ export const BlockManagement = () => {
       await apiPost("blocks/import", {
         data: file,
       });
+      toast.success("Nhập dữ liệu câu hỏi thành công", toastOptions);
     } catch (err) {
-      console.log("can not import blocks");
-      console.log(err);
+      toast.error("Có lỗi trong lúc nhập dữ liệu", toastOptions);
     } finally {
       setRefresh(!refresh);
     }

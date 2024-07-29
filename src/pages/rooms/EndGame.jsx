@@ -32,13 +32,24 @@ export const EndGame = () => {
       }
     });
 
-    setAllQuestions(data?.meta_data?.count ? data?.meta_data?.count : data?.meta_data?.blocks.length);
+    setAllQuestions(
+      data?.meta_data?.count
+        ? data?.meta_data?.count
+        : data?.meta_data?.blocks.length
+    );
     setRanks(sortedRanks);
   };
 
   useEffect(() => {
     rankingUpdate(location?.state);
   }, []);
+
+  const getName = (name) => {
+    if (!name) return "";
+    const names = name.split(" ");
+    const initials = names.map((n) => n.charAt(0).toUpperCase());
+    return initials.join("");
+  };
 
   return (
     <>
@@ -149,11 +160,19 @@ export const EndGame = () => {
                         }
                       >
                         <div className="flex items-center ">
-                          <img
-                            src={row?.user_data?.meta_data?.avatar}
-                            // alt={initials}
-                            className="w-8 h-8 rounded-full  object-cover mr-2"
-                          />
+                          {row?.user_data?.meta_data?.avatar ? (
+                            <img
+                              src={row?.user_data?.meta_data?.avatar}
+                              className="w-8 h-8 rounded-full  object-cover mr-2"
+                            />
+                          ) : (
+                            <div
+                              style={{ backgroundColor: "#1976d2" }}
+                              className="w-8 h-8 rounded-full mr-2 flex items-center justify-center text-white font-bold  focus:ring-2 focus:ring-sky-600"
+                            >
+                              {getName(row?.user_data.name)}
+                            </div>
+                          )}
                           <div>{row?.user_data.name}</div>
                         </div>
                       </TableCell>

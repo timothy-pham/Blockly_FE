@@ -136,7 +136,8 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${
+            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -144,7 +145,8 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${
+          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -200,8 +202,9 @@ export const CollectionManagement = () => {
       await apiPost("collections/import", {
         data: file,
       });
+      toast.success("Nhập dữ liệu danh mục thành công", toastOptions);
     } catch (err) {
-      console.log("can not create block");
+      toast.error("Có lỗi trong lúc nhập dữ liệu", toastOptions);
     } finally {
       setRefresh(!refresh);
     }

@@ -26,11 +26,11 @@ export const Dashboard = () => {
 
       <div className="border-t border-solid border-gray-300 pt-5">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {rows.map((val) => {
+          {rows.map((val, idx) => {
             return (
               <div
                 className="relative group cursor-pointer"
-                key={val}
+                key={idx}
                 onClick={() => {
                   if (val.type == "normal") {
                     navigate(`/collections/${val.collection_id}`);

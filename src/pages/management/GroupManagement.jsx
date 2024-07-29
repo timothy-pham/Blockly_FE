@@ -209,8 +209,9 @@ export const GroupManagement = () => {
       await apiPost("groups/import", {
         data: file,
       });
+      toast.success("Nhập dữ liệu bài tập thành công", toastOptions);
     } catch (err) {
-      console.log("can not create block");
+      toast.error("Có lỗi trong lúc nhập dữ liệu", toastOptions);
     } finally {
       setRefresh(!refresh);
     }
