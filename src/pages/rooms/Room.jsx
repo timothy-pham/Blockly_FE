@@ -52,7 +52,9 @@ export const Rooms = () => {
     try {
       const res = await apiGet("groups/search?collection_id=" + collection_id);
       if (res) {
-        setGroups(res);
+        // sort by meta_data.position
+        const temp = res.sort((a, b) => a.meta_data.position - b.meta_data.position);
+        setGroups(temp);
         setCreateRoom({ ...createRoom, group_id: res[0].group_id });
       }
     } catch (e) {
