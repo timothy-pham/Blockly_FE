@@ -139,6 +139,7 @@ export const Rooms = () => {
         <table className="table-auto w-full">
           <thead>
             <tr>
+              <th className="border px-4 py-2">Chủ phòng</th>
               <th className="border px-4 py-2">Tên phòng</th>
               <th className="border px-4 py-2">Mô tả</th>
               <th className="border px-4 py-2">Trạng thái</th>
@@ -146,42 +147,56 @@ export const Rooms = () => {
             </tr>
           </thead>
           <tbody>
-            {rooms.map((room) => (
-              <tr key={room.room_id}>
-                <td className="border px-4 py-2">{room.name}</td>
-                <td className="border px-4 py-2">{room.description}</td>
-                <td className="border px-4 py-2 text-center">
-                  <Chip
-                    label={getRoomStatus(room.status)}
-                    style={{
-                      margin: 2,
-                      backgroundColor: getRoomColor(room.status),
-                      fontWeight: "bold",
-                    }}
-                  />
-                </td>
-                <td className="border px-2 py-2  text-center">
-                  {room.status === "waiting" ?
-                    (<Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ fontWeight: "bold" }}
-                      onClick={() => navigate("/rooms/" + room.room_id)}
-                    >
-                      Tham gia
-                    </Button>)
-                    : (<Button
-                      variant="contained"
-                      color="primary"
-                      sx={{ fontWeight: "bold" }}
-                      onClick={() => navigate("/rooms/" + room.room_id + "/watch")}
-                    >
-                      Theo dõi trận đấu
-                    </Button>)
-                  }
-                </td>
-              </tr>
-            ))}
+            {rooms.map((room, index) => {
+              const host = room?.users?.find((user) => user?.is_host === true);
+              return (
+                <tr key={index}>
+                  <td className="border px-4  py-2">
+                    <div className="flex items-center ">
+                      <img
+                        src={host?.user_data?.meta_data?.avatar}
+                        className="w-10 h-10 rounded-full  object-cover mr-2"
+                      />
+                      <p style={{
+                        whiteSpace: "nowrap",
+                      }}>{host?.user_data?.name}</p>
+                    </div>
+                  </td>
+                  <td className="border px-4 py-2">{room?.name}</td>
+                  <td className="border px-4 py-2">{room?.description}</td>
+                  <td className="border px-4 py-2 text-center">
+                    <Chip
+                      label={getRoomStatus(room.status)}
+                      style={{
+                        margin: 2,
+                        backgroundColor: getRoomColor(room.status),
+                        fontWeight: "bold",
+                      }}
+                    />
+                  </td>
+                  <td className="border px-2 py-2  text-center">
+                    {room.status === "waiting" ?
+                      (<Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ fontWeight: "bold" }}
+                        onClick={() => navigate("/rooms/" + room.room_id)}
+                      >
+                        Tham gia
+                      </Button>)
+                      : (<Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ fontWeight: "bold" }}
+                        onClick={() => navigate("/rooms/" + room.room_id + "/watch")}
+                      >
+                        Theo dõi trận đấu
+                      </Button>)
+                    }
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
