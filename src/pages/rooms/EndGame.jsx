@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -16,12 +16,26 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import { milisecondToSecondMinute } from "../../utils/transform";
+import { apiGetDetail } from "../../utils/dataProvider";
 export const EndGame = () => {
+  const navigate = useNavigate();
   const info = localStorage.getItem("authToken");
   const location = useLocation();
   const { user } = JSON.parse(info);
   const [allQuestions, setAllQuestions] = useState(0);
   const [ranks, setRanks] = useState([]);
+  const { id } = useParams();
+  const fetchRoomData = async () => {
+    try {
+      const res = await apiGetDetail("rooms", id);
+      if (res) {
+        rankingUpdate(res);
+      }
+    } catch (e) {
+      console.log("can not fetch rooms");
+      console.log(e)
+    }
+  };
 
   const rankingUpdate = (data) => {
     const sortedRanks = [...data?.users].sort((a, b) => {
@@ -41,7 +55,11 @@ export const EndGame = () => {
   };
 
   useEffect(() => {
-    rankingUpdate(location?.state);
+    if (location.state) {
+      rankingUpdate(location.state);
+    } else {
+      fetchRoomData();
+    }
   }, []);
 
   const getName = (name) => {
@@ -144,20 +162,18 @@ export const EndGame = () => {
                 </TableHead>
                 <TableBody>
                   {ranks.map((row, index) => (
-                    <TableRow>
+                    <TableRow
+                      key={index}
+                    >
                       <TableCell
                         component="th"
                         scope="row"
-                        sx={
-                          user.user_id == row.user_id && { fontWeight: "bold" }
-                        }
+                        style={{ fontWeight: user.user_id == row.user_id ? "bold" : "normal" }}
                       >
                         {index + 1}
                       </TableCell>
                       <TableCell
-                        sx={
-                          user.user_id == row.user_id && { fontWeight: "bold" }
-                        }
+                        style={{ fontWeight: user.user_id == row.user_id ? "bold" : "normal" }}
                       >
                         <div className="flex items-center ">
                           {row?.user_data?.meta_data?.avatar ? (
@@ -177,9 +193,7 @@ export const EndGame = () => {
                         </div>
                       </TableCell>
                       <TableCell
-                        sx={
-                          user.user_id == row.user_id && { fontWeight: "bold" }
-                        }
+                        style={{ fontWeight: user.user_id == row.user_id ? "bold" : "normal" }}
                       >
                         {row?.score}/{allQuestions}
                       </TableCell>

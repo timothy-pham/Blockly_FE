@@ -242,7 +242,7 @@ export const Layout = () => {
                           user_from?.meta_data?.avatar || "/default_avatar.png"
                         }
                         className="w-8 h-8 rounded-full  object-cover mr-2"
-                        referrerpolicy="no-referrer"
+                        referrerPolicy="no-referrer"
                       />
                       <div className="font-bold">{user_from.name}</div>
                       <div className="ms-1">mời bạn tham gia phòng</div>
@@ -315,7 +315,7 @@ export const Layout = () => {
                 src={avatar}
                 aria-expanded={isUserDropdownOpen}
                 onClick={toggleUserDropdown}
-                referrerpolicy="no-referrer"
+                referrerPolicy="no-referrer"
               />
             ) : (
               <div

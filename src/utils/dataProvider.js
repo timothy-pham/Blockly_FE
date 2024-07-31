@@ -29,7 +29,7 @@ export async function apiGet(resource, headers) {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    // console.error("Error fetching data:", error);
     return null;
   }
 }
@@ -51,7 +51,7 @@ export async function apiGetDetail(resource, id) {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    // console.error("Error fetching data:", error);
     return null;
   }
 }
@@ -74,7 +74,7 @@ export async function apiDelete(resource, id) {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    // console.error("Error fetching data:", error);
     return null;
   }
 }
@@ -98,7 +98,7 @@ export async function apiPatch(resource, id, data) {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    // console.error("Error fetching data:", error);
     return error;
   }
 }

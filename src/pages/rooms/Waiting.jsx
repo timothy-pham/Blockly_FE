@@ -53,10 +53,23 @@ export const Waiting = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
+        if (res.status == "playing") {
+          navigate("/rooms/watch/" + id);
+        } else if (res.status == "finished") {
+          navigate("/rooms/");
+        }
         setRoomDetail(res);
+        // check cur user ready
+        const userReady = res.users.find((v) => v.user_id === user.user_id);
+        if (userReady) {
+          setReady(userReady.is_ready);
+        }
+      } else {
+        navigate("/rooms/");
       }
     } catch (e) {
       console.log("can not fetch rooms");
+      navigate("/rooms/");
     }
   };
 
@@ -150,6 +163,10 @@ export const Waiting = () => {
       kickUser(data);
     });
 
+    socket.on("refresh_rooms", () => {
+      fetchRoomData();
+    });
+
     return () => {
       socket.off("user_joined");
       socket.off("user_ready");
@@ -225,13 +242,20 @@ export const Waiting = () => {
   };
 
   const connectToRoom = () => {
-    socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
+    if (user && socket) {
+      socket.emit("join_room", { room_id: id, user_id: user.user_id, user });
+    }
   };
 
   const handleReady = () => {
     socket?.emit("user_ready", !ready);
     setReady(!ready);
   };
+
+  const handleLeaveRoom = () => {
+    socket?.emit("leave_room");
+    navigate("/rooms");
+  }
 
   const checkHost = (user, userList) => {
     return userList.some((v) => v?.user_id === user?.user_id && v.is_host);
@@ -264,10 +288,15 @@ export const Waiting = () => {
       }}
     >
       <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
-      <div className="flex  justify-between">
-        <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
-        </Button>
+      <div className="flex justify-between">
+        <div>
+          <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }} color={ready ? "error" : "primary"}>
+            {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
+          </Button>
+          <Button onClick={handleLeaveRoom} variant="contained" sx={{ mt: 3, mb: 2, ml: 3 }} color={"error"}>
+            Thoát phòng
+          </Button>
+        </div>
         <div
           style={{
             display: "flex",
