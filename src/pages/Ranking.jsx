@@ -86,8 +86,11 @@ export const RankingPage = () => {
         <div style={{ display: "inline-block", width: "12.5%" }}>
           <h4 style={{ fontSize: "15px" }}>Hạng</h4>
         </div>
-        <div style={{ display: "inline-block", width: "55%" }}>
+        <div style={{ display: "inline-block", width: "30%" }}>
           <h4 style={{ fontSize: "15px" }}>Tên</h4>
+        </div>
+        <div style={{ display: "inline-block", width: "25%" }}>
+          <h4 style={{ fontSize: "15px" }}>Tên người dùng</h4>
         </div>
         <div style={{ display: "inline-block", width: "12.5%" }}>
           <h4
@@ -174,12 +177,18 @@ const User = ({
       </div>
       <div
         style={{
-          width: "55%",
+          width: "30%",
         }}
       >
         <a style={{ verticalAlign: "middle" }}>{name}</a>
       </div>
-
+      <div
+        style={{
+          width: "25%",
+        }}
+      >
+        <a style={{ verticalAlign: "middle" }}>{username}</a>
+      </div>
       <div style={{ width: "12.5%" }}>
         <h4>{formatNumber(points)}</h4>
       </div>
