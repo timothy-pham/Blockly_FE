@@ -17,6 +17,7 @@ import {
   Select,
   Chip,
   Autocomplete,
+  SvgIcon
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useRef, useState } from "react";
@@ -36,6 +37,8 @@ import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../constant/toast";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import LockOpenIcon from "@heroicons/react/24/solid/LockOpenIcon";
+import { validatePassword } from "../../utils/validate";
 
 const userRole = {
   teacher: "Giáo viên",
@@ -59,6 +62,7 @@ export const UserManagement = () => {
   const [openPopupAssign, setOpenPopupAssign] = useState(false);
   const [open, setOpen] = useState(false);
   const [openAssign, setOpenAssign] = useState(false);
+  const [openPopupChangePassword, setOpenPopupChangePassword] = useState(false);
   const [rows, setRows] = useState([]);
   const [data, setData] = useState({ name: "", description: "" });
   const [refresh, setRefresh] = React.useState(false);
@@ -91,7 +95,40 @@ export const UserManagement = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const handleSubmiteChangePassword = async (event) => {
+    event.preventDefault();
+    let res;
+    if (validatePassword(data.password) === false) {
+      toast.error(`Mật khẩu phải có ít nhất 6 ký tự.`, toastOptions);
+      return
+    }
+    if (!data.password || !data.passwordConfirm) {
+      toast.error(`Vui lòng nhập mật khẩu và xác nhận mật khẩu.`, toastOptions);
+    } else if (data.password !== data.passwordConfirm) {
+      toast.error(`Mật khẩu và xác nhận mật khẩu không khớp.`, toastOptions);
+    } else {
+      try {
+        const username = data.username;
+        const newPassword = data.password;
+        res = await apiPost("auth/reset-password", {
+          username,
+          password: newPassword,
+        });
+        if (res) {
+          toast.success(`Đặt lại mật khẩu thành công.`, toastOptions);
+        }
+        setData({});
+      } catch (err) {
+        toast.error(
+          `Có lỗi trong lúc đặt lại mật khẩu. Vui lòng kiểm tra lại.`,
+          toastOptions
+        );
+      } finally {
+        setRefresh(!refresh);
+        setOpenPopupChangePassword(false);
+      }
+    }
+  }
   const handleSubmitPermission = async (event) => {
     event.preventDefault();
     let res;
@@ -281,20 +318,19 @@ export const UserManagement = () => {
               {user.role === "admin" && <TableCell>Gán PH/HS với GV</TableCell>}
               <TableCell>Gán PH với HS</TableCell>
               {user.role === "admin" && <TableCell>Thay đổi quyền</TableCell>}
+              <TableCell>Đặt lại mật khẩu</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
               ? filteredRows.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                )
+                page * rowsPerPage,
+                page * rowsPerPage + rowsPerPage
+              )
               : filteredRows
             ).map((row, index) => (
               <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row?.name}
-                </TableCell>
+                <TableCell component="th" scope="row">{row?.name}</TableCell>
                 <TableCell>{row?.username}</TableCell>
                 <TableCell>{userRole[row?.role]}</TableCell>
                 <TableCell>
@@ -350,7 +386,9 @@ export const UserManagement = () => {
                   })}
                 </TableCell>
                 {user.role === "admin" && (
-                  <TableCell>
+                  <TableCell style={{
+                    textAlign: "center",
+                  }}>
                     {(row.role === "student" || row.role === "parent") && (
                       <IconButton
                         title="Gán PH/HS - GV"
@@ -374,7 +412,9 @@ export const UserManagement = () => {
                     )}
                   </TableCell>
                 )}
-                <TableCell>
+                <TableCell style={{
+                  textAlign: "center",
+                }}>
                   {row.role === "student" && (
                     <IconButton
                       title="Gán PH - HS"
@@ -397,7 +437,9 @@ export const UserManagement = () => {
                     </IconButton>
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell style={{
+                  textAlign: "center",
+                }} >
                   {user.role === "admin" && (
                     <IconButton
                       title="thay đổi quyền"
@@ -409,6 +451,21 @@ export const UserManagement = () => {
                       <ModeEditIcon />
                     </IconButton>
                   )}
+                </TableCell>
+                <TableCell style={{
+                  textAlign: "center",
+                }}>
+                  <IconButton
+                    title="Đặt lại mật khẩu"
+                    onClick={() => {
+                      setOpenPopupChangePassword(true);
+                      setData(row);
+                    }}
+                  >
+                    <SvgIcon fontSize="small">
+                      <LockOpenIcon />
+                    </SvgIcon>
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
@@ -436,6 +493,47 @@ export const UserManagement = () => {
           </TableFooter>
         </Table>
       </TableContainer>
+
+      <Dialog
+        sx={{
+          "& .MuiDialog-paper": { width: "50%", padding: 5, maxHeight: 435 },
+        }}
+        open={openPopupChangePassword}
+        onClose={() => {
+          setData({});
+          setOpenPopupChangePassword(false);
+        }}
+      >
+        <p className="text-center">
+          Đặt lại mật khẩu
+        </p>
+        <Box
+          className="flex flex-col items-center"
+          component="form"
+          defaultValue={data}
+          onSubmit={handleSubmiteChangePassword}
+          sx={{ mt: 1 }}
+        >
+          <TextField
+            label="Mật khẩu mới"
+            type="password"
+            onChange={(e) => {
+              setData({ ...data, password: e.target.value });
+            }}
+          />
+          <TextField
+            style={{ marginTop: 10 }}
+            label="Nhập lại mật khẩu"
+            type="password"
+            onChange={(e) => {
+              setData({ ...data, passwordConfirm: e.target.value });
+            }}
+          />
+          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+            Xác nhận
+          </Button>
+        </Box>
+      </Dialog>
 
       <Dialog
         sx={{
