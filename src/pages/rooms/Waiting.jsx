@@ -53,8 +53,8 @@ export const Waiting = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
-        if (res.status == "playing") {
-          navigate("/rooms/watch/" + id);
+        if (res.status == "playing" && res.users.find((v) => v.user_id === user.user_id) == 0) {
+          navigate(`/rooms/${id}/watch`);
         } else if (res.status == "finished") {
           navigate("/rooms/");
         }
