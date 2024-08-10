@@ -33,6 +33,7 @@ import ClassHome from "./pages/class/ClassHome";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from "react";
 import RequestAdmin from "./pages/RequestAdmin";
+import { RoomManagement } from "./pages/management/RoomManagement";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -88,6 +89,15 @@ function App() {
                 <Route
                   path="/history-plays"
                   element={<PrivateRoute element={HistoryPlay} />}
+                />
+                <Route
+                  path="/roomManagement"
+                  element={
+                    <PrivateRoute
+                      element={RoomManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
                 />
                 <Route
                   path="/groupManagement"
