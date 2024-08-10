@@ -48,7 +48,7 @@ export const RankingPage = () => {
       >
         <h2>
           Hạng của bạn:{" "}
-          {list.findIndex((user) => user.username === username) + 1 || 1}
+          {list.findIndex((user) => user.username === username) + 1 || "Bạn chưa có hạng, hãy thi đấu 1 trận đi!"}
           {"\n"}
         </h2>
         <h2>
