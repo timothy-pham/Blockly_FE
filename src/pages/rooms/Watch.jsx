@@ -51,17 +51,14 @@ export const Watch = () => {
 
   const setQuestions = async (res) => {
     try {
-      const haveData = checkLocalStorage();
-      if (!haveData) {
-        if (res) {
-          const data = res.map((item) => ({
-            ...item,
-            answered: false,
-          }));
-          setRows(data);
-          saveToLocalStorage(data, data[0], 0);
-        }
+      if (res) {
+        const data = res.map((item) => ({
+          ...item,
+          answered: false,
+        }));
+        setRows(data);
       }
+
     } catch (e) {
       console.error(e);
     }
@@ -77,8 +74,6 @@ export const Watch = () => {
         }
         setRoomDetail(res);
         setRanks(res?.users);
-        updateUserFollowing(res);
-
         return res;
       }
     } catch (e) {
@@ -124,6 +119,7 @@ export const Watch = () => {
       const fetchData = async () => {
         const res = await fetchRoomData();
         await setQuestions(res?.meta_data?.blocks);
+        updateUserFollowing(res);
       };
       fetchData();
       hasFetched.current = true; // Ensure it only runs once
@@ -150,6 +146,7 @@ export const Watch = () => {
     if (userFollowData) {
       const count = userFollowData?.blocks?.length || 0
       if (count > currentQuestionIndex) {
+        console.log("count2", count);
         setCurrentQuestionIndex(count);
         setBlockDetail(rows[count]);
       }
@@ -165,7 +162,7 @@ export const Watch = () => {
     // for reload page
     connectToRoom();
     socket.on("user_joined", (data) => {
-      rankingUpdate(data);
+      // rankingUpdate(data);
     });
 
     socket.on("ranking_update", (data) => {
@@ -198,7 +195,7 @@ export const Watch = () => {
       socket.off("user_finish");
       socket.off("cursorPosition");
     };
-  }, [socket]);
+  }, [socket, roomDetail]);
 
   const userFinish = (data) => {
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
@@ -373,7 +370,7 @@ export const Watch = () => {
       </div>
       <div className="flex">
         <div className="flex-1">
-          {blockDetail && (
+          {blockDetail && !checkFinished && (
             <Box>
               <div>
                 <Typography component="span">Đề bài: </Typography>
@@ -389,32 +386,31 @@ export const Watch = () => {
                   sx={{ width: "fit-content" }}
                 />
               </div>
+              <BlocklyLayout
+                setDataBlocks={setDataBlocks}
+                data={blockDetail.data}
+                isEdit={false}
+              />
 
-              <div className="my-2">
-                {checkFinished ? (
-                  <div>
-                    <Typography>
-                      Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
-                      đa!
-                    </Typography>
-                    <Typography>
-                      Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
-                    </Typography>
-                    <Typography>
-                      Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
-                    </Typography>
-                    <Typography>Số điểm của bạn: {getScore()}</Typography>
-                  </div>
-                ) : (
-                  <BlocklyLayout
-                    setDataBlocks={setDataBlocks}
-                    data={blockDetail.data}
-                    isEdit={false}
-                  />
-                )}
-              </div>
             </Box>
           )}
+          <div className="my-2">
+            {checkFinished && (
+              <div>
+                <Typography>
+                  Người chơi đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
+                  đa!
+                </Typography>
+                <Typography>
+                  Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
+                </Typography>
+                <Typography>
+                  Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
+                </Typography>
+                <Typography>Số điểm của người chơi: {getScore()}</Typography>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex-1 mt-6">
           {blockDetail?.meta_data?.image && !checkFinished && (

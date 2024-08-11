@@ -83,15 +83,12 @@ export const Play = () => {
         }));
         setRows(data);
         if (data.length > 0) {
-          const initialBlockDetail = data[0];
           // checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
           const count = res?.users?.filter((v) => v.user_id === user.user_id)[0]?.blocks?.length;
           setCurrentQuestionIndex(count - 1);
           setBlockDetail(rows[count - 1]);
         }
       }
-
-
     } catch (e) {
       console.error(e);
     }
