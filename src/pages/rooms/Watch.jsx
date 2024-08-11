@@ -181,6 +181,7 @@ export const Watch = () => {
       socket.off("end_game");
       socket.off("user_joined");
       socket.off("user_finish");
+      socket.off("cursorPosition");
     };
   }, [socket]);
 
@@ -346,8 +347,8 @@ export const Watch = () => {
                 checkWrongAnswer(val.block_id)
                   ? "error"
                   : checkTrueAnswer(val.block_id)
-                  ? "success"
-                  : "primary"
+                    ? "success"
+                    : "primary"
               }
             >
               {index + 1}

@@ -174,6 +174,7 @@ export const Waiting = () => {
       socket.off("receive_messages");
       socket.off("start_game");
       socket.off("kick_user");
+      socket.off("refresh_rooms");
     };
   }, [socket]);
 

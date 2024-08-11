@@ -86,7 +86,7 @@ export const Play = () => {
           if (data.length > 0) {
             const initialBlockDetail = data[0];
             setBlockDetail(initialBlockDetail);
-            checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
+            // checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
           }
           saveToLocalStorage(data, data[0], 0);
         }
@@ -101,10 +101,15 @@ export const Play = () => {
     try {
       const res = await apiGetDetail("rooms", id);
       if (res) {
-        // check status room
-        if (res?.status !== "playing") {
+        // // check status room
+        if (res?.status !== "playing" && res?.status !== "finished") {
           navigate(`/rooms`);
           return;
+        } else {
+          if (res?.status === "finished") {
+            navigate(`/rooms/${id}/end-game`, { state: res });
+            return;
+          }
         }
         // check user in room and status = playing
         const userInRoom = res.users.find(
@@ -151,7 +156,6 @@ export const Play = () => {
 
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
-    console.log("SKIP1", currentQuestionIndex);
     if (nextIndex < rows.length) {
       console.log("SKIP2", nextIndex);
       setCurrentQuestionIndex(nextIndex);
@@ -295,7 +299,6 @@ export const Play = () => {
       wrong: true,
       skip: true
     });
-    console.log("SKIP");
     handleNextQuestion();
     setShowDeleteDialog(false);
   };
