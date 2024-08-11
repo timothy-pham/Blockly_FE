@@ -80,14 +80,21 @@ export const Waiting = () => {
         let temp = []
         res.forEach((user) => {
           let isValid = true;
-          roomDetail.users.forEach((roomUser) => {
-            if (user.user_id == roomUser.user_id) {
+          if (user.user_id) {
+            roomDetail.users.forEach((roomUser) => {
+              if (user.user_id == roomUser.user_id) {
+                isValid = false;
+              }
+            })
+            // check includes in temps
+            if (temp.find((v) => v.user_id === user.user_id)) {
               isValid = false;
             }
-          })
-          if (isValid) {
-            temp.push(user);
+            if (isValid) {
+              temp.push(user);
+            }
           }
+
         })
         setUserOnlineList(temp);
         setShowDialogInvite(true);
@@ -235,11 +242,11 @@ export const Waiting = () => {
   };
 
   const userJoin = (data) => {
-    setUserList(data.users.filter((v) => v.is_connected));
+    setUserList(data?.users.filter((v) => v.is_connected));
   };
 
   const userReady = (data) => {
-    setUserList(data.users.filter((v) => v.is_connected));
+    setUserList(data?.users.filter((v) => v.is_connected));
   };
 
   const connectToRoom = () => {
@@ -369,7 +376,7 @@ export const Waiting = () => {
                           // alt={initials}
                           className="w-16 h-16 rounded-full  object-cover mr-2"
                         />
-                        <div>{row?.user_data.name}</div>
+                        <div>{row?.user_data?.name}</div>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -444,19 +451,19 @@ export const Waiting = () => {
                             src={data?.meta_data?.avatar || "/default_avatar.png"}
                             className="w-8 h-8 rounded-full  object-cover mr-2"
                           />
-                          <div>{data.name}</div>
+                          <div>{data?.name}</div>
                         </div>
                       </TableCell>
                       <TableCell style={{ width: '200px', textAlign: 'right' }}>
                         <Button
-                          disabled={listInvited.includes(data.user_id)}
+                          disabled={listInvited.includes(data?.user_id)}
                           variant="contained"
                           onClick={() => {
                             socket?.emit("invite_user", {
                               room: roomDetail,
-                              user_id: data.user_id,
+                              user_id: data?.user_id,
                             });
-                            setListInvited([...listInvited, data.user_id]);
+                            setListInvited([...listInvited, data?.user_id]);
                           }}
                         >
                           Mời

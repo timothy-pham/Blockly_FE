@@ -57,16 +57,21 @@ export const SideNav = ({ open, setOpenNav }) => {
   const reloadInfo = async () => {
     try {
       const { user } = JSON.parse(localStorage.getItem("authToken"));
-      const res = await apiGetDetail("users", user?.user_id);
-      const oldUser = JSON.parse(localStorage.getItem("authToken"));
-      localStorage.setItem(
-        "authToken",
-        JSON.stringify({
-          token: oldUser?.token,
-          refreshToken: oldUser?.refreshToken,
-          user: res,
-        })
-      );
+      if (user?.user_id) {
+        const res = await apiGetDetail("users", user?.user_id);
+        const oldUser = JSON.parse(localStorage.getItem("authToken"));
+        if (res) {
+          localStorage.setItem(
+            "authToken",
+            JSON.stringify({
+              token: oldUser?.token,
+              refreshToken: oldUser?.refreshToken,
+              user: res,
+            })
+          );
+        }
+      }
+
     } catch (error) {
       console.log("RELOAD INFO ERROR", error);
     }
