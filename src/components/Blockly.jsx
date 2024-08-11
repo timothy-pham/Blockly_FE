@@ -14,9 +14,11 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
   const workspaceRef = useRef(null);
 
   useLayoutEffect(() => {
+    // Định nghĩa các khối và phương thức tùy chỉnh
     Blockly.common.defineBlocks(blocks);
     Object.assign(javascriptGenerator.forBlock, forBlock);
 
+    // Khởi tạo workspace Blockly
     if (blocklyDivRef.current) {
       workspaceRef.current = Blockly.inject(blocklyDivRef.current, {
         toolbox: isEdit ? toolbox : null,
@@ -33,6 +35,7 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
         trashcan: isEdit,
       });
 
+      // Tải dữ liệu vào workspace nếu có
       if (data) {
         BlocklyCore.serialization.workspaces.load(
           data,
@@ -41,6 +44,7 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
         );
       }
 
+      // Thêm listener để theo dõi thay đổi trong workspace
       workspaceRef.current.addChangeListener((e) => {
         if (
           e.isUiEvent ||
@@ -49,11 +53,14 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
         ) {
           return;
         }
+
         const workspaceData = BlocklyCore.serialization.workspaces.save(
           workspaceRef.current
         );
+
         const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
         setDataBlocks({ code, data: workspaceData });
+
         showText();
       });
     }
@@ -74,6 +81,12 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
         undefined
       );
     }
+
+    if (!isEdit) {
+      workspaceRef.current.getAllBlocks().forEach((block) => {
+        block.setEditable(false);
+      });
+    }
   }, [data]);
 
   const showText = () => {
@@ -81,19 +94,6 @@ export const BlocklyLayout = ({ data, setDataBlocks, isEdit = true }) => {
       const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
       if (codeDivRef.current) codeDivRef.current.textContent = code;
       if (outputDivRef.current) outputDivRef.current.innerHTML = "";
-    }
-  };
-
-  const runCode = (e) => {
-    e.preventDefault();
-    if (workspaceRef.current) {
-      const code = javascriptGenerator.workspaceToCode(workspaceRef.current);
-      console.log("code", code);
-      try {
-        const a = eval(code);
-      } catch (error) {
-        console.log("error", error);
-      }
     }
   };
 
