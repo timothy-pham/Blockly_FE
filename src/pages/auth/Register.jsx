@@ -37,12 +37,20 @@ const Register = () => {
         }
       );
 
+      const res = await response.json();
+
+      if (typeof res.message === "string") {
+        setError(res.message);
+      } else {
+        setError("");
+      }
+
       if (response.ok) {
         navigate(`/login`);
-      } else if (response.status === 409) {
-        setError("Tài khoản này đã tồn tại");
-      } else {
-        setError("Tạo tài khoản thất bại");
+        // } else if (response.status === 409) {
+        //   setError("Tài khoản này đã tồn tại");
+        // } else {
+        //   setError("Tạo tài khoản thất bại");
       }
     } catch (error) {
       console.error("Login error:", error);

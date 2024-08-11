@@ -7,7 +7,7 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Chip
+  Chip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { apiPost, apiGet } from "../../utils/dataProvider";
@@ -22,6 +22,7 @@ export const Rooms = () => {
   const [groups, setGroups] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [createRoom, setCreateRoom] = useState({});
+  const [validateCount, setValidateCount] = useState("");
 
   const fetchRoom = async () => {
     try {
@@ -53,7 +54,9 @@ export const Rooms = () => {
       const res = await apiGet("groups/search?collection_id=" + collection_id);
       if (res) {
         // sort by meta_data.position
-        const temp = res.sort((a, b) => a.meta_data.position - b.meta_data.position);
+        const temp = res.sort(
+          (a, b) => a.meta_data.position - b.meta_data.position
+        );
         setGroups(temp);
         setCreateRoom({ ...createRoom, group_id: res[0].group_id });
       }
@@ -79,7 +82,9 @@ export const Rooms = () => {
 
   const handleCreateRoom = async () => {
     try {
-      const group_data = groups.find((group) => group.group_id === createRoom?.group_id);
+      const group_data = groups.find(
+        (group) => group.group_id === createRoom?.group_id
+      );
       let data = {
         name: createRoom?.name,
         description: createRoom?.description,
@@ -87,7 +92,7 @@ export const Rooms = () => {
           collection_id: createRoom?.collection_id,
           group_id: createRoom?.group_id,
           count: Number(createRoom?.count),
-          group_data: group_data
+          group_data: group_data,
         },
       };
       const res = await apiPost("rooms", data);
@@ -159,9 +164,13 @@ export const Rooms = () => {
                         src={host?.user_data?.meta_data?.avatar}
                         className="w-10 h-10 rounded-full  object-cover mr-2"
                       />
-                      <p style={{
-                        whiteSpace: "nowrap",
-                      }}>{host?.user_data?.name}</p>
+                      <p
+                        style={{
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {host?.user_data?.name}
+                      </p>
                     </div>
                   </td>
                   <td className="border px-4 py-2">{room?.name}</td>
@@ -177,27 +186,30 @@ export const Rooms = () => {
                     />
                   </td>
                   <td className="border px-2 py-2  text-center">
-                    {room.status === "waiting" ?
-                      (<Button
+                    {room.status === "waiting" ? (
+                      <Button
                         variant="contained"
                         color="primary"
                         sx={{ fontWeight: "bold" }}
                         onClick={() => navigate("/rooms/" + room.room_id)}
                       >
                         Tham gia
-                      </Button>)
-                      : (<Button
+                      </Button>
+                    ) : (
+                      <Button
                         variant="contained"
                         color="primary"
                         sx={{ fontWeight: "bold" }}
-                        onClick={() => navigate("/rooms/" + room.room_id + "/watch")}
+                        onClick={() =>
+                          navigate("/rooms/" + room.room_id + "/watch")
+                        }
                       >
                         Theo dõi trận đấu
-                      </Button>)
-                    }
+                      </Button>
+                    )}
                   </td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
@@ -237,11 +249,34 @@ export const Rooms = () => {
               variant="outlined"
               fullWidth
               value={createRoom?.count}
-              onChange={(e) =>
-                setCreateRoom({
-                  ...createRoom,
-                  count: e.target.value,
-                })
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "") {
+                  setCreateRoom({
+                    ...createRoom,
+                    count: value,
+                  });
+                  setValidateCount("");
+                } else {
+                  const numericValue = Number(value);
+                  if (numericValue >= 3 && numericValue <= 10) {
+                    setCreateRoom({
+                      ...createRoom,
+                      count: numericValue,
+                    });
+                    setValidateCount("");
+                  } else {
+                    setCreateRoom({
+                      ...createRoom,
+                      count: numericValue,
+                    });
+                    setValidateCount("Số câu hỏi phải trong khoảng 3 đến 10");
+                  }
+                }
+              }}
+              inputProps={{ min: 3, max: 10 }}
+              helperText={
+                <Typography color="error">{validateCount}</Typography>
               }
             />
           </div>
