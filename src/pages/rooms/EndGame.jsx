@@ -46,12 +46,14 @@ export const EndGame = () => {
       }
     });
 
+    const filterRanks = sortedRanks.filter((rank) => rank.is_ready);
+
     setAllQuestions(
       data?.meta_data?.count
         ? data?.meta_data?.count
         : data?.meta_data?.blocks.length
     );
-    setRanks(sortedRanks);
+    setRanks(filterRanks);
   };
 
   useEffect(() => {

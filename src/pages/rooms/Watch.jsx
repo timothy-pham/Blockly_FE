@@ -17,6 +17,7 @@ export const Watch = () => {
   const { collection_id, id } = useParams();
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [blockDetail, setBlockDetail] = useState();
   const [dataBlock, setDataBlocks] = useState();
   const [roomDetail, setRoomDetail] = useState();
@@ -43,7 +44,6 @@ export const Watch = () => {
     const index = JSON.parse(localStorage.getItem("index"));
     if (questions && current) {
       setRows(questions);
-      setBlockDetail(current);
       haveData = true;
     }
     return haveData;
@@ -59,10 +59,6 @@ export const Watch = () => {
             answered: false,
           }));
           setRows(data);
-          if (data.length > 0) {
-            const initialBlockDetail = data[0];
-            setBlockDetail(initialBlockDetail);
-          }
           saveToLocalStorage(data, data[0], 0);
         }
       }
@@ -82,6 +78,7 @@ export const Watch = () => {
         setRoomDetail(res);
         setRanks(res?.users);
         updateUserFollowing(res);
+
         return res;
       }
     } catch (e) {
@@ -95,11 +92,16 @@ export const Watch = () => {
     const userFollowing =
       res?.users?.filter((v) => v.user_id === user_id)[0] || res.users[0];
     setUser(userFollowing?.user_data);
+    const count = userFollowing?.blocks?.length || 0;
+    setCurrentQuestionIndex(count);
+    let blocks_data = res?.meta_data?.blocks
+    setBlockDetail(blocks_data[count]);
     if (
       userFollowing &&
       (userFollowing.user_id !== user?.user_id || user === null)
     ) {
       handleFollowUser(userFollowing?.user_id);
+
     }
   };
 
@@ -140,6 +142,19 @@ export const Watch = () => {
     );
     setRoomDetail(data);
     setRanks(sortedRanks);
+
+    const userFollowData = data?.users?.filter(
+      (v) => v.user_id === user?.user_id
+    )[0];
+
+    if (userFollowData) {
+      const count = userFollowData?.blocks?.length || 0
+      if (count > currentQuestionIndex) {
+        setCurrentQuestionIndex(count);
+        setBlockDetail(rows[count]);
+      }
+    }
+
   };
 
   const connectToRoom = () => {

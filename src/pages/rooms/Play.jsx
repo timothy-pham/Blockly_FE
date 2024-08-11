@@ -73,24 +73,24 @@ export const Play = () => {
 
 
 
-  const setQuestions = async (blocks) => {
+  const setQuestions = async (res) => {
     try {
-      const haveData = checkLocalStorage();
-      if (!haveData) {
-        if (blocks) {
-          const data = blocks.map((item) => ({
-            ...item,
-            answered: false,
-          }));
-          setRows(data);
-          if (data.length > 0) {
-            const initialBlockDetail = data[0];
-            setBlockDetail(initialBlockDetail);
-            // checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
-          }
-          saveToLocalStorage(data, data[0], 0);
+      const blocks = res?.meta_data?.blocks
+      if (blocks) {
+        const data = blocks.map((item) => ({
+          ...item,
+          answered: false,
+        }));
+        setRows(data);
+        if (data.length > 0) {
+          const initialBlockDetail = data[0];
+          // checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
+          const count = res?.users?.filter((v) => v.user_id === user.user_id)[0]?.blocks?.length;
+          setCurrentQuestionIndex(count - 1);
+          setBlockDetail(rows[count - 1]);
         }
       }
+
 
     } catch (e) {
       console.error(e);
@@ -130,7 +130,7 @@ export const Play = () => {
     if (!hasFetched.current) {
       const fetchData = async () => {
         const res = await fetchRoomData();
-        await setQuestions(res?.meta_data?.blocks);
+        await setQuestions(res);
         setRanks(res?.users);
       };
       fetchData();
@@ -157,7 +157,6 @@ export const Play = () => {
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < rows.length) {
-      console.log("SKIP2", nextIndex);
       setCurrentQuestionIndex(nextIndex);
       setBlockDetail(rows[nextIndex]);
       saveToLocalStorage(rows, rows[nextIndex], nextIndex);
@@ -166,7 +165,7 @@ export const Play = () => {
 
   const rankingUpdate = (data) => {
     if (rows.length === 0 || ranks.length === 0) return;
-    const is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
+    const is_done = checkFinished;
     if (is_done) {
       socket.emit("user_finish")
     }
@@ -180,6 +179,14 @@ export const Play = () => {
       }
     );
     setRanks(sortedRanks);
+
+    // check user.blocks.length
+    const count = data?.users?.filter((v) => v.user_id === user.user_id)[0]?.blocks?.length;
+
+    if (count > currentQuestionIndex && count < rows.length) {
+      setCurrentQuestionIndex(count);
+      setBlockDetail(rows[count]);
+    }
   };
 
   const connectToRoom = () => {
@@ -376,6 +383,8 @@ export const Play = () => {
     return false;
   }
 
+  const renderProgress = useMemo(() => { }, [checkFinished]);
+
   return (
     <Paper
       sx={{
@@ -425,7 +434,7 @@ export const Play = () => {
       </div>
       <div className="flex">
         <div className="flex-1">
-          {blockDetail && (
+          {blockDetail && !checkFinished && (
             <Box>
               <div>
                 <Typography component="span">Đề bài: </Typography>
@@ -443,27 +452,11 @@ export const Play = () => {
               </div>
 
               <div className="my-2">
-                {checkFinished ? (
-                  <div>
-                    <Typography>
-                      Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
-                      đa!
-                    </Typography>
-                    <Typography>
-                      Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
-                    </Typography>
-                    <Typography>
-                      Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
-                    </Typography>
-                    <Typography>Số điểm của bạn: {getScore()}</Typography>
-                  </div>
-                ) : (
-                  <BlocklyLayout
-                    setDataBlocks={setDataBlocks}
-                    data={blockDetail.data}
-                    isEdit={false}
-                  />
-                )}
+                <BlocklyLayout
+                  setDataBlocks={setDataBlocks}
+                  data={blockDetail.data}
+                  isEdit={false}
+                />
               </div>
               {!checkFinished && (
                 <div>
@@ -494,6 +487,35 @@ export const Play = () => {
                 </div>
               )}
             </Box>
+          )}
+          {checkFinished && (
+            <div>
+              <div>
+                <Typography component="span">Đề bài: </Typography>
+                <span className="font-semibold">{blockDetail.question}</span>
+              </div>
+              <div>
+                <Typography component="span">Mức độ: </Typography>
+                <Chip
+                  style={{
+                    backgroundColor: getColor(blockDetail?.level),
+                  }}
+                  label={getLabel(blockDetail?.level)}
+                  sx={{ width: "fit-content" }}
+                />
+              </div>
+              <Typography>
+                Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
+                đa!
+              </Typography>
+              <Typography>
+                Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
+              </Typography>
+              <Typography>
+                Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
+              </Typography>
+              <Typography>Số điểm của bạn: {getScore()}</Typography>
+            </div>
           )}
         </div>
         <div className="flex-1 mt-6">
