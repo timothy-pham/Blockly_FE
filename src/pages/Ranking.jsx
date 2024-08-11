@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { apiGet } from "../utils/dataProvider";
 import { Avatar } from "@mui/material";
 import { formatDateTime, formatNumber } from "../utils/transform";
-
+import "./main.css";
 export const RankingPage = () => {
   const [list, setList] = useState([]);
   const [username, setUsername] = useState("");
@@ -37,42 +37,69 @@ export const RankingPage = () => {
   };
 
   return (
-    <div style={{ width: "1000px", margin: "80px auto" }}>
-      {/* your ranking */}
-      <div
-        style={{
-          width: "100%",
-          borderRadius: "5px 5px 0 0",
-          marginBottom: "10px",
-        }}
-      >
-        <h2>
-          Hạng của bạn:{" "}
-          {list.findIndex((user) => user.username === username) + 1 || "Bạn chưa có hạng, hãy thi đấu 1 trận đi!"}
-          {"\n"}
-        </h2>
-        <h2>
-          Điểm tích lũy:{" "}
-          {list.find((user) => user.username === username)?.points || 0}
-          {"\n"}
-        </h2>
-        <h2>
-          Tổng số trận đã đấu:{" "}
-          {list.find((user) => user.username === username)?.matches || 0}
-        </h2>
+    <div style={{ width: "1000px", margin: "auto" }}>
+      <div style={{
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+        opacity: "0.3",
+      }}>
+        <div class="wrapper">
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+          <div><span class="dot"></span></div>
+        </div>
       </div>
+      {/* your ranking */}
+      <h1 style={{
+        textAlign: "center",
+        fontSize: "30px",
+        fontWeight: "bold",
+      }}>BẢNG XẾP HẠNG</h1>
       <div
         style={{
           width: "100%",
-          height: "70px",
           background: "rgba(0, 168, 232, 0.79)",
           textAlign: "center",
           borderRadius: "5px 5px 0 0",
         }}
       >
-        <h2 style={{ margin: "0", color: "#ffffff", paddingTop: "20px" }}>
-          Bảng xếp hạng
-        </h2>
+        <div
+          style={{
+            width: "100%",
+            borderRadius: "5px 5px 0 0",
+            marginBottom: "10px",
+          }}
+        >
+          <h2>
+            Hạng của bạn:{" "}
+            {list.findIndex((user) => user.username === username) + 1 || "Bạn chưa có hạng, hãy thi đấu 1 trận đi!"}
+            {"\n"}
+          </h2>
+          <h2>
+            Điểm tích lũy:{" "}
+            {list.find((user) => user.username === username)?.points || 0}
+            {"\n"}
+          </h2>
+          <h2>
+            Tổng số trận đã đấu:{" "}
+            {list.find((user) => user.username === username)?.matches || 0}
+          </h2>
+        </div>
       </div>
       <div
         style={{
@@ -111,7 +138,7 @@ export const RankingPage = () => {
         <User
           key={user?.username}
           name={user?.name}
-          rank={i + 1 || 1}
+          rank={i + 1 || 0}
           points={user?.points}
           matches={user?.matches}
           username={user?.username}
@@ -138,7 +165,18 @@ const User = ({
     const initials = names.map((n) => n.charAt(0).toUpperCase());
     return initials.join("");
   };
-
+  const getColor = () => {
+    switch (rank) {
+      case 1:
+        return "#FFD700";
+      case 2:
+        return "#C0C0C0";
+      case 3:
+        return "#cd7f32";
+      default:
+        return "rgba(254, 254, 254, .9)";
+    }
+  }
   return (
     <div
       style={{
@@ -146,16 +184,13 @@ const User = ({
         flexDirection: "row",
         flexWrap: "nowrap",
         alignItems: "center",
-        background:
-          currentUser === username
-            ? "rgba(120, 168, 232, 0.79)"
-            : "rgba(254, 254, 254, .9)",
+        background: getColor(),
         width: "100%",
         height: "100%",
         padding: "5px",
         textAlign: "center",
-        paddingBottom: "20px",
-        paddingTop: "20px",
+        paddingBottom: "10px",
+        paddingTop: "10px",
         border: "1px solid rgba(0,0,0,.2)",
       }}
     >
@@ -172,7 +207,7 @@ const User = ({
         <h4>{rank}</h4>
         <img
           src={userData?.avatar ? userData?.avatar : "/default_avatar.png"}
-          className="w-20 h-20 rounded-full ms-2 object-cover"
+          className="w-14 h-14 rounded-full ms-2 object-cover"
         />
       </div>
       <div
@@ -180,7 +215,10 @@ const User = ({
           width: "30%",
         }}
       >
-        <a style={{ verticalAlign: "middle" }}>{name}</a>
+        <a style={{
+          verticalAlign: "middle",
+          fontWeight: currentUser === username ? "1000" : "normal ",
+        }}>{name}</a>
       </div>
       <div
         style={{
