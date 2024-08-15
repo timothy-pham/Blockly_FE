@@ -2,7 +2,14 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import { apiGet } from "../utils/dataProvider";
 import { truncateText } from "../utils/transform";
 import { useNavigate } from "react-router-dom";
-import { Paper, Typography } from "@mui/material";
+import { Paper, Typography, SvgIcon } from "@mui/material";
+import {
+  QuestionMarkCircleIcon,
+  BookOpenIcon
+} from "@heroicons/react/24/solid";
+
+// import css
+import "./styles/dashboard.css";
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -13,23 +20,97 @@ export const Dashboard = () => {
       if (res) {
         setRows(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useLayoutEffect(() => {
     fetchCollection();
   }, []);
-  return (
-    <Paper sx={{ padding: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Chủ đề
-      </Typography>
 
-      <div className="border-t border-solid border-gray-300 pt-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {rows.map((val, idx) => {
-            return (
+  return (
+    <div class="paper">
+      <div class="dashboard">
+        {rows.map((val, idx) => {
+          return (
+            <div class="card">
               <div
-                className="relative group cursor-pointer"
+                style={{
+                  backgroundColor: "hsl(0, 0%, 13%)",
+                  width: "100%",
+                  height: "100%",
+                  flex: 1,
+
+                }}
+              >
+                <div className="flex items-center relative rounded w-full p-3">
+                  <div className="book-3d relative w-full"
+                  >
+                    <img
+                      className="rounded w-full"
+                      src={val?.meta_data?.image}
+                      alt={val?.name}
+                    />
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    width: "100%",
+                    padding: 10,
+                  }}
+
+                >
+                  <div className="text-black text-center">
+                    <span
+                      style={{
+                        fontSize: 24,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        display: "block",
+                        textTransform: "uppercase",
+                        fontFamily: '"Roboto", sans-serif',
+
+                      }}
+                      class="text"
+                    >{val.name}</span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 18,
+                      fontFamily: '"Roboto", sans-serif',
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <SvgIcon fontSize="small" >
+                        <BookOpenIcon />
+                      </SvgIcon>
+                      <p className="font-bold ml-1">Tổng số bài: <span>{val?.total_groups}</span></p>
+                    </div>
+                    <div className="flex items-center">
+                      <SvgIcon fontSize="small" >
+                        <QuestionMarkCircleIcon />
+                      </SvgIcon>
+                      <p className="font-bold ml-1">Tổng số câu hỏi: <span>{val?.total_blocks}</span></p>
+                    </div>
+
+                  </div>
+
+                  <p
+                    style={{
+                      fontSize: 16,
+                      fontFamily: '"Roboto", sans-serif',
+                      whiteSpace: "pre-line",
+                      wordBreak: "break-word",
+                      hyphens: "auto",
+                      marginTop: 10,
+                    }}
+                    class="text"
+                  >
+                    {truncateText(val?.meta_data?.description, 250)}
+                  </p>
+
+                </div>
+              </div>
+              <div class="content"
                 key={idx}
                 onClick={() => {
                   if (val.type == "normal") {
@@ -39,33 +120,28 @@ export const Dashboard = () => {
                       `/rooms?type=${val.type}&collection_id=${val.collection_id}`
                     );
                   }
-                }}
-              >
-                <div className="max-w-full flex flex-col items-center bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300">
-                  <div className="flex items-center relative rounded w-full">
-                    <div className="book-3d relative w-full h-[270px]">
-                      <img
-                        className="object-cover w-full h-full align-middle rounded-t-[25px]"
-                        src={val?.meta_data?.image}
-                        alt="Product"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-3 w-full p-2">
-                    <div className="text-black py-2 flex flex-wrap justify-between items-center">
-                      <span>{val.name}</span>
-                    </div>
-                    <div className="text-gray-400 [&>span]:text-xs lg:[&>span]:text-sm flex flex-wrap justify-between items-center break-all">
-                      <span>{truncateText(val?.meta_data?.description)}</span>
-                    </div>
-                  </div>
+                }}>
+                <div class="contentBx">
+                  {val.type == "normal" ?
+                    (<section>
+                      <div>
+                        <button anim="glow" >BẮT ĐẦU LUYỆN TẬP</button>
+                      </div>
+                    </section>) :
+                    (
+                      <section>
+                        <div>
+                          <button anim="sheen" >THI ĐẤU NGAY</button>
+                        </div>
+                      </section>
+                    )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
-    </Paper>
+    </div>
+
   );
 };
