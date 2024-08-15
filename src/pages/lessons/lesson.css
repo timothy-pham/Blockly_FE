@@ -1,0 +1,129 @@
+.ag-courses_box {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 50px 0;
+}
+
+.ag-courses_item {
+  display: flex;
+  flex-direction: column;
+  flex-basis: calc(33.33333% - 30px);
+  margin: 0 15px 30px;
+  overflow: hidden;
+  border-radius: 28px;
+  position: relative; /* Ensure position relative for child absolute positioning */
+}
+
+.ag-courses-item_link {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 15px;
+  background-color: hsl(0, 0%, 13%);
+  overflow: hidden;
+  position: relative;
+  z-index: 1; /* Ensure it's above the background circle */
+  justify-content: space-between;
+}
+
+.ag-courses-item_title {
+  margin: 0 0 25px;
+  font-weight: bold;
+  font-size: 30px;
+  color: #fff;
+  z-index: 2;
+}
+
+.ag-courses-item_date-box {
+  font-size: 18px;
+  color: #fff;
+  z-index: 2;
+}
+
+.ag-courses-item_date {
+  font-weight: bold;
+  color: #f56e4c;
+  transition: color 0.5s ease;
+}
+
+.ag-courses-item_bg {
+  height: 128px;
+  width: 128px;
+  background-color: #f56e4c;
+  position: absolute;
+  top: -75px;
+  right: -75px;
+  border-radius: 50%;
+  transition: transform 0.5s ease; /* Ensure transition for scaling */
+  z-index: 0; /* Place it behind the content */
+}
+
+/* .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+  background-color: #f56e4c;
+}
+
+.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+  background-color: #e44002;
+}
+
+.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+  background-color: #952aff;
+}
+
+.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+  background-color: #cd3e94;
+}
+
+.ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+  background-color: #4c49ea;
+} */
+
+.ag-courses-item_link:hover {
+  .ag-courses-item_bg {
+    transform: scale(10);
+  }
+
+  .ag-courses-item_date {
+    color: #fff;
+  }
+
+  .hover-icon path {
+    fill: #fff; /* Change to the color you want on hover */
+  }
+}
+
+@media only screen and (max-width: 979px) {
+  .ag-courses_item {
+    flex-basis: calc(50% - 30px);
+  }
+
+  .ag-courses-item_title {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .ag-format-container {
+    width: 96%;
+  }
+}
+
+@media only screen and (max-width: 639px) {
+  .ag-courses_item {
+    flex-basis: 100%;
+  }
+
+  .ag-courses-item_title {
+    min-height: 72px;
+    line-height: 1;
+    font-size: 24px;
+  }
+
+  .ag-courses-item_link {
+    padding: 22px 40px;
+  }
+
+  .ag-courses-item_date-box {
+    font-size: 16px;
+  }
+}
