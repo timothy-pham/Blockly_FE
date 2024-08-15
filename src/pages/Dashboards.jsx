@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Paper, Typography, SvgIcon } from "@mui/material";
 import {
   QuestionMarkCircleIcon,
-  BookOpenIcon
+  BookOpenIcon,
 } from "@heroicons/react/24/solid";
 
 // import css
@@ -20,128 +20,89 @@ export const Dashboard = () => {
       if (res) {
         setRows(res);
       }
-    } catch (e) { }
+    } catch (e) {}
   };
   useLayoutEffect(() => {
     fetchCollection();
   }, []);
 
   return (
-    <div class="paper">
-      <div class="dashboard">
+    <div>
+      <div
+        class="relative flex h-[calc(100vh)]
+          cursor-pointer
+       "
+        style={{
+          fontFamily: "Courier New,'Courier','monospace'",
+          fontSize: "1.5rem",
+        }}
+      >
         {rows.map((val, idx) => {
-          return (
-            <div class="card">
+          const { type } = val;
+          if (type === "normal") {
+            return (
               <div
+                class="absolute h-full w-full 
+              transition-all duration-300 ease-in-out
+               shadow-[inset_0_0_0_2000px_hsl(12,90%,63%,90%)] hover:shadow-[hsl(12,90%,63%)]
+                [clip-path:polygon(0_0,30%_0,70%_100%,0%_100%)] object-contain
+          "
                 style={{
-                  backgroundColor: "hsl(0, 0%, 13%)",
-                  width: "100%",
-                  height: "100%",
-                  flex: 1,
-
+                  backgroundImage: `url(${val?.meta_data?.image})`,
+                  backgroundSize: " cover",
+                }}
+                onClick={() => {
+                  navigate(`/collections/${val.collection_id}`);
                 }}
               >
-                <div className="flex items-center relative rounded w-full p-3">
-                  <div className="book-3d relative w-full"
-                  >
-                    <img
-                      className="rounded w-full"
-                      src={val?.meta_data?.image}
-                      alt={val?.name}
-                    />
+                <div>
+                  <div class="text-center space-y-4 text-[#333] w-[calc(50%-40px)] flex-1 flex flex-col absolute top-1/2 px-4 -translate-y-1/2">
+                    <p className="font-bold text-5xl">{val.name}</p>
+
+                    <p className="font-bold">
+                      Tổng số bài: <span>{val?.total_groups}</span>
+                    </p>
+                    <p className="font-bold">
+                      Tổng số câu hỏi: <span>{val?.total_blocks}</span>
+                    </p>
                   </div>
-                </div>
-
-                <div
-                  style={{
-                    width: "100%",
-                    padding: 10,
-                  }}
-
-                >
-                  <div className="text-black text-center">
-                    <span
-                      style={{
-                        fontSize: 24,
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        display: "block",
-                        textTransform: "uppercase",
-                        fontFamily: '"Roboto", sans-serif',
-
-                      }}
-                      class="text"
-                    >{val.name}</span>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      fontFamily: '"Roboto", sans-serif',
-                    }}
-                  >
-                    <div className="flex items-center">
-                      <SvgIcon fontSize="small" >
-                        <BookOpenIcon />
-                      </SvgIcon>
-                      <p className="font-bold ml-1">Tổng số bài: <span>{val?.total_groups}</span></p>
-                    </div>
-                    <div className="flex items-center">
-                      <SvgIcon fontSize="small" >
-                        <QuestionMarkCircleIcon />
-                      </SvgIcon>
-                      <p className="font-bold ml-1">Tổng số câu hỏi: <span>{val?.total_blocks}</span></p>
-                    </div>
-
-                  </div>
-
-                  <p
-                    style={{
-                      fontSize: 16,
-                      fontFamily: '"Roboto", sans-serif',
-                      whiteSpace: "pre-line",
-                      wordBreak: "break-word",
-                      hyphens: "auto",
-                      marginTop: 10,
-                    }}
-                    class="text"
-                  >
-                    {truncateText(val?.meta_data?.description, 250)}
-                  </p>
-
                 </div>
               </div>
-              <div class="content"
-                key={idx}
-                onClick={() => {
-                  if (val.type == "normal") {
-                    navigate(`/collections/${val.collection_id}`);
-                  } else {
-                    navigate(
-                      `/rooms?type=${val.type}&collection_id=${val.collection_id}`
-                    );
-                  }
-                }}>
-                <div class="contentBx">
-                  {val.type == "normal" ?
-                    (<section>
-                      <div>
-                        <button anim="glow" >BẮT ĐẦU LUYỆN TẬP</button>
-                      </div>
-                    </section>) :
-                    (
-                      <section>
-                        <div>
-                          <button anim="sheen" >THI ĐẤU NGAY</button>
-                        </div>
-                      </section>
-                    )}
+            );
+          }
+          return (
+            <div
+              class="absolute h-full w-full 
+               transition-all duration-300 ease-in-out
+          [clip-path:polygon(100%_0,100%_100%,70%_100%,30%_0)]
+           shadow-[inset_0_0_0_2000px_rgb(51,51,51,90%)] hover:shadow-[rgb(51,51,51)]
+          "
+              style={{
+                backgroundImage: `url(${val?.meta_data?.image})`,
+                backgroundSize: " cover",
+              }}
+              onClick={() => {
+                navigate(
+                  `/rooms?type=${val.type}&collection_id=${val.collection_id}`
+                );
+              }}
+            >
+              <div>
+                <div class="space-y-4  text-center right-0 text-[hsl(12,90%,63%)] w-[calc(50%-120px)] flex-1 flex flex-col absolute top-1/2 px-4 -translate-y-1/2">
+                  <p className="font-bold text-5xl">{val.name}</p>
+
+                  <p className="font-bold">
+                    Tổng số bài: <span>{val?.total_groups}</span>
+                  </p>
+                  <p className="font-bold">
+                    Tổng số câu hỏi: <span>{val?.total_blocks}</span>
+                  </p>
                 </div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-
   );
 };

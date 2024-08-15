@@ -27,15 +27,15 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const drawerWidth = 280;
-const appBarHeight = 64;
+const appBarHeight = 0;
 
 const LayoutContainer = styled("div")(({ theme }) => ({
   display: "flex",
   flex: "1 1 auto",
   flexDirection: "column",
   width: "100%",
-  backgroundColor: "#f0f0f0",
-  minHeight: "94vh",
+  // backgroundColor: "#f0f0f0",
+  // minHeight: "94vh",
   padding: theme.spacing(3),
   overflow: "hidden",
 }));
@@ -57,26 +57,27 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  position: "fixed",
-  top: 0,
-  zIndex: 50,
-  width: "100%",
-  backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#ffffff",
-  borderBottom: `1px solid ${theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
-    }`,
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    height: appBarHeight,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
+  // position: "fixed",
+  // top: 0,
+  // zIndex: 50,
+  // width: "100%",
+  // borderBottom: `1px solid ${
+  //   theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
+  // }`,
+  // transition: theme.transitions.create(["margin", "width"], {
+  //   easing: theme.transitions.easing.sharp,
+  //   duration: theme.transitions.duration.leavingScreen,
+  // }),
+  // ...(open && {
+  //   width: `calc(100% - ${drawerWidth}px)`,
+  //   marginLeft: drawerWidth,
+  //   height: appBarHeight,
+  //   transition: theme.transitions.create(["margin", "width"], {
+  //     easing: theme.transitions.easing.easeOut,
+  //     duration: theme.transitions.duration.enteringScreen,
+  //   }),
+  // }),
+  backgroundColor: "transparent",
 }));
 
 export const Layout = () => {
@@ -129,7 +130,7 @@ export const Layout = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0;i < prev.length;i++) {
+        for (let i = 0; i < prev.length; i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -209,7 +210,7 @@ export const Layout = () => {
 
   return (
     <>
-      <AppBar position="fixed" open={openNav}>
+      <AppBar position="fixed" open={openNav} className="bg-transparent">
         <Toolbar
           sx={{
             display: "flex",
@@ -330,8 +331,9 @@ export const Layout = () => {
 
             <div
               ref={dropdownRef} // Attach ref to the dropdown
-              className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
-                } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+              className={`z-50 ${
+                isUserDropdownOpen ? "" : "hidden"
+              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
               id="user-dropdown"
             >
               <div className="px-4 py-3">
@@ -368,9 +370,11 @@ export const Layout = () => {
       </AppBar>
       <SideNav setOpenNav={setOpenNav} open={openNav} />
       <Main open={openNav}>
-        <LayoutContainer style={{
-          padding: 0
-        }}>
+        <LayoutContainer
+          style={{
+            padding: 0,
+          }}
+        >
           <Outlet />
           {openContact && <ContactButton />}
         </LayoutContainer>
