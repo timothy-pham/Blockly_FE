@@ -201,11 +201,13 @@ export const LessonsDetail = () => {
             backgroundColor: "var(--black)",
           }}
         >
-          <Box className="p-5 rounded-lg shadow-sm"
+          <Box className="p-5"
             sx={{
               borderRadius: "10px",
               border: "1px solid var(--red)",
+              padding: "20px",
             }}
+            class="border-animation"
           >
             <div className="mb-4">
               <Typography component="span" className="font-semibold text-lg">
