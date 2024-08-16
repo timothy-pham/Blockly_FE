@@ -8,7 +8,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -72,88 +71,139 @@ export const EndGame = () => {
   };
 
   return (
-    <>
+    <div class="container-body">
       <div className="flex-1">
-        <h3>Bảng xếp hạng</h3>
         <div className="flex justify-center">
           {/* Top 2 card*/}
-          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+          <Card sx={{
+            width: 345, height: 345, marginTop: 20, marginX: 5,
+            borderRadius: "50%",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "var(--red)"
+          }}>
             <CardMedia
               sx={{
                 height: 150,
                 aspectRatio: 1,
                 objectFit: "contain !important",
-                margin: "auto",
               }}
               component="img"
               image="/top2.png"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+            <CardContent sx={{
+              textAlign: "center",
+              color: "white",
+              fontWeight: "bold",
+              fontSize: "1.5rem",
+            }}>
+              <div gutterBottom variant="h5" component="div">
                 {ranks[1]?.user_data.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 {`${ranks[1]?.score} / ${allQuestions}`}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 +75 điểm
-              </Typography>
+              </div>
             </CardContent>
           </Card>
           {/* Top 1 card*/}
-          <Card sx={{ width: 345, height: 345, marginBottom: 20, marginX: 5 }}>
+          <Card sx={{
+            width: 345, height: 345, marginBottom: 20, marginX: 5,
+            borderRadius: "50%",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "var(--red)"
+          }}>
             <CardMedia
               sx={{
                 height: 150,
                 aspectRatio: 1,
                 objectFit: "contain !important",
-                margin: "auto",
               }}
               component="img"
               image="/top1.png"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+            <CardContent
+              sx={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+
+              }}
+            >
+              <div gutterBottom variant="h5" component="div">
                 {ranks[0]?.user_data.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 {`${ranks[0]?.score} / ${allQuestions}`}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 +100 điểm
-              </Typography>
+              </div>
             </CardContent>
           </Card>
           {/* Top 3 card */}
 
-          <Card sx={{ width: 345, height: 345, marginTop: 20, marginX: 5 }}>
+          <Card sx={{
+            width: 345, height: 345, marginTop: 20, marginX: 5,
+            borderRadius: "50%",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            flexDirection: "column",
+            backgroundColor: "var(--red)"
+          }}>
             <CardMedia
               sx={{
                 height: 150,
                 aspectRatio: 1,
                 objectFit: "contain !important",
-                margin: "auto",
               }}
               component="img"
               image="/top3.png"
             />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
+            <CardContent
+              sx={{
+                textAlign: "center",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+              }}
+            >
+              <div gutterBottom variant="h5" component="div">
                 {ranks[2] ? ranks[2]?.user_data.name : "Không có đối thủ"}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 {ranks[2] && `${ranks[2]?.score} / ${allQuestions}`}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              </div>
+              <div variant="body2" color="text.secondary">
                 {ranks[2] && "+50 điểm"}
-              </Typography>
+              </div>
             </CardContent>
           </Card>
         </div>
         <div className="flex-col">
-          <div>
-            <Typography variant="h6">Chi tiết</Typography>
-            <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+          <div className="flex justify-center">
+            <TableContainer sx={{
+              width: "80%",
+              boxShadow: "none", marginTop: "20px",
+              "& > *": {
+                backgroundColor: "var(--black)",
+                color: "var(--white)",
+              },
+              // tableCell style
+              "& .MuiTableCell-root": {
+                color: "white",
+                borderBottom: "1px solid var(--red)",
+              },
+            }} component={Paper}>
               <Table aria-label="simple table">
                 <TableHead>
                   <TableRow className="[&>*]:font-bold">
@@ -207,6 +257,6 @@ export const EndGame = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

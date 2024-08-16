@@ -108,241 +108,255 @@ export const Rooms = () => {
   };
 
   return (
-    <Paper
-      sx={{
-        padding: 3,
-        height: "100%",
-        backgroundColor: "#f5f5f5",
-        borderRadius: "20px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-5">
-        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333333" }}>
-          Phòng
-        </Typography>
-        <div className="flex items-center">
-          <Button
-            sx={{ mr: 2, fontWeight: "bold" }}
-            variant="contained"
-            color="primary"
-            onClick={fetchRoom}
-          >
-            Làm mới
-          </Button>
-          <Button
-            sx={{ fontWeight: "bold" }}
-            variant="contained"
-            color="primary"
-            onClick={() => setDialogCreateRoom(true)}
-          >
-            Tạo phòng
-          </Button>
+    <div class="container-body">
+      <div style={{
+        position: "fixed",
+        top: "0",
+        left: "0",
+        right: "0",
+        bottom: "0",
+        zIndex: "0",
+      }}>
+        <div class="stripe">
+          <div class="stripe_inner">
+            DATONS 2024
+          </div>
         </div>
       </div>
-      {/* Table content */}
-      <div>
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              <th className="border px-4 py-2">Chủ phòng</th>
-              <th className="border px-4 py-2">Tên phòng</th>
-              <th className="border px-4 py-2">Mô tả</th>
-              <th className="border px-4 py-2">Trạng thái</th>
-              <th className="border px-4 py-2">Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rooms.map((room, index) => {
-              const host = room?.users?.find((user) => user?.is_host === true);
-              return (
-                <tr key={index}>
-                  <td className="border px-4  py-2">
-                    <div className="flex items-center ">
-                      <img
-                        src={host?.user_data?.meta_data?.avatar}
-                        className="w-10 h-10 rounded-full  object-cover mr-2"
-                      />
-                      <p
-                        style={{
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {host?.user_data?.name}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="border px-4 py-2">{room?.name}</td>
-                  <td className="border px-4 py-2">{room?.description}</td>
-                  <td className="border px-4 py-2 text-center">
-                    <Chip
-                      label={getRoomStatus(room.status)}
-                      style={{
-                        margin: 2,
-                        backgroundColor: getRoomColor(room.status),
-                        fontWeight: "bold",
-                      }}
-                    />
-                  </td>
-                  <td className="border px-2 py-2  text-center">
-                    {room.status === "waiting" ? (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ fontWeight: "bold" }}
-                        onClick={() => navigate("/rooms/" + room.room_id)}
-                      >
-                        Tham gia
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ fontWeight: "bold" }}
-                        onClick={() =>
-                          navigate("/rooms/" + room.room_id + "/watch")
-                        }
-                      >
-                        Theo dõi trận đấu
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {/* Dialog create room */}
-      <Dialog
-        open={dialogCreateRoom}
-        fullWidth
-        onClose={() => setDialogCreateRoom(false)}
+      <div
+        class="glassmorph"
+        style={{
+          width: "80%",
+          padding: "20px",
+        }}
       >
-        <DialogTitle
-          sx={{
-            backgroundColor: "#f5f5f5",
-            borderBottom: "1px solid #ddd",
-            color: "#333333",
-            fontWeight: "bold",
-          }}
-        >
-          Tạo phòng
-        </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#f5f5f5", paddingTop: "20px" }}>
-          <div className="mb-5 mt-3">
-            <TextField
-              label="Tên phòng"
-              variant="outlined"
-              fullWidth
-              value={createRoom?.name}
-              onChange={(e) =>
-                setCreateRoom({ ...createRoom, name: e.target.value })
-              }
-            />
+        {/* Header */}
+        <div className="flex justify-between items-center mb-5">
+          <Typography variant="h6" sx={{ fontWeight: "bold", color: "var(--black)" }}>
+            Danh sách phòng
+          </Typography>
+          <div className="flex items-center">
+            <Button
+              sx={{ mr: 2, fontWeight: "bold" }}
+              variant="contained"
+              color="primary"
+              onClick={fetchRoom}
+            >
+              Làm mới
+            </Button>
+            <Button
+              sx={{ fontWeight: "bold" }}
+              variant="contained"
+              color="primary"
+              onClick={() => setDialogCreateRoom(true)}
+            >
+              Tạo phòng
+            </Button>
           </div>
-          <div className="mb-5 mt-3">
-            <TextField
-              label="Số câu hỏi"
-              type="number"
-              variant="outlined"
-              fullWidth
-              value={createRoom?.count}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "") {
-                  setCreateRoom({
-                    ...createRoom,
-                    count: value,
-                  });
-                  setValidateCount("");
-                } else {
-                  const numericValue = Number(value);
-                  if (numericValue >= 3 && numericValue <= 10) {
+        </div>
+        {/* Table content */}
+        <div class="room-table">
+          <table className="table-auto w-full" >
+            <thead>
+              <tr>
+                <th >Chủ phòng</th>
+                <th >Tên phòng</th>
+                <th >Mô tả</th>
+                <th >Trạng thái</th>
+                <th >Hành động</th>
+              </tr>
+            </thead>
+            <tbody >
+              {rooms.map((room, index) => {
+                const host = room?.users?.find((user) => user?.is_host === true);
+                return (
+                  <tr key={index}>
+                    <td >
+                      <div className="flex items-center ">
+                        <img
+                          src={host?.user_data?.meta_data?.avatar}
+                          className="w-10 h-10 rounded-full  object-cover mr-2"
+                        />
+                        <p
+                          style={{
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {host?.user_data?.name}
+                        </p>
+                      </div>
+                    </td>
+                    <td >{room?.name}</td>
+                    <td >{room?.description}</td>
+                    <td className="text-center">
+                      <Chip
+                        label={getRoomStatus(room.status)}
+                        style={{
+                          margin: 2,
+                          backgroundColor: getRoomColor(room.status),
+                          fontWeight: "bold",
+                        }}
+                      />
+                    </td>
+                    <td className=" px-2 py-2  text-center">
+                      {room.status === "waiting" ? (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ fontWeight: "bold" }}
+                          onClick={() => navigate("/rooms/" + room.room_id)}
+                        >
+                          Tham gia
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ fontWeight: "bold" }}
+                          onClick={() =>
+                            navigate("/rooms/" + room.room_id + "/watch")
+                          }
+                        >
+                          Theo dõi trận đấu
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        {/* Dialog create room */}
+        <Dialog
+          open={dialogCreateRoom}
+          fullWidth
+          onClose={() => setDialogCreateRoom(false)}
+        >
+          <DialogTitle
+            sx={{
+              backgroundColor: "#f5f5f5",
+              borderBottom: "1px solid #ddd",
+              color: "#333333",
+              fontWeight: "bold",
+            }}
+          >
+            Tạo phòng
+          </DialogTitle>
+          <DialogContent sx={{ backgroundColor: "#f5f5f5", paddingTop: "20px" }}>
+            <div className="mb-5 mt-3">
+              <TextField
+                label="Tên phòng"
+                variant="outlined"
+                fullWidth
+                value={createRoom?.name}
+                onChange={(e) =>
+                  setCreateRoom({ ...createRoom, name: e.target.value })
+                }
+              />
+            </div>
+            <div className="mb-5 mt-3">
+              <TextField
+                label="Số câu hỏi"
+                type="number"
+                variant="outlined"
+                fullWidth
+                value={createRoom?.count}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "") {
                     setCreateRoom({
                       ...createRoom,
-                      count: numericValue,
+                      count: value,
                     });
                     setValidateCount("");
                   } else {
-                    setCreateRoom({
-                      ...createRoom,
-                      count: numericValue,
-                    });
-                    setValidateCount("Số câu hỏi phải trong khoảng 3 đến 10");
+                    const numericValue = Number(value);
+                    if (numericValue >= 3 && numericValue <= 10) {
+                      setCreateRoom({
+                        ...createRoom,
+                        count: numericValue,
+                      });
+                      setValidateCount("");
+                    } else {
+                      setCreateRoom({
+                        ...createRoom,
+                        count: numericValue,
+                      });
+                      setValidateCount("Số câu hỏi phải trong khoảng 3 đến 10");
+                    }
                   }
+                }}
+                inputProps={{ min: 3, max: 10 }}
+                helperText={
+                  <Typography color="error">{validateCount}</Typography>
                 }
-              }}
-              inputProps={{ min: 3, max: 10 }}
-              helperText={
-                <Typography color="error">{validateCount}</Typography>
-              }
-            />
-          </div>
-          <div className="mb-5">
-            <TextField
-              multiline
-              rows={4}
-              label="Mô tả"
-              variant="outlined"
-              fullWidth
-              value={createRoom?.description}
-              onChange={(e) =>
-                setCreateRoom({ ...createRoom, description: e.target.value })
-              }
-            />
-          </div>
-          <div className="mb-5">
-            <Select
-              fullWidth
-              defaultValue={collections[0]?.collection_id || ""}
-              value={createRoom?.collection_id}
-              onChange={(e) => {
-                setCreateRoom({ ...createRoom, collection_id: e.target.value });
-                fetchGroup(e.target.value);
-              }}
+              />
+            </div>
+            <div className="mb-5">
+              <TextField
+                multiline
+                rows={4}
+                label="Mô tả"
+                variant="outlined"
+                fullWidth
+                value={createRoom?.description}
+                onChange={(e) =>
+                  setCreateRoom({ ...createRoom, description: e.target.value })
+                }
+              />
+            </div>
+            <div className="mb-5">
+              <Select
+                fullWidth
+                defaultValue={collections[0]?.collection_id || ""}
+                value={createRoom?.collection_id}
+                onChange={(e) => {
+                  setCreateRoom({ ...createRoom, collection_id: e.target.value });
+                  fetchGroup(e.target.value);
+                }}
+                sx={{ fontWeight: "bold" }}
+              >
+                {collections?.map((collection) => (
+                  <MenuItem
+                    key={collection?.collection_id}
+                    value={collection?.collection_id}
+                  >
+                    {collection?.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+            <div className="mb-5">
+              <Select
+                fullWidth
+                defaultValue={groups[0]?.group_id || ""}
+                value={createRoom?.group_id}
+                onChange={(e) =>
+                  setCreateRoom({ ...createRoom, group_id: e.target.value })
+                }
+                sx={{ fontWeight: "bold" }}
+              >
+                {groups?.map((group) => (
+                  <MenuItem key={group?.group_id} value={group?.group_id}>
+                    {group?.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+          </DialogContent>
+          <DialogActions sx={{ backgroundColor: "#f5f5f5", padding: "20px" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCreateRoom}
               sx={{ fontWeight: "bold" }}
             >
-              {collections?.map((collection) => (
-                <MenuItem
-                  key={collection?.collection_id}
-                  value={collection?.collection_id}
-                >
-                  {collection?.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-          <div className="mb-5">
-            <Select
-              fullWidth
-              defaultValue={groups[0]?.group_id || ""}
-              value={createRoom?.group_id}
-              onChange={(e) =>
-                setCreateRoom({ ...createRoom, group_id: e.target.value })
-              }
-              sx={{ fontWeight: "bold" }}
-            >
-              {groups?.map((group) => (
-                <MenuItem key={group?.group_id} value={group?.group_id}>
-                  {group?.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-        </DialogContent>
-        <DialogActions sx={{ backgroundColor: "#f5f5f5", padding: "20px" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCreateRoom}
-            sx={{ fontWeight: "bold" }}
-          >
-            Tạo
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
+              Tạo
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </div>
   );
 };

@@ -143,6 +143,8 @@ export const Waiting = () => {
 
       hasFetched.current = true; // Ensure it only runs once
     }
+
+    window.scrollTo(0, 0);
   });
 
   useEffect(() => {
@@ -287,273 +289,293 @@ export const Waiting = () => {
   }
 
   return (
-    <Paper
+    <div class="container-body"
       sx={{
-        padding: 3,
-        height: "100%",
-        borderRadius: "20px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
-      <div className="flex justify-between">
-        <div>
-          <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }} color={ready ? "error" : "primary"}>
-            {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
-          </Button>
-          <Button onClick={handleLeaveRoom} variant="contained" sx={{ mt: 3, mb: 2, ml: 3 }} color={"error"}>
-            Thoát phòng
-          </Button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Button
-            onClick={() => {
-              fetchUserOnline();
-            }}
-            variant="contained"
-            sx={{ mt: 3, mb: 2, mr: 2 }}
-          >
-            Mời mọi người
-          </Button>
-          <Button
-            onClick={() => {
-              setShowChooseBot(true);
-            }}
-            variant="contained"
-            sx={{ mt: 3, mb: 2, mr: 2 }}
-            disabled={countBot(userList) >= MAX_BOT}
-          >
-            Thêm máy
-          </Button>
-          <Button
-            onClick={() => {
-              socket?.emit("start_game", { room_id: id });
-            }}
-            disabled={
-              !(userList && userList?.every((v) => v.is_ready)) ||
-              !checkHost(user, userList) ||
-              !(userList?.length > 1)
-            }
-            variant="contained"
-            sx={{
-              mt: 3, mb: 2,
-              display:
-                !checkHost(user, userList) ? "none" : "block"
-            }}
-          >
-            Bắt đầu
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex">
-        <div className="w-fullflex flex-col justify-center flex-1">
-          <TableContainer sx={{ boxShadow: "none" }}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow className="[&>*]:font-bold">
-                  <TableCell>Tên</TableCell>
-                  <TableCell>Sẵn sàng</TableCell>
-                  <TableCell>Điểm tích lũy </TableCell>
-                  <TableCell>Số trận đã đấu</TableCell>
-                  <TableCell>Hành động</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {userList.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell component="th" scope="row">
-                      <div className="flex items-center ">
-                        <img
-                          src={row?.user_data?.meta_data?.avatar}
-                          // alt={initials}
-                          className="w-16 h-16 rounded-full  object-cover mr-2"
-                        />
-                        <div>{row?.user_data?.name}</div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {row?.is_ready ? (
-                        <Chip label="Sẵn sàng" color="success" />
-                      ) : (
-                        <Chip label="Chưa sẵn sàng" color="error" />
-                      )}
-                    </TableCell>
-
-                    <TableCell>
-                      {row?.user_data?.meta_data?.points || 0}
-                    </TableCell>
-                    <TableCell>
-                      {row?.user_data?.meta_data?.matches || 0}
-                    </TableCell>
-                    <TableCell>
-                      {checkHost(user, userList) && row.user_id !== user.user_id && (
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => {
-                            socket?.emit("kick_user", {
-                              room_id: id,
-                              user_id: row.user_id,
-                            });
-                          }}
-                        >
-                          Kick
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div className="flex-1 ml-5">
-          <ChatBox
-            messages={messages}
-            onSendMessage={handleSendMessage}
-            userId={user?.user_id}
-            avatar={user?.meta_data?.avatar}
-            roomId={id}
-          />
-        </div>
-      </div>
-      <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
-
-      <Dialog
-        open={showDialogInvite}
-        onClose={() => {
-          setShowDialogInvite(false)
-          setListInvited([]);
+        overflow: "hidden",
+      }}>
+      <div
+        class="border-animation"
+        style={{
+          width: "90%",
+          padding: "20px",
+          minHeight: "85%",
+          height: "fit-content",
+          borderRadius: "20px",
+          color: "var(--white)",
         }}
       >
-        <div
-          className="p-4"
-        >
-          <Typography variant="h4">Danh sách người chơi online</Typography>
-          <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
-            <Table aria-label="simple table">
-              <TableBody>
-                {userOnlineList.map((row, index) => {
-                  const data = row.user
-                  return (
+        <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
+        <div className="flex justify-between">
+          <div>
+            <Button onClick={handleReady} variant="contained" sx={{ mt: 3, mb: 2 }} color={ready ? "error" : "primary"}>
+              {ready ? "Hủy sẵn sàng" : "Sẵn sàng"}
+            </Button>
+            <Button onClick={handleLeaveRoom} variant="contained" sx={{ mt: 3, mb: 2, ml: 3 }} color={"error"}>
+              Thoát phòng
+            </Button>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button
+              onClick={() => {
+                fetchUserOnline();
+              }}
+              variant="contained"
+              sx={{ mt: 3, mb: 2, mr: 2 }}
+            >
+              Mời mọi người
+            </Button>
+            <Button
+              onClick={() => {
+                setShowChooseBot(true);
+              }}
+              variant="contained"
+              sx={{ mt: 3, mb: 2, mr: 2 }}
+              disabled={countBot(userList) >= MAX_BOT}
+            >
+              Thêm máy
+            </Button>
+            <Button
+              onClick={() => {
+                socket?.emit("start_game", { room_id: id });
+              }}
+              disabled={
+                !(userList && userList?.every((v) => v.is_ready)) ||
+                !checkHost(user, userList) ||
+                !(userList?.length > 1)
+              }
+              variant="contained"
+              sx={{
+                mt: 3, mb: 2,
+                display:
+                  !checkHost(user, userList) ? "none" : "block",
+                "&.Mui-disabled": {
+                  background: "#eaeaea",
+                  color: "#000",
+                  opacity: 0.7
+                }
+              }}
+
+            >
+              Bắt đầu
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex">
+          <div className="w-fullflex flex-col justify-center flex-1">
+            <TableContainer sx={{
+              boxShadow: "none",
+              "& .MuiTableCell-root": {
+                color: "var(--white)",
+                fontSize: "15px",
+              }
+            }}>
+              <Table aria-label="simple table">
+                <TableHead>
+                  <TableRow className="[&>*]:font-bold">
+                    <TableCell>Tên</TableCell>
+                    <TableCell>Sẵn sàng</TableCell>
+                    <TableCell>Điểm tích lũy </TableCell>
+                    <TableCell>Số trận đã đấu</TableCell>
+                    <TableCell>Hành động</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {userList.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell component="th" scope="row">
                         <div className="flex items-center ">
                           <img
-                            src={data?.meta_data?.avatar || "/default_avatar.png"}
-                            className="w-8 h-8 rounded-full  object-cover mr-2"
+                            src={row?.user_data?.meta_data?.avatar}
+                            // alt={initials}
+                            className="w-16 h-16 rounded-full  object-cover mr-2"
                           />
-                          <div>{data?.name}</div>
+                          <div>{row?.user_data?.name}</div>
                         </div>
                       </TableCell>
-                      <TableCell style={{ width: '200px', textAlign: 'right' }}>
-                        <Button
-                          disabled={listInvited.includes(data?.user_id)}
-                          variant="contained"
-                          onClick={() => {
-                            socket?.emit("invite_user", {
-                              room: roomDetail,
-                              user_id: data?.user_id,
-                            });
-                            setListInvited([...listInvited, data?.user_id]);
-                          }}
-                        >
-                          Mời
-                        </Button>
+                      <TableCell>
+                        {row?.is_ready ? (
+                          <Chip label="Sẵn sàng" color="success" />
+                        ) : (
+                          <Chip label="Chưa sẵn sàng" color="error" />
+                        )}
+                      </TableCell>
+
+                      <TableCell>
+                        {row?.user_data?.meta_data?.points || 0}
+                      </TableCell>
+                      <TableCell>
+                        {row?.user_data?.meta_data?.matches || 0}
+                      </TableCell>
+                      <TableCell>
+                        {checkHost(user, userList) && row.user_id !== user.user_id && (
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => {
+                              socket?.emit("kick_user", {
+                                room_id: id,
+                                user_id: row.user_id,
+                              });
+                            }}
+                          >
+                            Kick
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button
-            className="mt-5 w-full"
-            variant="contained"
-            color="error"
-            onClick={() => {
-              setShowDialogInvite(false)
-              setListInvited([]);
-            }}>
-            Đóng
-          </Button>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+          <div className="flex-1 ml-5">
+            <ChatBox
+              messages={messages}
+              onSendMessage={handleSendMessage}
+              userId={user?.user_id}
+              avatar={user?.meta_data?.avatar}
+              roomId={id}
+            />
+          </div>
         </div>
-      </Dialog>
+        <CooldownDialog open={cooldown > 0} cooldown={cooldown} />
 
-      <Dialog
-        open={showChooseBot}
-        onClose={() => {
-          setShowChooseBot(false);
-        }}
-        fullWidth
-      >
-        <div
-          className="p-4"
-          style={{
-            minHeight: "600px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between"
+        <Dialog
+          open={showDialogInvite}
+          onClose={() => {
+            setShowDialogInvite(false)
+            setListInvited([]);
           }}
         >
           <div
-            className="text-center"
+            className="p-4"
           >
-            <Typography variant="h4">Chọn độ khó cho máy</Typography>
-            <Autocomplete
-              disablePortal
-              id="bot_level"
-              fullWidth
-              options={botConfig}
-              getOptionLabel={(option) => option?.name}
-              style={{
-                fontSize: "50px"
-              }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Độ khó"
-                  name="bot_level"
-                  margin="normal"
-                />
-              )}
-              onChange={(e, value) => setBotLevel(value?.level)}
-            />
-          </div>
-          <div>
+            <Typography variant="h4">Danh sách người chơi online</Typography>
+            <TableContainer sx={{ boxShadow: "none" }} component={Paper}>
+              <Table aria-label="simple table">
+                <TableBody>
+                  {userOnlineList.map((row, index) => {
+                    const data = row.user
+                    return (
+                      <TableRow key={index}>
+                        <TableCell component="th" scope="row">
+                          <div className="flex items-center ">
+                            <img
+                              src={data?.meta_data?.avatar || "/default_avatar.png"}
+                              className="w-8 h-8 rounded-full  object-cover mr-2"
+                            />
+                            <div>{data?.name}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell style={{ width: '200px', textAlign: 'right' }}>
+                          <Button
+                            disabled={listInvited.includes(data?.user_id)}
+                            variant="contained"
+                            onClick={() => {
+                              socket?.emit("invite_user", {
+                                room: roomDetail,
+                                user_id: data?.user_id,
+                              });
+                              setListInvited([...listInvited, data?.user_id]);
+                            }}
+                          >
+                            Mời
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
             <Button
               className="mt-5 w-full"
               variant="contained"
-              color="success"
-              onClick={() => {
-                addBot();
-              }}>
-              Thêm máy
-            </Button>
-            <Button
-              style={{
-                marginTop: "15px"
-              }}
-              className="w-full"
-              variant="contained"
               color="error"
               onClick={() => {
-                setShowChooseBot(false);
+                setShowDialogInvite(false)
+                setListInvited([]);
               }}>
               Đóng
             </Button>
           </div>
-        </div>
-      </Dialog>
+        </Dialog>
 
-    </Paper>
+        <Dialog
+          open={showChooseBot}
+          onClose={() => {
+            setShowChooseBot(false);
+          }}
+          fullWidth
+        >
+          <div
+            className="p-4"
+            style={{
+              minHeight: "600px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between"
+            }}
+          >
+            <div
+              className="text-center"
+            >
+              <Typography variant="h4">Chọn độ khó cho máy</Typography>
+              <Autocomplete
+                disablePortal
+                id="bot_level"
+                fullWidth
+                options={botConfig}
+                getOptionLabel={(option) => option?.name}
+                style={{
+                  fontSize: "50px"
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Độ khó"
+                    name="bot_level"
+                    margin="normal"
+                  />
+                )}
+                onChange={(e, value) => setBotLevel(value?.level)}
+              />
+            </div>
+            <div>
+              <Button
+                className="mt-5 w-full"
+                variant="contained"
+                color="success"
+                onClick={() => {
+                  addBot();
+                }}>
+                Thêm máy
+              </Button>
+              <Button
+                style={{
+                  marginTop: "15px"
+                }}
+                className="w-full"
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setShowChooseBot(false);
+                }}>
+                Đóng
+              </Button>
+            </div>
+          </div>
+        </Dialog>
+
+      </div>
+    </div>
   );
 };

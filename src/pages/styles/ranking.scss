@@ -4,12 +4,14 @@ $purple: #f67280;
 $blue: #c06c84;
 $ltblue: #6c5b7b;
 $magenta: #355c7d;
+
 .rank-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .ranking-bg {
   position: fixed;
   top: 0;

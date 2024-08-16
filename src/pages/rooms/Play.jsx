@@ -256,12 +256,12 @@ export const Play = () => {
 
   const handleSubmitAnswer = async () => {
     const res = await apiPost("blocks/check-answer", {
-      id: blockDetail.block_id,
+      id: blockDetail?.block_id,
       answers: transformCodeBlockly(dataBlock.code),
     });
     if (res && res.correct) {
       socket.emit("ranking_update", {
-        block_id: blockDetail.block_id,
+        block_id: blockDetail?.block_id,
         answered: true,
       });
       handleNextQuestion();
@@ -278,7 +278,7 @@ export const Play = () => {
       });
     } else {
       socket.emit("ranking_update", {
-        block_id: blockDetail.block_id,
+        block_id: blockDetail?.block_id,
         answered: true,
         wrong: true
       });
@@ -298,7 +298,7 @@ export const Play = () => {
 
   const handleSkipAnswer = () => {
     socket.emit("ranking_update", {
-      block_id: blockDetail.block_id,
+      block_id: blockDetail?.block_id,
       answered: true,
       wrong: true,
       skip: true
@@ -383,186 +383,197 @@ export const Play = () => {
   const renderProgress = useMemo(() => { }, [checkFinished]);
 
   return (
-    <Paper
-      sx={{
-        padding: 3,
-        height: "100%",
-        borderRadius: "20px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      <div className="flex justify-between">
-        <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
-        {!isNaN(timeLeft) && (
-          <Typography variant="h4">
-            Còn lại: {milisecondToSecondMinute(timeLeft)}
-          </Typography>
-        )}
-      </div>
-      <div className="border-b border-solid border-gray-300 pb-10 my-5">
-        <Typography variant="subtitle1" className="text-lg mb-4">
-          Câu hỏi
-        </Typography>
+    <div class="container-body">
+      <div
+        style={{
+          width: "95%",
+          height: "fit-content",
+        }}
 
-        <div className="flex gap-3 flex-wrap">
-          {rows.map((val, index) => {
-            return (
-              <Button
-                variant="contained"
-
-                key={index}
-                color={
-                  checkWrongAnswer(val.block_id)
-                    ? "error"
-                    : checkTrueAnswer(val.block_id)
-                      ? "success"
-                      : "primary"
-                }
-                className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${index === currentQuestionIndex
-                  ? "opacity-100"
-                  : "opacity-50"
-                  }`}
-              >
-                {index + 1}
-              </Button>
-            )
-          })}
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex-1">
-          {blockDetail && !checkFinished && (
-            <Box>
-              <div>
-                <Typography component="span">Đề bài: </Typography>
-                <span className="font-semibold">{blockDetail.question}</span>
-              </div>
-              <div>
-                <Typography component="span">Mức độ: </Typography>
-                <Chip
-                  style={{
-                    backgroundColor: getColor(blockDetail?.level),
-                  }}
-                  label={getLabel(blockDetail?.level)}
-                  sx={{ width: "fit-content" }}
-                />
-              </div>
-
-              <div className="my-2">
-                <BlocklyLayout
-                  setDataBlocks={setDataBlocks}
-                  data={blockDetail.data}
-                  isEdit={false}
-                />
-              </div>
-              {!checkFinished && (
-                <div>
-                  {currentQuestionIndex ===
-                    rows.findIndex(
-                      (row) => row.block_id === blockDetail.block_id
-                    ) && (
-                      <Button
-                        onClick={handleSubmitAnswer}
-                        variant="contained"
-                        disabled={blockDetail.answered}
-                        sx={{ mt: 3, mb: 2 }}
-                      >
-                        Kiểm tra
-                      </Button>
-                    )}
+        class="border-animation"
+      >
+        <div className="flex justify-between py-3">
+          <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
+          {!isNaN(timeLeft) && (
+            <Typography variant="h4">
+              Còn lại: {milisecondToSecondMinute(timeLeft)}
+            </Typography>
+          )}
+          <div>
+            <div className="flex gap-3 flex-wrap">
+              {rows.map((val, index) => {
+                return (
                   <Button
-                    onClick={() => setShowDeleteDialog(true)}
                     variant="contained"
-                    disabled={
-                      blockDetail.answered || checkWrongAnswer(blockDetail.block_id)
+
+                    key={index}
+                    color={
+                      checkWrongAnswer(val.block_id)
+                        ? "error"
+                        : checkTrueAnswer(val.block_id)
+                          ? "success"
+                          : "primary"
                     }
-                    sx={{ ml: 3, mt: 3, mb: 2 }}
-                    color="error"
+                    className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${index === currentQuestionIndex
+                      ? "opacity-100"
+                      : "opacity-50"
+                      }`}
                   >
-                    Bỏ qua
+                    {index + 1}
                   </Button>
-                </div>
-              )}
-            </Box>
-          )}
-          {checkFinished && (
-            <div>
-              <div>
-                <Typography component="span">Đề bài: </Typography>
-                <span className="font-semibold">{blockDetail.question}</span>
-              </div>
-              <div>
-                <Typography component="span">Mức độ: </Typography>
-                <Chip
-                  style={{
-                    backgroundColor: getColor(blockDetail?.level),
-                  }}
-                  label={getLabel(blockDetail?.level)}
-                  sx={{ width: "fit-content" }}
-                />
-              </div>
-              <Typography>
-                Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
-                đa!
-              </Typography>
-              <Typography>
-                Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
-              </Typography>
-              <Typography>
-                Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
-              </Typography>
-              <Typography>Số điểm của bạn: {getScore()}</Typography>
+                )
+              })}
             </div>
-          )}
-        </div>
-        <div className="flex-1 mt-6">
-          {blockDetail?.meta_data?.image && !checkFinished && (
-            <div>
-              <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
-                Hình ảnh
-              </Typography>
-              <div className=" max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
-                <img
-                  src={blockDetail?.meta_data?.image}
-                  alt="block detail"
-                  className="play-img w-full max-h-[400px] rounded-lg "
-                />
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="flex-1 mt-6">
-          <div className="flex-col">
-            <Ranking ranks={ranks} rows={rows} />
           </div>
         </div>
+        <div>
+          <Typography component="span">Đề bài: </Typography>
+          <span className="font-semibold">{blockDetail?.question}</span>
+        </div>
+        <div>
+          <Typography component="span">Mức độ: </Typography>
+          <Chip
+            style={{
+              backgroundColor: getColor(blockDetail?.level),
+            }}
+            label={getLabel(blockDetail?.level)}
+            sx={{ width: "fit-content" }}
+          />
+        </div>
+        <div className="flex mt-3">
+          <div className="flex-1">
+            {blockDetail && !checkFinished && (
+              <Box>
+                <div>
+                  <BlocklyLayout
+                    setDataBlocks={setDataBlocks}
+                    data={blockDetail?.data}
+                    isEdit={false}
+                  />
+                </div>
+                {!checkFinished && (
+                  <div>
+                    {currentQuestionIndex ===
+                      rows.findIndex(
+                        (row) => row.block_id === blockDetail?.block_id
+                      ) && (
+                        <Button
+                          onClick={handleSubmitAnswer}
+                          variant="contained"
+                          disabled={blockDetail?.answered}
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Kiểm tra
+                        </Button>
+                      )}
+                    <Button
+                      onClick={() => setShowDeleteDialog(true)}
+                      variant="contained"
+                      disabled={
+                        blockDetail?.answered || checkWrongAnswer(blockDetail?.block_id)
+                      }
+                      sx={{ ml: 3, mt: 3, mb: 2 }}
+                      color="error"
+                    >
+                      Bỏ qua
+                    </Button>
+                  </div>
+                )}
+              </Box>
+            )}
+            {checkFinished && (
+              <div>
+                <div>
+                  <Typography component="span">Đề bài: </Typography>
+                  <span className="font-semibold">{blockDetail?.question}</span>
+                </div>
+                <div>
+                  <Typography component="span">Mức độ: </Typography>
+                  <Chip
+                    style={{
+                      backgroundColor: getColor(blockDetail?.level),
+                    }}
+                    label={getLabel(blockDetail?.level)}
+                    sx={{ width: "fit-content" }}
+                  />
+                </div>
+                <Typography>
+                  Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
+                  đa!
+                </Typography>
+                <Typography>
+                  Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
+                </Typography>
+                <Typography>
+                  Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
+                </Typography>
+                <Typography>Số điểm của bạn: {getScore()}</Typography>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 ms-3">
+            <div
+              style={{
+                height: "50vh",
+                position: "relative",
+                borderRadius: "10px",
+              }}
+              className="bg-white rounded-lg shadow-inner flex items-center justify-center">
+              <img
+                src={blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"}
+                alt="block detail"
+                class={blockDetail?.meta_data?.image ? "play-img" : "play-img cover"}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  backgroundColor: "rgba(0,0,0,0.8)",
+                  color: "white",
+                  padding: "5px",
+                  borderTopLeftRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                  border: "1px solid var(--red)",
+                }}
+              >
+                Hình minh họa
+              </div>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex-col">
+              <Ranking ranks={ranks} rows={rows} />
+            </div>
+          </div>
+        </div>
+        <Dialog
+          open={showDeleteDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Bạn chắc chắn muốn bỏ qua câu hỏi này chứ?
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              Nếu bỏ qua, bạn sẽ không thể trả lời lại câu này nữa!
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleSkipAnswer} color="primary">
+              Đồng ý
+            </Button>
+            <Button
+              onClick={() => setShowDeleteDialog(false)}
+              color="primary"
+              autoFocus
+            >
+              Hủy
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-      <Dialog
-        open={showDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          Bạn chắc chắn muốn bỏ qua câu hỏi này chứ?
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            Nếu bỏ qua, bạn sẽ không thể trả lời lại câu này nữa!
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleSkipAnswer} color="primary">
-            Đồng ý
-          </Button>
-          <Button
-            onClick={() => setShowDeleteDialog(false)}
-            color="primary"
-            autoFocus
-          >
-            Hủy
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
+    </div>
   );
 };

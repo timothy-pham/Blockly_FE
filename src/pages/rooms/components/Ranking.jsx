@@ -10,7 +10,7 @@ const Ranking = ({ ranks, rows, onChangeUser }) => {
 
   useEffect(() => {
     const filterData = ranks.filter((rank) => rank.status === "playing" || rank.status === "finished");
-    const sortedRanks = filterData.sort((a, b) => {
+    let sortedRanks = filterData.sort((a, b) => {
       if (a.score !== b.score) {
         return b.score - a.score;
       } else {
@@ -31,60 +31,68 @@ const Ranking = ({ ranks, rows, onChangeUser }) => {
     }
   );
   return (
-    <div className="flex flex-col items-center">
-      <Typography variant="h4">Bảng xếp hạng</Typography>
-      <div className={styles.list} style={{ height: sortedData.length * 75 }}>
-        {transitions((style, item, t, index) => (
-          <animated.div
-            className={styles.card}
-            style={{ zIndex: sortedData.length - index, ...style }}
-          >
-            <div className={styles.cell}
-              onClick={() => {
-                onChangeUser && onChangeUser(item);
-              }}
+    <div className="ms-3">
+      <div className="flex flex-col items-center"
+        style={{
+          height: '50vh',
+          borderRadius: 10,
+          boxShadow: '0 0 10px 0 var(--red)',
+        }}
+      >
+        <Typography variant="h4">Bảng xếp hạng</Typography>
+        <div className={styles.list} style={{ height: sortedData.length * 75 }}>
+          {transitions((style, item, t, index) => (
+            <animated.div
+              className={styles.card}
+              style={{ zIndex: sortedData.length - index, ...style }}
             >
-              <div className={styles.details}>
-                <div className="flex items-center ">
-                  <img
-                    src={item?.user_data?.meta_data?.avatar ? item?.user_data?.meta_data?.avatar : "/default_avatar.png"}
-                    className="w-8 h-8 rounded-full  object-cover mr-2"
-                  />
-                  <div>{item.user_data.name}</div>
-                </div>
+              <div className={styles.cell}
+                onClick={() => {
+                  onChangeUser && onChangeUser(item);
+                }}
+              >
+                <div className={styles.details}>
+                  <div className="flex items-center ">
+                    <img
+                      src={item?.user_data?.meta_data?.avatar ? item?.user_data?.meta_data?.avatar : "/default_avatar.png"}
+                      className="w-8 h-8 rounded-full  object-cover mr-2"
+                    />
+                    <div>{item.user_data.name}</div>
+                  </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 4,
-                  }}
-                >
                   <div
                     style={{
                       display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       gap: 4,
                     }}
                   >
-                    {item.status === "finished" && (
-                      <div
-                        sx={{
-                          ml: 2,
-                        }}
-                      >
-                        <CheckCircleOutlineIcon variant="outline" />
-                      </div>
-                    )}
-                    <span style={{ display: "flex" }}>
-                      {item.score}/{rows.length}
-                    </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 4,
+                      }}
+                    >
+                      {item.status === "finished" && (
+                        <div
+                          sx={{
+                            ml: 2,
+                          }}
+                        >
+                          <CheckCircleOutlineIcon variant="outline" />
+                        </div>
+                      )}
+                      <span style={{ display: "flex" }}>
+                        {item.score}/{rows.length}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </animated.div>
-        ))}
+            </animated.div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -244,9 +244,6 @@ export const LessonsDetail = () => {
               {/* Image Section */}
 
               <div className="flex-1">
-                {/* {blockDetail?.meta_data?.image && (
-              
-                )} */}
                 <div
                   style={{
                     height: "50vh",
