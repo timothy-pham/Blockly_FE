@@ -1,0 +1,22 @@
+:root {
+  --black: hsl(0, 0%, 13%);
+  --dark: hsl(12, 32%, 2%);
+  --gray: hsl(0, 0%, 70%);
+  --white: hsl(0, 0%, 96%);
+  --red: hsl(12, 90%, 63%);
+  --red-shadow: hsl(12, 100%, 60%);
+  --red-sheen: linear-gradient(
+    to bottom,
+    hsl(12, 90%, 43%),
+    hsla(12, 40%, 70%, 0.5) 50%,
+    hsl(12, 93%, 23%)
+  );
+}
+
+.container-body {
+  background-color: var(--black);
+  height: 100vh;
+  justify-content: center;
+  display: flex;
+  padding: 1.5rem;
+}

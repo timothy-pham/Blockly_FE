@@ -47,7 +47,7 @@ export const Layout = () => {
   const [inviteData, setInviteData] = useState([]);
   const { pathname } = useLocation();
 
-  console.log("pathname", pathname);
+
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
   const [avatar, setAvatar] = useState(""); // State for the avatar
@@ -59,6 +59,12 @@ export const Layout = () => {
   useEffect(() => {
     setAvatar(user?.meta_data?.avatar || "");
   }, [user]);
+
+
+  // scroll to top when changing route
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   // Listen for localStorage changes
   useEffect(() => {
@@ -78,7 +84,6 @@ export const Layout = () => {
     }
 
     window.addEventListener("storage", handleStorageChange);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
@@ -88,7 +93,7 @@ export const Layout = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0; i < prev.length; i++) {
+        for (let i = 0;i < prev.length;i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -136,12 +141,19 @@ export const Layout = () => {
     navigate(`/login`);
   };
 
+  const handleScroll = (e) => {
+    e.preventDefault();
+    document
+      .querySelector("#content-section")
+      .scrollIntoView({ behavior: "smooth" });
+  };
   const isDashboard = pathname === "/";
 
   return (
     <>
       <Header
         inviteData={inviteData}
+        setInviteData={setInviteData}
         avatar={avatar}
         toggleUserDropdown={toggleUserDropdown}
         isUserDropdownOpen={isUserDropdownOpen}
@@ -180,9 +192,17 @@ export const Layout = () => {
               </div> */}
             </div>
 
-            <div class="title-wrapper">
+            <div class="title-wrapper"
+              onClick={handleScroll}
+            >
               <div class="title">
-                <div class="datons">DATONS 2024</div>
+                <div class="datons">DATONS</div>
+                <div class="datons-sub">
+                  Chăm chỉ luyện tập
+                </div>
+                <div class="datons-sub">
+                  Tự tin thi đấu!
+                </div>
                 <ScrollToContent />
               </div>
             </div>
@@ -231,7 +251,7 @@ const AppBar = styled(MuiAppBar)(({ theme, scrollY, isDashboard }) => ({
     ? scrollY > appBarHeight
       ? "var(--black)"
       : "transparent"
-    : "white",
+    : "var(--black)",
   transition: "background-color 0.3s ease",
   zIndex: 50,
 }));
@@ -244,6 +264,7 @@ export const Header = ({
   closeUserDropdown,
   handleLogout,
   isDashboard,
+  setInviteData,
 }) => {
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
@@ -309,9 +330,16 @@ export const Header = ({
                   key={item.title}
                   component={Link}
                   to={item.path}
-                  color="inherit"
-                  sx={{ mx: 1 }} // margin giữa các nút
+                  sx={{
+                    mx: 1, color: "white", fontWeight: "bold", color: '#fff',
+                    fontSize: '1rem',
+                    '&:hover': {
+                      backgroundColor: 'hsl(12, 90%, 63%)',
+                      color: '#fff',
+                    },
+                  }} // margin giữa các nút
                   startIcon={item.icon}
+
                 >
                   {item.title}
                 </Button>
@@ -399,7 +427,9 @@ export const Header = ({
               },
             }}
           >
-            <IconButton aria-label="Mời" onClick={handleClick}>
+            <IconButton style={{
+              color: '#fff'
+            }} aria-label="Mời" onClick={handleClick}>
               <EmailIcon />
             </IconButton>
           </Badge>
@@ -422,9 +452,8 @@ export const Header = ({
           )}
           <div
             ref={dropdownRef} // Attach ref to the dropdown
-            className={`z-50 ${
-              isUserDropdownOpen ? "" : "hidden"
-            } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+            className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
+              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
             id="user-dropdown"
           >
             <div className="px-4 py-3">
@@ -442,6 +471,16 @@ export const Header = ({
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 >
                   Trang cá nhân
+                </a>
+              </li>
+            </ul>
+            <ul className="py-2" aria-labelledby="user-menu-button">
+              <li>
+                <a
+                  onClick={() => navigate("/class")}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                >
+                  Danh sách lớp
                 </a>
               </li>
             </ul>
@@ -467,12 +506,6 @@ const menuHeader = [
     title: "Trang chủ",
     path: "/",
   },
-
-  {
-    title: "Trò chuyện",
-    path: "/messages",
-  },
-
   {
     title: "Bảng xếp hạng ",
     path: "/ranking",
@@ -484,6 +517,10 @@ const menuHeader = [
   {
     title: "Lịch sử thi đấu",
     path: "/history-plays",
+  },
+  {
+    title: "Trò chuyện",
+    path: "/messages",
   },
   {
     title: "Admin",

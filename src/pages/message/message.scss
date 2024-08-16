@@ -11,3 +11,11 @@
   margin-right: 10px;
   object-fit: cover;
 }
+
+.chat-container {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem;
+  background-color: var(--black);
+  height: 100vh;
+}

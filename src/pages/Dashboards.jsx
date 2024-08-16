@@ -20,7 +20,7 @@ export const Dashboard = () => {
       if (res) {
         setRows(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useLayoutEffect(() => {
     fetchCollection();
@@ -44,7 +44,7 @@ export const Dashboard = () => {
               <div
                 class="absolute h-full w-full 
               transition-all duration-300 ease-in-out
-               shadow-[inset_0_0_0_2000px_hsl(12,90%,63%,90%)] hover:shadow-[hsl(12,90%,63%)]
+               shadow-[inset_0_0_0_2000px_hsl(12,90%,63%,0.8)] hover:shadow-[hsl(12,90%,63%)]
                 [clip-path:polygon(0_0,30%_0,70%_100%,0%_100%)] object-contain
           "
                 style={{
@@ -75,7 +75,7 @@ export const Dashboard = () => {
               class="absolute h-full w-full 
                transition-all duration-300 ease-in-out
           [clip-path:polygon(100%_0,100%_100%,70%_100%,30%_0)]
-           shadow-[inset_0_0_0_2000px_rgb(51,51,51,90%)] hover:shadow-[rgb(51,51,51)]
+           shadow-[inset_0_0_0_2000px_rgb(51,51,51,0.8)] hover:shadow-[rgb(51,51,51)]
           "
               style={{
                 backgroundImage: `url(${val?.meta_data?.image})`,

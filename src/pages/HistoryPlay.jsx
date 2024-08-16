@@ -92,76 +92,94 @@ export const HistoryPlay = () => {
   };
 
   return (
-    <TableContainer sx={{ padding: 3 }} component={Paper}>
-      <div className="flex justify-between">
-        <Typography variant="h6">Lịch sử thi đấu</Typography>
-      </div>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow className="[&>*]:font-bold">
-            <TableCell>Tên phòng</TableCell>
-            <TableCell>Tên bài tập</TableCell>
-            <TableCell>Điểm số</TableCell>
-            <TableCell>Thời gian tham gia</TableCell>
-            <TableCell>Thứ hạng/ Tổng số người</TableCell>
-            <TableCell>Điểm tích lũy</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row, index) => (
-            <TableRow key={index}>
-              <TableCell component="th" scope="row">
-                {row?.name}
-              </TableCell>
-              <TableCell>
-                {
-                  groups.find((v) => v?.group_id == row?.meta_data?.group_id)
-                    ?.name
-                }
-              </TableCell>
-              <TableCell>
-                {
-                  row.users.find((v) => {
-                    if (v.user_id === id) {
-                      return v;
-                    }
-                  }).score
-                }
-                / {row?.meta_data?.blocks.length}
-              </TableCell>
-              <TableCell>{formatDateTime(row?.created_at)}</TableCell>
-              <TableCell>
-                {findRank(id, row.users)}/{row.users.length}
-              </TableCell>
-              <TableCell>{findPoints(id, row.users, row.room_id)}</TableCell>
+    <div class="container-body">
+      <TableContainer sx={{
+        padding: 3,
+        width: "80%",
+        backgroundColor: "var(--black)",
+        borderRadius: "10px",
+        border: "1px solid var(--red)",
+        color: "var(--red)",
+        "& .MuiTableCell-root": {
+          color: "var(--red)",
+          fontSize: "18px",
+          textAlign: "center",
+        },
+      }} component={Paper}>
+        <div className="flex justify-center">
+          <Typography variant="h6" sx={{
+            color: "var(--red)",
+            borderBottom: "2px solid var(--red)",
+            padding: "5px"
+          }}>Lịch sử thi đấu</Typography>
+        </div>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow className="[&>*]:font-bold">
+              <TableCell>Tên phòng</TableCell>
+              <TableCell>Tên bài tập</TableCell>
+              <TableCell>Điểm số</TableCell>
+              <TableCell>Thời gian tham gia</TableCell>
+              <TableCell>Thứ hạng/ Tổng số người</TableCell>
+              <TableCell>Điểm tích lũy</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    "aria-label": "rows per page",
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row?.name}
+                </TableCell>
+                <TableCell>
+                  {
+                    groups.find((v) => v?.group_id == row?.meta_data?.group_id)
+                      ?.name
+                  }
+                </TableCell>
+                <TableCell>
+                  {
+                    row.users.find((v) => {
+                      if (v.user_id === id) {
+                        return v;
+                      }
+                    }).score
+                  }
+                  / {row?.meta_data?.blocks.length}
+                </TableCell>
+                <TableCell>{formatDateTime(row?.created_at)}</TableCell>
+                <TableCell>
+                  {findRank(id, row.users)}/{row.users.length}
+                </TableCell>
+                <TableCell>{findPoints(id, row.users, row.room_id)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
                   },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };

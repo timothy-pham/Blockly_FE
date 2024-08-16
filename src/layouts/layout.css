@@ -226,6 +226,13 @@ body {
   color: white;
 }
 
+.datons-sub {
+  font-size: 5vw;
+  /* font vietnamese */
+  font-family: "Courier New", Courier, monospace;
+  color: white;
+}
+
 .layout-container {
   height: 100vh;
 }

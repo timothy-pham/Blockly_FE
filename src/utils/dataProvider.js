@@ -96,10 +96,12 @@ export async function apiPatch(resource, id, data) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const result = await response.json();
+    if (response.status >= 400) {
+      throw new Error(result.message);
+    }
     return result;
   } catch (error) {
-    // console.error("Error fetching data:", error);
-    return error;
+    throw new Error(result.message);
   }
 }
 

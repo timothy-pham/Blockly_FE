@@ -35,7 +35,7 @@ import React from "react";
 import RequestAdmin from "./pages/RequestAdmin";
 import { RoomManagement } from "./pages/management/RoomManagement";
 import { LayoutAdmin } from "./layouts/LayoutAdmin";
-
+import "./pages/styles/main.scss"
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const navigate = useNavigate();

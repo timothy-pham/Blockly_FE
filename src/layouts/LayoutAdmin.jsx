@@ -61,9 +61,8 @@ const AppBar = styled(MuiAppBar, {
   top: 0,
   zIndex: 50,
   width: "100%",
-  borderBottom: `1px solid ${
-    theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
-  }`,
+  borderBottom: `1px solid ${theme.palette.mode === "dark" ? "#4a5568" : "#e2e8f0"
+    }`,
   backgroundColor: theme.palette.background.paper,
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
@@ -131,7 +130,7 @@ export const LayoutAdmin = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0; i < prev.length; i++) {
+        for (let i = 0;i < prev.length;i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -332,9 +331,8 @@ export const LayoutAdmin = () => {
 
             <div
               ref={dropdownRef} // Attach ref to the dropdown
-              className={`z-50 ${
-                isUserDropdownOpen ? "" : "hidden"
-              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+              className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
+                } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
               id="user-dropdown"
             >
               <div className="px-4 py-3">
@@ -352,6 +350,16 @@ export const LayoutAdmin = () => {
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                   >
                     Trang cá nhân
+                  </a>
+                </li>
+              </ul>
+              <ul className="py-2" aria-labelledby="user-menu-button">
+                <li>
+                  <a
+                    onClick={() => navigate("/class")}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                  >
+                    Danh sách lớp
                   </a>
                 </li>
               </ul>

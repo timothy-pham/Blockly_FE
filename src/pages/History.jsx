@@ -47,63 +47,97 @@ export const History = () => {
   };
 
   return (
-    <TableContainer sx={{ padding: 3 }} component={Paper}>
-      <div className="flex justify-between">
-        <Typography variant="h6">Lịch sử luyện tập</Typography>
-      </div>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow className="[&>*]:font-bold">
-            <TableCell>Tên danh mục</TableCell>
-            <TableCell>Tên bài tập</TableCell>
-            <TableCell>Điểm số</TableCell>
-            <TableCell>Thời gian tham gia</TableCell>
-            <TableCell>Thời gian cập nhật</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
-          ).map((row, index) => (
-            <TableRow key={index}>
-              <TableCell component="th" scope="row">
-                {row?.collection?.name}
-              </TableCell>
-              <TableCell>{row?.group?.name}</TableCell>
-              <TableCell>
-                {row?.meta_data?.score ? row?.meta_data?.score : 0}/
-                {row?.meta_data?.total}
-              </TableCell>
-              <TableCell>
-                {formatDateTime(row?.meta_data?.start_time)}
-              </TableCell>
-              <TableCell>{formatDateTime(row?.meta_data?.end_time)}</TableCell>
+    <div class="container-body">
+      <TableContainer sx={{
+        padding: 3,
+        width: "80%",
+        backgroundColor: "var(--black)",
+        borderRadius: "10px",
+        border: "1px solid var(--red)",
+        color: "var(--red)",
+
+        "& .MuiTableCell-root": {
+          color: "var(--red)",
+          fontSize: "18px",
+          textAlign: "center",
+        },
+
+      }} component={Paper}>
+        <div className="flex justify-center">
+          <Typography variant="h6"
+            sx={{
+              color: "var(--red)",
+              borderBottom: "2px solid var(--red)",
+              padding: "5px"
+            }}
+          >
+            Lịch sử luyện tập
+          </Typography>
+        </div>
+        <Table aria-label="simple table">
+          <TableHead>
+            <TableRow className="[&>*]:font-bold">
+              <TableCell sx={{
+                color: "var(--red)",
+              }}>Tên danh mục</TableCell>
+              <TableCell>Tên bài tập</TableCell>
+              <TableCell>Điểm số</TableCell>
+              <TableCell>Thời gian tham gia</TableCell>
+              <TableCell>Thời gian cập nhật</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              slotProps={{
-                select: {
-                  inputProps: {
-                    "aria-label": "rows per page",
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : rows
+            ).map((row, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {row?.collection?.name}
+                </TableCell>
+                <TableCell>{row?.group?.name}</TableCell>
+                <TableCell>
+                  {row?.meta_data?.score ? row?.meta_data?.score : 0}/
+                  {row?.meta_data?.total}
+                </TableCell>
+                <TableCell>
+                  {formatDateTime(row?.meta_data?.start_time)}
+                </TableCell>
+                <TableCell>{formatDateTime(row?.meta_data?.end_time)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                count={rows.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                slotProps={{
+                  select: {
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
                   },
-                  native: true,
-                },
-              }}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+                }}
+                sx={{
+                  "& .MuiTablePagination-actions button": {
+                    color: "var(--red)",
+                  },
+                  "& .MuiTablePagination-selectIcon": {
+                    color: "var(--red)",
+                  },
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+    </div>
   );
 };
