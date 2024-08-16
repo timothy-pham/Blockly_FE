@@ -147,7 +147,7 @@ export const HistoryPlay = () => {
               </div>
               <div>
                 <p>
-                  Điểm trung bình mỗi bài: {statistics?.avg_scores}
+                  Điểm trung bình mỗi trận: {statistics?.avg_scores}
                 </p>
                 <p>
                   Tổng thời gian đã thi đấu: {formatTime(statistics?.total_time, true)}

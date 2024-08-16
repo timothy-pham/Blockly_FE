@@ -153,103 +153,143 @@ export const LessonsDetail = () => {
   }, [handleKeyDown]);
 
   return (
-    <>
-      <Typography variant="h4" className="text-3xl font-bold mb-6">
-        {groupDetail?.name}
-      </Typography>
-      <div className="border-b border-solid border-gray-300 pb-10 my-5">
-        <Typography variant="subtitle1" className="text-lg mb-4">
-          Câu hỏi
-        </Typography>
-
-        <div className="flex gap-3 flex-wrap">
-          {rows.map((val, index) => (
-            <Button
-              variant="contained"
-              style={{
-                backgroundColor: val.answered && "#4caf50"
-              }}
-              // disabled={index > 0 && !rows[index - 1].answered}
-              className={`${index === currentQuestionIndex
-                ? "bg-blue-500 text-white"
-                : "bg-white text-blue-500"
-                } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
-              key={index}
-              onClick={() => {
-                setCurrentQuestionIndex(index);
-                setBlockDetail(val);
-              }}
-            >
-              <span>{val.name}</span>
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-gray-100 p-5 rounded-lg shadow-lg">
-        <Box className="p-5 bg-white rounded-lg shadow-sm">
-          <div className="mb-4">
-            <Typography component="span" className="font-semibold text-lg">
-              Đề bài:{" "}
-            </Typography>
-            <span>{blockDetail?.question}</span>
-          </div>
-          <div className="mb-4">
-            <Typography component="span" className="font-semibold text-lg">
-              Mức độ:{" "}
-            </Typography>
-            <Chip
-              style={{
-                backgroundColor: getColor(blockDetail?.level),
-              }}
-              label={
-                getLabel(blockDetail?.level)
-              }
-              sx={{
-                width: "fit-content",
-                fontSize: "14px",
-                fontWeight: "bold",
-              }}
-            />
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-6">
-            {/* Blockly Section */}
-            <BlocklyLayout
-              setDataBlocks={setDataBlocks}
-              data={blockDetail?.data}
-              isEdit={false}
-            />
-            {/* Image Section */}
-
-            <div className="flex-1 ">
-              <Typography component="span" className="font-semibold text-lg">
-                Hình ảnh:{" "}
-              </Typography>{" "}
-              {blockDetail?.meta_data?.image && (
-                <div className="max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
-                  <img
-                    src={blockDetail?.meta_data?.image}
-                    alt="block detail"
-                    className="play-img w-full max-h-[400px] object-contain rounded-lg"
-                  />
-                </div>
-              )}
+    <div class="cus-bg-black"
+      style={{
+        height: "100vh",
+        padding: "20px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+        }}
+      >
+        <div className="flex justify-between py-3 px-5">
+          <Typography variant="h4" className="text-3xl font-bold">
+            {groupDetail?.name}
+          </Typography>
+          <div className="flex flex-col items-center">
+            <div className="flex gap-5 flex-wrap">
+              {rows.map((val, index) => (
+                <Button
+                  variant="contained"
+                  style={{
+                    backgroundColor: val.answered && "#4caf50"
+                  }}
+                  // disabled={index > 0 && !rows[index - 1].answered}
+                  className={`${index === currentQuestionIndex
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-blue-500"
+                    } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+                  key={index}
+                  onClick={() => {
+                    setCurrentQuestionIndex(index);
+                    setBlockDetail(val);
+                  }}
+                >
+                  <span>{val.name}</span>
+                </Button>
+              ))}
             </div>
           </div>
-          {currentQuestionIndex ===
-            rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
-              <Button
-                onClick={handleSubmitAnswer}
-                disabled={rows[currentQuestionIndex].answered}
-                variant="contained"
-                sx={{ mt: 1 }}
-              >
-                Kiểm tra
-              </Button>
-            )}
-        </Box>
+        </div>
+
+        <div className="p-5 rounded-lg"
+          sx={{
+            backgroundColor: "var(--black)",
+          }}
+        >
+          <Box className="p-5 rounded-lg shadow-sm"
+            sx={{
+              borderRadius: "10px",
+              border: "1px solid var(--red)",
+            }}
+          >
+            <div className="mb-4">
+              <Typography component="span" className="font-semibold text-lg">
+                Đề bài:{" "}
+              </Typography>
+              <span>{blockDetail?.question}</span>
+            </div>
+            <div className="mb-4">
+              <Typography component="span" className="font-semibold text-lg">
+                Mức độ:{" "}
+              </Typography>
+              <Chip
+                style={{
+                  backgroundColor: getColor(blockDetail?.level),
+                }}
+                label={
+                  getLabel(blockDetail?.level)
+                }
+                sx={{
+                  width: "fit-content",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                }}
+              />
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Blockly Section */}
+              <BlocklyLayout
+                setDataBlocks={setDataBlocks}
+                data={blockDetail?.data}
+                isEdit={false}
+              />
+              {/* Image Section */}
+
+              <div className="flex-1">
+                {/* {blockDetail?.meta_data?.image && (
+              
+                )} */}
+                <div
+                  style={{
+                    height: "50vh",
+                    position: "relative",
+                    borderRadius: "10px",
+                  }}
+                  className="bg-white rounded-lg shadow-inner flex items-center justify-center">
+                  <img
+                    src={blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"}
+                    alt="block detail"
+                    class={blockDetail?.meta_data?.image ? "play-img" : "play-img cover"}
+                  />
+                  {/* absolute text "Hình minh họa"*/}
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      backgroundColor: "rgba(0,0,0,0.8)",
+                      color: "white",
+                      padding: "5px",
+                      borderTopLeftRadius: "10px",
+                      borderBottomRightRadius: "10px",
+                      border: "1px solid var(--red)",
+                    }}
+                  >
+                    Hình minh họa
+                  </div>
+                </div>
+              </div>
+            </div>
+            {currentQuestionIndex ===
+              rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
+                <Button
+                  onClick={handleSubmitAnswer}
+                  disabled={rows[currentQuestionIndex].answered}
+                  variant="contained"
+                  sx={{ mt: 1 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
+          </Box>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
