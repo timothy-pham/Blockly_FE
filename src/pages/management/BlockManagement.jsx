@@ -400,7 +400,7 @@ export const BlockManagement = () => {
               size="small"
               component="a"
               startIcon={<AddIcon />}
-              onClick={() => navigate("/blockManagement/create")}
+              onClick={() => navigate("/admin/blockManagement/create")}
             >
               Thêm mới
             </Button>
@@ -477,7 +477,7 @@ export const BlockManagement = () => {
                   <TableCell>
                     <IconButton
                       onClick={() =>
-                        navigate(`/blockManagement/${row.block_id}/edit`)
+                        navigate(`/admin/blockManagement/${row.block_id}/edit`)
                       }
                     >
                       <ModeEditIcon />
