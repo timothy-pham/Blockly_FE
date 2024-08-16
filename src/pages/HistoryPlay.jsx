@@ -85,7 +85,7 @@ export const HistoryPlay = () => {
   const findPoints = (userId, data, roomId) => {
     if (!Array.isArray(data)) {
       console.error("Invalid data: Expected an array.");
-      return null;
+      return 0;
     }
 
     const userDetails = data.find((user) => user.user_id === userId);
@@ -93,16 +93,16 @@ export const HistoryPlay = () => {
     const pointsHistory = userDetails?.user_data?.meta_data?.points_history;
     if (!Array.isArray(pointsHistory)) {
       console.warn("Points history is not available or not an array.");
-      return null;
+      return 0;
     }
 
     const pointsRecord = pointsHistory.find((v) => v.room_id === roomId);
     if (!pointsRecord) {
       console.warn(`No points record found for room_id: ${roomId}`);
-      return null;
+      return 0;
     }
 
-    return pointsRecord.points ?? null;
+    return pointsRecord.points ?? 0;
   };
 
   return (
