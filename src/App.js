@@ -30,10 +30,11 @@ import MessageHome from "./pages/message/MessageHome";
 import { LoaderProvider } from "./components/progress/LoaderContext";
 import { Loader } from "./components/progress/Loader";
 import ClassHome from "./pages/class/ClassHome";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import React from "react";
 import RequestAdmin from "./pages/RequestAdmin";
 import { RoomManagement } from "./pages/management/RoomManagement";
+import { LayoutAdmin } from "./layouts/LayoutAdmin";
 
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -58,8 +59,7 @@ const PrivateRoute = ({ element: Component, permission, ...rest }) => {
 
 function App() {
   return (
-    <GoogleOAuthProvider clientId="905650264931-n27bauh1b85f7kefe7kh8l7uis0mrabg.apps.googleusercontent.com"
-    >
+    <GoogleOAuthProvider clientId="905650264931-n27bauh1b85f7kefe7kh8l7uis0mrabg.apps.googleusercontent.com">
       <AlertProvider>
         <LoaderProvider>
           <Loader />
@@ -91,66 +91,6 @@ function App() {
                   element={<PrivateRoute element={HistoryPlay} />}
                 />
                 <Route
-                  path="/roomManagement"
-                  element={
-                    <PrivateRoute
-                      element={RoomManagement}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/groupManagement"
-                  element={
-                    <PrivateRoute
-                      element={GroupManagement}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/blockManagement"
-                  element={
-                    <PrivateRoute
-                      element={BlockManagement}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/userManagement"
-                  element={
-                    <PrivateRoute
-                      element={UserManagement}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/collectionManagement"
-                  element={
-                    <PrivateRoute
-                      element={CollectionManagement}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/blockManagement/create"
-                  element={
-                    <PrivateRoute
-                      element={CreateBlock}
-                      permission={[Role.ADMIN]}
-                    />
-                  }
-                />
-                <Route
-                  path="/blockManagement/:id/edit"
-                  element={
-                    <PrivateRoute element={EditBlock} permission={[Role.ADMIN]} />
-                  }
-                />
-                <Route
                   path="/collections/:id"
                   element={<PrivateRoute element={Lessons} />}
                 />
@@ -158,7 +98,10 @@ function App() {
                   path="/collections/:collection_id/groups/:group_id"
                   element={<PrivateRoute element={LessonsDetail} />}
                 />
-                <Route path="/rooms" element={<PrivateRoute element={Rooms} />} />
+                <Route
+                  path="/rooms"
+                  element={<PrivateRoute element={Rooms} />}
+                />
                 <Route
                   path="/rooms/:id"
                   element={<PrivateRoute element={Waiting} />}
@@ -180,9 +123,75 @@ function App() {
                   path="/ranking"
                   element={<PrivateRoute element={RankingPage} />}
                 />
+              </Route>
+
+              <Route path="/admin" element={<LayoutAdmin />}>
+                <Route
+                  path="/admin/roomManagement"
+                  element={
+                    <PrivateRoute
+                      element={RoomManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/groupManagement"
+                  element={
+                    <PrivateRoute
+                      element={GroupManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/blockManagement"
+                  element={
+                    <PrivateRoute
+                      element={BlockManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/userManagement"
+                  element={
+                    <PrivateRoute
+                      element={UserManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/collectionManagement"
+                  element={
+                    <PrivateRoute
+                      element={CollectionManagement}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/blockManagement/create"
+                  element={
+                    <PrivateRoute
+                      element={CreateBlock}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
+                <Route
+                  path="/admin/blockManagement/:id/edit"
+                  element={
+                    <PrivateRoute
+                      element={EditBlock}
+                      permission={[Role.ADMIN]}
+                    />
+                  }
+                />
 
                 <Route
-                  path="/request-admin"
+                  path="/admin/request-admin"
                   element={<PrivateRoute element={RequestAdmin} />}
                 />
               </Route>

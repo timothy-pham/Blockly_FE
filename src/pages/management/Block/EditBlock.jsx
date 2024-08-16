@@ -99,7 +99,7 @@ export const EditBlock = () => {
       const res = await apiPatch("blocks", id, body);
       if (res) {
         toast.success("Chỉnh sửa câu hỏi thành công.", toastOptions);
-        navigate("/blockManagement");
+        navigate("/admin/blockManagement");
       }
     } catch (err) {
       console.log("err ===>", err);

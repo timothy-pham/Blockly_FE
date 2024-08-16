@@ -12,71 +12,71 @@ import { SvgIcon } from "@mui/material";
 import { Role } from "../constant/role";
 
 export const items = [
-  {
-    title: "Trang chủ",
-    permission: ["*"],
-    path: "/",
-    icon: (
-      <SvgIcon fontSize="small">
-        <GlobeAltIcon />
-      </SvgIcon>
-    ),
-  },
+  // {
+  //   title: "Trang chủ",
+  //   permission: ["*"],
+  //   path: "/",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <GlobeAltIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
 
-  {
-    title: "Trò chuyện",
-    permission: ["*"],
-    path: "/messages",
-    icon: (
-      <SvgIcon fontSize="small">
-        <ChatBubbleOvalLeftEllipsisIcon />
-      </SvgIcon>
-    ),
-  },
+  // {
+  //   title: "Trò chuyện",
+  //   permission: ["*"],
+  //   path: "/messages",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ChatBubbleOvalLeftEllipsisIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
 
-  {
-    permission: ["*"],
-    title: "Bảng xếp hạng ",
-    path: "/ranking",
-    icon: (
-      <SvgIcon fontSize="small">
-        <TrophyIcon />
-      </SvgIcon>
-    ),
-  },
-  {
-    title: "Danh sách lớp",
-    permission: ["*"],
-    path: "/class",
-    icon: (
-      <SvgIcon fontSize="small">
-        <QueueListIcon />
-      </SvgIcon>
-    ),
-  },
-  {
-    permission: ["*"],
-    title: "Lịch sử luyện tập",
-    path: "/history",
-    icon: (
-      <SvgIcon fontSize="small">
-        <ClockIcon />
-      </SvgIcon>
-    ),
-  },
-  {
-    permission: ["*"],
-    title: "Lịch sử thi đấu",
-    path: "/history-plays",
-    icon: (
-      <SvgIcon fontSize="small">
-        <ClockIcon />
-      </SvgIcon>
-    ),
-  },
+  // {
+  //   permission: ["*"],
+  //   title: "Bảng xếp hạng ",
+  //   path: "/ranking",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <TrophyIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
+  // {
+  //   title: "Danh sách lớp",
+  //   permission: ["*"],
+  //   path: "/class",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <QueueListIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
+  // {
+  //   permission: ["*"],
+  //   title: "Lịch sử luyện tập",
+  //   path: "/history",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ClockIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
+  // {
+  //   permission: ["*"],
+  //   title: "Lịch sử thi đấu",
+  //   path: "/history-plays",
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ClockIcon />
+  //     </SvgIcon>
+  //   ),
+  // },
   {
     title: "Quản lí phòng thi đấu",
-    path: "/roomManagement",
+    path: "/admin/roomManagement",
     permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
@@ -86,7 +86,7 @@ export const items = [
   },
   {
     title: "Quản lí danh mục",
-    path: "/collectionManagement",
+    path: "/admin/collectionManagement",
     permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
@@ -96,7 +96,7 @@ export const items = [
   },
   {
     title: "Quản lí bài tập",
-    path: "/groupManagement",
+    path: "/admin/groupManagement",
     permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
@@ -106,7 +106,7 @@ export const items = [
   },
   {
     title: "Quản lí câu hỏi",
-    path: "/blockManagement",
+    path: "/admin/blockManagement",
     permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">
@@ -116,7 +116,7 @@ export const items = [
   },
   {
     title: "Quản lí người dùng",
-    path: "/userManagement",
+    path: "/admin/userManagement",
     permission: [Role.ADMIN],
     icon: (
       <SvgIcon fontSize="small">

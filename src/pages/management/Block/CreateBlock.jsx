@@ -75,7 +75,7 @@ export const CreateBlock = () => {
       });
       if (res) {
         toast.success("Thêm mới câu hỏi thành công.", toastOptions);
-        navigate("/blockManagement");
+        navigate("/admin/blockManagement");
       }
     } catch (err) {
       toast.error(
