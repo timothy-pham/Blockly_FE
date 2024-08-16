@@ -17,7 +17,6 @@ export const Lessons = () => {
   const info = localStorage.getItem("authToken");
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
-  const [statistics, setStatistics] = useState();
   const [histories, setHistories] = useState();
   const fetchCollection = async () => {
     try {
@@ -37,15 +36,6 @@ export const Lessons = () => {
     } catch (e) { }
   };
 
-  const fetchStatistics = async () => {
-    try {
-      const res = await apiGet(`histories/statistics`);
-      if (res) {
-        setStatistics(res?.find((v) => v.collection_id == id).listGroup);
-      }
-    } catch (e) { }
-  };
-
   const fetchHistories = async () => {
     try {
       const res = await apiGet(`histories/`);
@@ -56,16 +46,9 @@ export const Lessons = () => {
   }
   useEffect(() => {
     fetchCollection();
-    fetchStatistics();
     fetchHistories();
   }, []);
 
-  const checkStatistics = (group_id) => {
-    if (statistics) {
-      return statistics.find((v) => v.group_id == group_id);
-    }
-    return false;
-  };
 
   const getHighestScoreData = (group_id) => {
     if (histories) {
@@ -85,7 +68,7 @@ export const Lessons = () => {
     <div>
       <div class="ag-courses_box">
         {rows.map((val) => {
-          const time = val?.total_blocks * 1 || 5;
+          const time = val?.total_blocks * 1.5 || 0;
           const highestScoreData = getHighestScoreData(val.group_id);
           let highestScore = 0;
           let timeString = "--:--"
@@ -103,11 +86,14 @@ export const Lessons = () => {
             }}
           >
             <a href="#" class="ag-courses-item_link">
-              <div class="ag-courses-item_bg"></div>
-
+              {highestScore > 0
+                ? (<div class="ag-courses-item_bg active"></div>)
+                : (<div class="ag-courses-item_bg"></div>)
+              }
               <div class="ag-courses-item_title">
                 {val?.name}
               </div>
+
 
               <div class="ag-courses-item_date-box">
                 <div class="flex justify-between ag-courses-item_date">
@@ -130,60 +116,29 @@ export const Lessons = () => {
                     </div>
                   </div>
                   <div>
-                    <div class="flex ">
-                      <SvgIcon className="hover-icon">
-                        <CheckBadgeIcon />
-                      </SvgIcon>
-                      <p class="ag-courses-item_date ml-1">
-                        Điểm cao nhất: {highestScore}
-                      </p>
-                    </div>
-                    <div class="flex mt-1">
-                      <SvgIcon className="hover-icon">
-                        <BoltIcon />
-                      </SvgIcon>
-                      <p class="ag-courses-item_date ml-1">
-                        Thời gian: {timeString}
-                      </p>
-                    </div>
+                    {highestScore > 0 && (<>
+                      <div class="flex ">
+                        <SvgIcon className="hover-icon">
+                          <CheckBadgeIcon />
+                        </SvgIcon>
+                        <p class="ag-courses-item_date ml-1">
+                          Điểm cao nhất: {highestScore}
+                        </p>
+                      </div>
+                      <div class="flex mt-1">
+                        <SvgIcon className="hover-icon">
+                          <BoltIcon />
+                        </SvgIcon>
+                        <p class="ag-courses-item_date ml-1">
+                          Nhanh nhất: {timeString}
+                        </p>
+                      </div></>)}
+
                   </div>
                 </div>
               </div>
-
             </a>
           </div>)
-          return (
-            <div
-              className="relative group cursor-pointer"
-              key={val.group_id}
-              onClick={() => {
-                navigate(`/collections/${id}/groups/${val.group_id}`);
-              }}
-            >
-              <div
-                className={`relative max-w-full flex flex-col items-center p-[25px] bg-slate-200 rounded-[25px] h-[100%] max-h-[500px] lg:group-hover:scale-105 transition-all duration-300`}
-                style={{
-                  backgroundImage: `url(${val?.meta_data?.image})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  borderWidth: checkStatistics(val.group_id) ? "5px" : "0px",
-                  borderColor: "springgreen",
-                }}
-              >
-                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-[25px]"></div>{" "}
-                {/* Overlay */}
-                <div className="relative w-full text-center">
-                  <div className="text-white py-2 flex flex-wrap justify-between items-center">
-                    <span className="text-lg font-bold">{val?.name}</span>
-                  </div>
-                  <div className="text-gray-200 [&>span]:text-xs lg:[&>span]:text-sm flex flex-wrap justify-between items-center break-all">
-                    <span>{truncateText(val?.meta_data?.description)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
         })}
 
       </div>

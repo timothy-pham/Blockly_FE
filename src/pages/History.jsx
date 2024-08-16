@@ -13,13 +13,13 @@ import {
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
 import React, { useEffect, useState } from "react";
 import { apiGet } from "../utils/dataProvider";
-import { formatDateTime } from "../utils/transform";
+import { formatDateTime, formatTime } from "../utils/transform";
 
 export const History = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState([]);
-
+  const [statistics, setStatistics] = useState(null);
   const [refresh, setRefresh] = React.useState(false);
 
   const fetchHistory = async () => {
@@ -33,8 +33,20 @@ export const History = () => {
     }
   };
 
+  const fetchStatistics = async () => {
+    try {
+      const res = await apiGet("histories/statistics");
+      if (res) {
+        setStatistics(res);
+      }
+    } catch (e) {
+      console.log("can not fetch statistics");
+    }
+  }
+
   useEffect(() => {
     fetchHistory();
+    fetchStatistics();
   }, [refresh]);
 
   const handleChangePage = (event, newPage) => {
@@ -59,20 +71,49 @@ export const History = () => {
         "& .MuiTableCell-root": {
           color: "var(--red)",
           fontSize: "18px",
-          textAlign: "center",
+          textAlign: "start",
         },
 
       }} component={Paper}>
-        <div className="flex justify-center">
-          <Typography variant="h6"
+        <div className="flex flex-col items-center">
+          <Typography variant="h5"
             sx={{
               color: "var(--red)",
               borderBottom: "2px solid var(--red)",
+              width: "fit-content",
               padding: "5px"
             }}
           >
             Lịch sử luyện tập
           </Typography>
+          <div>
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              color: "var(--red)",
+              textAlign: "start",
+              gap: "5rem",
+              fontSize: "1rem",
+              marginTop: "1.5rem",
+            }}>
+              <div>
+                <p>
+                  Số câu hỏi đã làm đúng: {statistics?.total_score}
+                </p>
+                <p>
+                  Tổng thời gian đã làm: {formatTime(statistics?.total_time, true)}
+                </p>
+              </div>
+              <div>
+                <p>
+                  Điểm trung bình mỗi bài: {statistics?.avg_score}
+                </p>
+                <p>
+                  Thời gian trung bình mỗi bài: {formatTime(statistics?.avg_time, true)}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
         <Table aria-label="simple table">
           <TableHead>
@@ -82,8 +123,8 @@ export const History = () => {
               }}>Tên danh mục</TableCell>
               <TableCell>Tên bài tập</TableCell>
               <TableCell>Điểm số</TableCell>
-              <TableCell>Thời gian tham gia</TableCell>
-              <TableCell>Thời gian cập nhật</TableCell>
+              <TableCell>Thời gian bắt đầu</TableCell>
+              <TableCell>Thời gian kết thúc</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -137,7 +178,7 @@ export const History = () => {
             </TableRow>
           </TableFooter>
         </Table>
-      </TableContainer>
-    </div>
+      </TableContainer >
+    </div >
   );
 };

@@ -58,25 +58,9 @@
   z-index: 0; /* Place it behind the content */
 }
 
-/* .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
-  background-color: #f56e4c;
+.ag-courses-item_bg.active {
+  background-color: rgb(127, 180, 48);
 }
-
-.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
-  background-color: #e44002;
-}
-
-.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
-  background-color: #952aff;
-}
-
-.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
-  background-color: #cd3e94;
-}
-
-.ag-courses_item:nth-child(6n) .ag-courses-item_bg {
-  background-color: #4c49ea;
-} */
 
 .ag-courses-item_link:hover {
   .ag-courses-item_bg {

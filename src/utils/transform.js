@@ -62,10 +62,17 @@ export const milisecondToSecondMinute = (milisecond) => {
     : ` ${seconds % 60} giây`;
 };
 
-export const formatTime = (seconds) => {
+export const formatTime = (seconds, isString) => {
   const minutes = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  // chỉ lấy để lấy 2 chữ số cuối phần lẻ của giây
+  const secs = Math.floor(seconds % 60);
+  if (isString) {
+
+    return `${minutes} phút ${secs} giây`;
+  } else {
+
+    return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
+  }
 };
 
 export const formatNumber = (number) => {
