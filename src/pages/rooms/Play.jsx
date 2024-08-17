@@ -395,7 +395,7 @@ export const Play = () => {
         <div className="flex justify-between py-3">
           <Typography variant="h4">Phòng : {roomDetail?.name}</Typography>
           {!isNaN(timeLeft) && (
-            <Typography variant="h4">
+            <Typography variant="h5">
               Còn lại: {milisecondToSecondMinute(timeLeft)}
             </Typography>
           )}
