@@ -145,7 +145,7 @@ export const Profile = () => {
   };
 
   return (
-    <>
+    <div className="container-body p-5">
       <Grid container spacing={3}>
         {/* Avatar and User Info Card */}
         <Grid item xs={12} md={4}>
@@ -336,14 +336,18 @@ export const Profile = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseChangePassword} color="primary">
+          <Button
+            onClick={handleCloseChangePassword}
+            color="primary"
+            variant="contained"
+          >
             Hủy
           </Button>
-          <Button onClick={handleSave} color="primary">
+          <Button onClick={handleSave} color="primary" variant="contained">
             Lưu
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 };

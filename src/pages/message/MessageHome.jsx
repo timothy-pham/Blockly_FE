@@ -180,20 +180,15 @@ const MessageHome = () => {
   }, [currentChat, conversations]);
 
   return (
-    <div
-      class="chat-container"
-    >
+    <div className="chat-container">
       <MainContainer
         responsive
         style={{
           height: "80vh",
           width: "80%",
-
         }}
       >
-        <Sidebar position="left" scrollable
-
-        >
+        <Sidebar position="left" scrollable>
           <Search placeholder="Search..." />
           <Conversation
             name="Phòng chat chung"
@@ -300,7 +295,8 @@ const MessageHome = () => {
                     <Avatar
                       name={message.sender.name}
                       src={
-                        message.sender?.meta_data?.avatar || "/default_avatar.png"
+                        message.sender?.meta_data?.avatar ||
+                        "/default_avatar.png"
                       }
                     />
                   </Message>
@@ -314,7 +310,7 @@ const MessageHome = () => {
           </ChatContainer>
         )}
       </MainContainer>
-    </div >
+    </div>
   );
 };
 

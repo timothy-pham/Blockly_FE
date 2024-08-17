@@ -106,59 +106,63 @@ export const HistoryPlay = () => {
   };
 
   return (
-    <div class="container-body">
-      <TableContainer sx={{
-        padding: 3,
-        width: "80%",
-        backgroundColor: "var(--black)",
-        borderRadius: "10px",
-        border: "1px solid var(--red)",
-        color: "var(--red)",
-        "& .MuiTableCell-root": {
+    <div className="container-body">
+      <TableContainer
+        sx={{
+          padding: 3,
+          width: "80%",
+          backgroundColor: "var(--black)",
+          borderRadius: "10px",
+          border: "1px solid var(--red)",
           color: "var(--red)",
-          fontSize: "18px",
-          textAlign: "start",
-        },
-      }} component={Paper}>
-        <div className="flex flex-col items-center">
-          <Typography variant="h5" sx={{
+          "& .MuiTableCell-root": {
             color: "var(--red)",
-            borderBottom: "2px solid var(--red)",
-            width: "fit-content",
-            padding: "5px"
-          }}>Lịch sử thi đấu</Typography>
-          <div>
-            <div style={{
-              display: "flex",
-              justifyContent: "center",
+            fontSize: "18px",
+            textAlign: "start",
+          },
+        }}
+        component={Paper}
+      >
+        <div className="flex flex-col items-center">
+          <Typography
+            variant="h5"
+            sx={{
               color: "var(--red)",
-              textAlign: "start",
-              gap: "5rem",
-              fontSize: "1rem",
-              marginTop: "1.5rem",
-            }}>
+              borderBottom: "2px solid var(--red)",
+              width: "fit-content",
+              padding: "5px",
+            }}
+          >
+            Lịch sử thi đấu
+          </Typography>
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                color: "var(--red)",
+                textAlign: "start",
+                gap: "5rem",
+                fontSize: "1rem",
+                marginTop: "1.5rem",
+              }}
+            >
               <div>
+                <p>Tổng số trận đã đấu: {statistics?.total_matches}</p>
+                <p>Tổng số điểm: {statistics?.total_points}</p>
+              </div>
+              <div>
+                <p>Điểm trung bình mỗi trận: {statistics?.avg_scores}</p>
                 <p>
-                  Tổng số trận đã đấu: {statistics?.total_matches}
-                </p>
-                <p>
-                  Tổng số điểm: {statistics?.total_points}
+                  Tổng thời gian đã thi đấu:{" "}
+                  {formatTime(statistics?.total_time, true)}
                 </p>
               </div>
               <div>
+                <p>Thứ hạng trung bình: {Math.round(statistics?.avg_rank)}</p>
                 <p>
-                  Điểm trung bình mỗi trận: {statistics?.avg_scores}
-                </p>
-                <p>
-                  Tổng thời gian đã thi đấu: {formatTime(statistics?.total_time, true)}
-                </p>
-              </div>
-              <div>
-                <p>
-                  Thứ hạng trung bình: {Math.round(statistics?.avg_rank)}
-                </p>
-                <p>
-                  Thời gian trung bình mỗi trận: {formatTime(statistics?.avg_time, true)}
+                  Thời gian trung bình mỗi trận:{" "}
+                  {formatTime(statistics?.avg_time, true)}
                 </p>
               </div>
             </div>

@@ -10,7 +10,7 @@ import {
   CheckBadgeIcon,
 } from "@heroicons/react/24/solid";
 
-import "./lesson.css"
+import "./lesson.css";
 import moment from "moment";
 export const Lessons = () => {
   const { id } = useParams();
@@ -33,7 +33,7 @@ export const Lessons = () => {
       if (res) {
         setRows(res.sort((a, b) => a.created_at - b.created_at));
       }
-    } catch (e) { }
+    } catch (e) {}
   };
 
   const fetchHistories = async () => {
@@ -42,105 +42,109 @@ export const Lessons = () => {
       if (res) {
         setHistories(res);
       }
-    } catch (e) { }
-  }
+    } catch (e) {}
+  };
   useEffect(() => {
     fetchCollection();
     fetchHistories();
   }, []);
-
 
   const getHighestScoreData = (group_id) => {
     if (histories) {
       const list = histories.filter((v) => v?.group?.group_id == group_id);
       if (list.length > 0) {
         const highestScore = list.reduce((prev, current) => {
-          return prev?.meta_data?.score > current?.meta_data?.score ? prev : current;
-        })
+          return prev?.meta_data?.score > current?.meta_data?.score
+            ? prev
+            : current;
+        });
         return highestScore?.meta_data;
       }
     }
     return null;
-  }
-
+  };
 
   return (
     <div>
-      <div class="ag-courses_box">
+      <div className="ag-courses_box">
         {rows.map((val) => {
           const time = val?.total_blocks * 1.5 || 0;
           const highestScoreData = getHighestScoreData(val.group_id);
           let highestScore = 0;
-          let timeString = "--:--"
+          let timeString = "--:--";
           if (highestScoreData) {
             highestScore = highestScoreData?.score;
-            const { start_time, end_time } = highestScoreData
-            const totalTime = moment(end_time).diff(moment(start_time), 'seconds');
-            timeString = moment.utc(totalTime * 1000).format('mm:ss')
+            const { start_time, end_time } = highestScoreData;
+            const totalTime = moment(end_time).diff(
+              moment(start_time),
+              "seconds"
+            );
+            timeString = moment.utc(totalTime * 1000).format("mm:ss");
           }
-          return (<div
-            class="ag-courses_item"
-            key={val.group_id}
-            onClick={() => {
-              navigate(`/collections/${id}/groups/${val.group_id}`);
-            }}
-          >
-            <a href="#" class="ag-courses-item_link">
-              {highestScore > 0
-                ? (<div class="ag-courses-item_bg active"></div>)
-                : (<div class="ag-courses-item_bg"></div>)
-              }
-              <div class="ag-courses-item_title">
-                {val?.name}
-              </div>
+          return (
+            <div
+              className="ag-courses_item"
+              key={val.group_id}
+              onClick={() => {
+                navigate(`/collections/${id}/groups/${val.group_id}`);
+              }}
+            >
+              <a href="#" className="ag-courses-item_link">
+                {highestScore > 0 ? (
+                  <div className="ag-courses-item_bg active"></div>
+                ) : (
+                  <div className="ag-courses-item_bg"></div>
+                )}
+                <div className="ag-courses-item_title">{val?.name}</div>
 
-
-              <div class="ag-courses-item_date-box">
-                <div class="flex justify-between ag-courses-item_date">
-                  <div>
-                    <div class="flex items-center">
-                      <SvgIcon className="hover-icon">
-                        <QuestionMarkCircleIcon />
-                      </SvgIcon>
-                      <p class="ag-courses-item_date ml-1">
-                        Số câu hỏi: {val?.total_blocks}
-                      </p>
-                    </div>
-                    <div class="flex mt-1">
-                      <SvgIcon className="hover-icon">
-                        <ClockIcon />
-                      </SvgIcon>
-                      <p class="ag-courses-item_date ml-1">
-                        Trung bình: {time} phút
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    {highestScore > 0 && (<>
-                      <div class="flex ">
+                <div className="ag-courses-item_date-box">
+                  <div className="flex justify-between ag-courses-item_date">
+                    <div>
+                      <div className="flex items-center">
                         <SvgIcon className="hover-icon">
-                          <CheckBadgeIcon />
+                          <QuestionMarkCircleIcon />
                         </SvgIcon>
-                        <p class="ag-courses-item_date ml-1">
-                          Điểm cao nhất: {highestScore}
+                        <p className="ag-courses-item_date ml-1">
+                          Số câu hỏi: {val?.total_blocks}
                         </p>
                       </div>
-                      <div class="flex mt-1">
+                      <div className="flex mt-1">
                         <SvgIcon className="hover-icon">
-                          <BoltIcon />
+                          <ClockIcon />
                         </SvgIcon>
-                        <p class="ag-courses-item_date ml-1">
-                          Nhanh nhất: {timeString}
+                        <p className="ag-courses-item_date ml-1">
+                          Trung bình: {time} phút
                         </p>
-                      </div></>)}
-
+                      </div>
+                    </div>
+                    <div>
+                      {highestScore > 0 && (
+                        <>
+                          <div className="flex ">
+                            <SvgIcon className="hover-icon">
+                              <CheckBadgeIcon />
+                            </SvgIcon>
+                            <p className="ag-courses-item_date ml-1">
+                              Điểm cao nhất: {highestScore}
+                            </p>
+                          </div>
+                          <div className="flex mt-1">
+                            <SvgIcon className="hover-icon">
+                              <BoltIcon />
+                            </SvgIcon>
+                            <p className="ag-courses-item_date ml-1">
+                              Nhanh nhất: {timeString}
+                            </p>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          </div>)
+              </a>
+            </div>
+          );
         })}
-
       </div>
     </div>
   );

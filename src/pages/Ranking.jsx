@@ -40,14 +40,18 @@ export const RankingPage = () => {
   };
 
   return (
-    <div class="rank-container">
-      <div class="rank-table">
-        <h1 style={{
-          textAlign: "center",
-          fontSize: "30px",
-          fontWeight: "bold",
-          marginTop: "10px"
-        }}>BẢNG XẾP HẠNG</h1>
+    <div className="rank-container">
+      <div className="rank-table">
+        <h1
+          style={{
+            textAlign: "center",
+            fontSize: "30px",
+            fontWeight: "bold",
+            marginTop: "10px",
+          }}
+        >
+          BẢNG XẾP HẠNG
+        </h1>
         <div
           style={{
             width: "100%",
@@ -65,7 +69,8 @@ export const RankingPage = () => {
           >
             <h4>
               Hạng của bạn:{" "}
-              {list.findIndex((user) => user.username === username) + 1 || "Bạn chưa có hạng, hãy thi đấu 1 trận đi!"}
+              {list.findIndex((user) => user.username === username) + 1 ||
+                "Bạn chưa có hạng, hãy thi đấu 1 trận đi!"}
               {"\n"}
             </h4>
             <h4>
@@ -79,12 +84,11 @@ export const RankingPage = () => {
             </h4>
           </div>
         </div>
-        <div class="rank-table__header">
+        <div className="rank-table__header">
           <div style={{ display: "inline-block", width: "2.5%" }}>
             <h4>Hạng</h4>
           </div>
-          <div style={{ display: "inline-block", width: "10%" }}>
-          </div>
+          <div style={{ display: "inline-block", width: "10%" }}></div>
           <div style={{ display: "inline-block", width: "30%" }}>
             <h4>Họ và tên</h4>
           </div>
@@ -98,9 +102,7 @@ export const RankingPage = () => {
             <h4>Tổng số trận đã đấu</h4>
           </div>
         </div>
-        <div
-          class="rank-table__body"
-        >
+        <div className="rank-table__body">
           {list?.map((user, i) => (
             <User
               key={user?.username}
@@ -114,48 +116,108 @@ export const RankingPage = () => {
             />
           ))}
         </div>
-
       </div>
       <GoTopButton />
-      <div class="ranking-bg" >
-        <div class="arrow arrow--top">
-          <svg xmlns="http://www.w3.org/2000/svg" width="270.11" height="649.9" overflow="visible">
-
-            <g class="item-to bounce-1">
-              <path class="geo-arrow draw-in" d="M135.06 142.564L267.995 275.5 135.06 408.434 2.125 275.499z" />
+      <div className="ranking-bg">
+        <div className="arrow arrow--top">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="270.11"
+            height="649.9"
+            overflow="visible"
+          >
+            <g className="item-to bounce-1">
+              <path
+                className="geo-arrow draw-in"
+                d="M135.06 142.564L267.995 275.5 135.06 408.434 2.125 275.499z"
+              />
             </g>
-            <circle class="geo-arrow item-to bounce-2" cx="194.65" cy="69.54" r="7.96" />
-            <circle class="geo-arrow draw-in" cx="194.65" cy="39.5" r="7.96" />
-            <circle class="geo-arrow item-to bounce-3" cx="194.65" cy="9.46" r="7.96" />
-            <g class="geo-arrow item-to bounce-2">
-              <path class="st0 draw-in" d="M181.21 619.5l13.27 27 13.27-27zM194.48 644.5v-552" />
+            <circle
+              className="geo-arrow item-to bounce-2"
+              cx="194.65"
+              cy="69.54"
+              r="7.96"
+            />
+            <circle
+              className="geo-arrow draw-in"
+              cx="194.65"
+              cy="39.5"
+              r="7.96"
+            />
+            <circle
+              className="geo-arrow item-to bounce-3"
+              cx="194.65"
+              cy="9.46"
+              r="7.96"
+            />
+            <g className="geo-arrow item-to bounce-2">
+              <path
+                className="st0 draw-in"
+                d="M181.21 619.5l13.27 27 13.27-27zM194.48 644.5v-552"
+              />
             </g>
           </svg>
         </div>
-        <div class="arrow arrow--bottom">
-          <svg xmlns="http://www.w3.org/2000/svg" width="31.35" height="649.9" overflow="visible">
-
-            <g class="item-to bounce-1">
-              <circle class="geo-arrow item-to bounce-3" cx="15.5" cy="580.36" r="7.96" />
-              <circle class="geo-arrow draw-in" cx="15.5" cy="610.4" r="7.96" />
-              <circle class="geo-arrow item-to bounce-2" cx="15.5" cy="640.44" r="7.96" />
-              <g class="item-to bounce-2">
-                <path class="geo-arrow draw-in" d="M28.94 30.4l-13.26-27-13.27 27zM15.68 5.4v552" />
+        <div className="arrow arrow--bottom">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="31.35"
+            height="649.9"
+            overflow="visible"
+          >
+            <g className="item-to bounce-1">
+              <circle
+                className="geo-arrow item-to bounce-3"
+                cx="15.5"
+                cy="580.36"
+                r="7.96"
+              />
+              <circle
+                className="geo-arrow draw-in"
+                cx="15.5"
+                cy="610.4"
+                r="7.96"
+              />
+              <circle
+                className="geo-arrow item-to bounce-2"
+                cx="15.5"
+                cy="640.44"
+                r="7.96"
+              />
+              <g className="item-to bounce-2">
+                <path
+                  className="geo-arrow draw-in"
+                  d="M28.94 30.4l-13.26-27-13.27 27zM15.68 5.4v552"
+                />
               </g>
             </g>
           </svg>
         </div>
-        <div class="main">
-          <div class="main__text-wrapper">
-            <svg xmlns="http://www.w3.org/2000/svg" class="dotted-circle" width="352" height="352" overflow="visible">
-              <circle cx="176" cy="176" r="174" fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-dasharray="12.921,11.9271" />
+        <div className="main">
+          <div className="main__text-wrapper">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="dotted-circle"
+              width="352"
+              height="352"
+              overflow="visible"
+            >
+              <circle
+                cx="176"
+                cy="176"
+                r="174"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2"
+                strokeMiterlimit="10"
+                strokeDasharray="12.921,11.9271"
+              />
             </svg>
           </div>
         </div>
       </div>
     </div>
-
-  )
+  );
 };
 
 const GoTopButton = () => {
@@ -167,7 +229,7 @@ const GoTopButton = () => {
     } else {
       setVisible(false);
     }
-  }
+  };
 
   useEffect(() => {
     window.addEventListener("scroll", handleVisibleButton);
@@ -175,28 +237,30 @@ const GoTopButton = () => {
 
   return (
     <div>
-      {visible && (<div
-        className="go-top-button"
-        onClick={() => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="icon icon-arrow-up"
+      {visible && (
+        <div
+          className="go-top-button"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
         >
-          <line x1="12" y1="19" x2="12" y2="5"></line>
-          <polyline points="5 12 12 5 19 12"></polyline>
-        </svg>
-      </div>)}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="icon icon-arrow-up"
+          >
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+          </svg>
+        </div>
+      )}
     </div>
   );
 };
@@ -216,7 +280,7 @@ const User = ({
     return initials.join("");
   };
   return (
-    <div class="rank-table__row">
+    <div className="rank-table__row">
       <div
         style={{
           width: "2.5%",
@@ -239,9 +303,13 @@ const User = ({
           width: "30%",
         }}
       >
-        <p style={{
-          fontWeight: currentUser === username ? "1000" : "normal",
-        }}>{name}</p>
+        <p
+          style={{
+            fontWeight: currentUser === username ? "1000" : "normal",
+          }}
+        >
+          {name}
+        </p>
       </div>
       <div
         style={{

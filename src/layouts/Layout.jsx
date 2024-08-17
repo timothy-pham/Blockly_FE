@@ -47,7 +47,6 @@ export const Layout = () => {
   const [inviteData, setInviteData] = useState([]);
   const { pathname } = useLocation();
 
-
   const dropdownRef = useRef(null); // Create a ref for the dropdown
 
   const [avatar, setAvatar] = useState(""); // State for the avatar
@@ -59,7 +58,6 @@ export const Layout = () => {
   useEffect(() => {
     setAvatar(user?.meta_data?.avatar || "");
   }, [user]);
-
 
   // scroll to top when changing route
   useEffect(() => {
@@ -93,7 +91,7 @@ export const Layout = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0;i < prev.length;i++) {
+        for (let i = 0; i < prev.length; i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -168,54 +166,48 @@ export const Layout = () => {
         }}
       >
         {isDashboard && (
-          <div class="layout-image">
-            <div class="layout-content">
-              {/* <div class="layout-buttonContainer">
+          <div className="layout-image">
+            <div className="layout-content">
+              {/* <div className="layout-buttonContainer">
                 <a
                   href="https://twitter.com/fredsrocha"
-                  class="js-nav"
+                  className="js-nav"
                   data-element="logo"
                   target="_blank"
                 />
 
                 <a
-                  class="Button StreamsSignUp js-signup"
+                  className="Button StreamsSignUp js-signup"
                   href="https://twitter.com/signup"
                   data-component="hero"
                   data-element="buttons"
                 >
                   Inscreva-se
                 </a>
-                <a class="Button StreamsLogin js-login" href="/login">
+                <a className="Button StreamsLogin js-login" href="/login">
                   Entrar
                 </a>
               </div> */}
             </div>
 
-            <div class="title-wrapper"
-              onClick={handleScroll}
-            >
-              <div class="title">
-                <div class="datons">DATONS</div>
-                <div class="datons-sub">
-                  Chăm chỉ luyện tập
-                </div>
-                <div class="datons-sub">
-                  Tự tin thi đấu!
-                </div>
+            <div className="title-wrapper" onClick={handleScroll}>
+              <div className="title">
+                <div className="datons">DATONS</div>
+                <div className="datons-sub">Chăm chỉ luyện tập</div>
+                <div className="datons-sub">Tự tin thi đấu!</div>
                 <ScrollToContent />
               </div>
             </div>
           </div>
         )}
 
-        <div id="content-section" class="layout-container">
+        <div id="content-section" className="layout-container">
           <LayoutContainer>
             <Outlet />
           </LayoutContainer>
         </div>
 
-        <div class="footer">
+        <div className="footer">
           <p>&copy; 2024 DATONS. All rights reserved.</p>
           <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
         </div>
@@ -243,15 +235,16 @@ const ScrollToContent = () => {
   );
 };
 
-const AppBar = styled(MuiAppBar)(({ theme, scrollY, isDashboard }) => ({
+const AppBar = styled(MuiAppBar)(({ theme, scrolly, isdashboard }) => ({
   top: 0,
   width: "100%",
-  position: isDashboard ? "none" : "sticky",
-  backgroundColor: isDashboard
-    ? scrollY > appBarHeight
-      ? "var(--black)"
-      : "transparent"
-    : "var(--black)",
+  position: isdashboard === "true" ? "none" : "sticky",
+  backgroundColor:
+    isdashboard === "true"
+      ? scrolly > appBarHeight
+        ? "var(--black)"
+        : "transparent"
+      : "var(--black)",
   transition: "background-color 0.3s ease",
   zIndex: 50,
 }));
@@ -313,9 +306,12 @@ export const Header = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [closeUserDropdown]);
-
   return (
-    <AppBar position="fixed" scrollY={scrollY} isDashboard={isDashboard}>
+    <AppBar
+      position="fixed"
+      scrolly={scrollY}
+      isdashboard={isDashboard.toString()}
+    >
       <Toolbar
         sx={{
           display: "flex",
@@ -331,15 +327,17 @@ export const Header = ({
                   component={Link}
                   to={item.path}
                   sx={{
-                    mx: 1, color: "white", fontWeight: "bold", color: '#fff',
-                    fontSize: '1rem',
-                    '&:hover': {
-                      backgroundColor: 'hsl(12, 90%, 63%)',
-                      color: '#fff',
+                    mx: 1,
+                    color: "white",
+                    fontWeight: "bold",
+                    color: "#fff",
+                    fontSize: "1rem",
+                    "&:hover": {
+                      backgroundColor: "hsl(12, 90%, 63%)",
+                      color: "#fff",
                     },
                   }} // margin giữa các nút
                   startIcon={item.icon}
-
                 >
                   {item.title}
                 </Button>
@@ -427,9 +425,13 @@ export const Header = ({
               },
             }}
           >
-            <IconButton style={{
-              color: '#fff'
-            }} aria-label="Mời" onClick={handleClick}>
+            <IconButton
+              style={{
+                color: "#fff",
+              }}
+              aria-label="Mời"
+              onClick={handleClick}
+            >
               <EmailIcon />
             </IconButton>
           </Badge>
@@ -452,8 +454,9 @@ export const Header = ({
           )}
           <div
             ref={dropdownRef} // Attach ref to the dropdown
-            className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
-              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+            className={`z-50 ${
+              isUserDropdownOpen ? "" : "hidden"
+            } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
             id="user-dropdown"
           >
             <div className="px-4 py-3">

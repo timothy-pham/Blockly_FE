@@ -140,7 +140,10 @@ export const LessonsDetail = () => {
   };
   // handle enter key event
   const handleKeyDown = (event) => {
-    if (event.key === "Enter" && rows[currentQuestionIndex].answered === false) {
+    if (
+      event.key === "Enter" &&
+      rows[currentQuestionIndex].answered === false
+    ) {
       handleSubmitAnswer();
     }
   };
@@ -153,7 +156,8 @@ export const LessonsDetail = () => {
   }, [handleKeyDown]);
 
   return (
-    <div class="cus-bg-black"
+    <div
+      className="cus-bg-black"
       style={{
         height: "100vh",
         padding: "20px",
@@ -176,13 +180,14 @@ export const LessonsDetail = () => {
                 <Button
                   variant="contained"
                   style={{
-                    backgroundColor: val.answered && "#4caf50"
+                    backgroundColor: val.answered && "#4caf50",
                   }}
                   // disabled={index > 0 && !rows[index - 1].answered}
-                  className={`${index === currentQuestionIndex
-                    ? "bg-blue-500 text-white"
-                    : "bg-white text-blue-500"
-                    } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+                  className={`${
+                    index === currentQuestionIndex
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-blue-500"
+                  } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
                   key={index}
                   onClick={() => {
                     setCurrentQuestionIndex(index);
@@ -196,18 +201,20 @@ export const LessonsDetail = () => {
           </div>
         </div>
 
-        <div className="p-5 rounded-lg"
+        <div
+          className="p-5 rounded-lg"
           sx={{
             backgroundColor: "var(--black)",
           }}
         >
-          <Box className="p-5"
+          <Box
+            className="p-5"
             sx={{
               borderRadius: "10px",
               border: "1px solid var(--red)",
               padding: "20px",
             }}
-            class="border-animation"
+            className="border-animation"
           >
             <div className="mb-4">
               <Typography component="span" className="font-semibold text-lg">
@@ -223,9 +230,7 @@ export const LessonsDetail = () => {
                 style={{
                   backgroundColor: getColor(blockDetail?.level),
                 }}
-                label={
-                  getLabel(blockDetail?.level)
-                }
+                label={getLabel(blockDetail?.level)}
                 sx={{
                   width: "fit-content",
                   fontSize: "14px",
@@ -250,11 +255,18 @@ export const LessonsDetail = () => {
                     position: "relative",
                     borderRadius: "10px",
                   }}
-                  className="bg-white rounded-lg shadow-inner flex items-center justify-center">
+                  className="bg-white rounded-lg shadow-inner flex items-center justify-center"
+                >
                   <img
-                    src={blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"}
+                    src={
+                      blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"
+                    }
                     alt="block detail"
-                    class={blockDetail?.meta_data?.image ? "play-img" : "play-img cover"}
+                    className={
+                      blockDetail?.meta_data?.image
+                        ? "play-img"
+                        : "play-img cover"
+                    }
                   />
                   {/* absolute text "Hình minh họa"*/}
                   <div
@@ -276,16 +288,18 @@ export const LessonsDetail = () => {
               </div>
             </div>
             {currentQuestionIndex ===
-              rows.findIndex((row) => row.block_id === blockDetail?.block_id) && (
-                <Button
-                  onClick={handleSubmitAnswer}
-                  disabled={rows[currentQuestionIndex].answered}
-                  variant="contained"
-                  sx={{ mt: 1 }}
-                >
-                  Kiểm tra
-                </Button>
-              )}
+              rows.findIndex(
+                (row) => row.block_id === blockDetail?.block_id
+              ) && (
+              <Button
+                onClick={handleSubmitAnswer}
+                disabled={rows[currentQuestionIndex].answered}
+                variant="contained"
+                sx={{ mt: 1 }}
+              >
+                Kiểm tra
+              </Button>
+            )}
           </Box>
         </div>
       </div>

@@ -1,10 +1,10 @@
 import { useState, StrictMode, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext/AuthContext";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 // import backgroundAuth from '/backgroundAuth.webp'
-import { GoogleLogin, useGoogleOneTapLogin } from '@react-oauth/google';
-import { googleLogout } from '@react-oauth/google';
+import { GoogleLogin, useGoogleOneTapLogin } from "@react-oauth/google";
+import { googleLogout } from "@react-oauth/google";
 import { apiPost } from "../../utils/dataProvider";
 const Login = () => {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Login = () => {
     } else {
       setError("");
     }
-  }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -59,7 +59,6 @@ const Login = () => {
         backgroundPosition: "center",
       }}
     >
-
       <div className="flex flex-col items-center justify-center px-6 py-8 h-[100vh] mx-auto lg:py-0">
         <div className="w-full bg-white rounded-lg shadow-2xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -101,25 +100,22 @@ const Login = () => {
               </div>
               <Typography color="error">{error}</Typography>
 
-              <button
+              <Button
                 onClick={handleLogin}
+                variant="contained"
                 className="w-full text-white bg-sky-600 hover:bg-sky-700 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700 dark:focus:ring-sky-800"
               >
                 Đăng nhập
-              </button>
+              </Button>
             </form>
-            <div
-              className="flex items-center justify-center space-x-2"
-            >
-
+            <div className="flex items-center justify-center space-x-2">
               <GoogleLogin
-                onSuccess={credentialResponse => {
+                onSuccess={(credentialResponse) => {
                   handleLoginGoogle(credentialResponse);
                 }}
                 onError={(error) => {
                   setError(error);
                 }}
-
               />
             </div>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
@@ -131,7 +127,6 @@ const Login = () => {
                 Tại đây
               </a>
             </p>
-
           </div>
         </div>
       </div>
