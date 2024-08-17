@@ -440,20 +440,27 @@ export const Play = () => {
             </div>
           </div>
         </div>
-        <div>
-          <Typography component="span">Đề bài: </Typography>
-          <span className="font-semibold">{blockDetail?.question}</span>
-        </div>
-        <div>
-          <Typography component="span">Mức độ: </Typography>
-          <Chip
-            style={{
-              backgroundColor: getColor(blockDetail?.level),
-            }}
-            label={getLabel(blockDetail?.level)}
-            sx={{ width: "fit-content" }}
-          />
-        </div>
+        {
+          blockDetail && !checkFinished && (
+            <>
+              <div>
+                <Typography component="span">Đề bài: </Typography>
+                <span className="font-semibold">{blockDetail?.question}</span>
+              </div>
+              <div>
+                <Typography component="span">Mức độ: </Typography>
+                <Chip
+                  style={{
+                    backgroundColor: getColor(blockDetail?.level),
+                  }}
+                  label={getLabel(blockDetail?.level)}
+                  sx={{ width: "fit-content" }}
+                />
+              </div>
+            </>
+          )
+        }
+
         <div className="flex mt-3">
           <div className="flex-1">
             {blockDetail && !checkFinished && (
@@ -498,20 +505,6 @@ export const Play = () => {
             )}
             {checkFinished && (
               <div>
-                <div>
-                  <Typography component="span">Đề bài: </Typography>
-                  <span className="font-semibold">{blockDetail?.question}</span>
-                </div>
-                <div>
-                  <Typography component="span">Mức độ: </Typography>
-                  <Chip
-                    style={{
-                      backgroundColor: getColor(blockDetail?.level),
-                    }}
-                    label={getLabel(blockDetail?.level)}
-                    sx={{ width: "fit-content" }}
-                  />
-                </div>
                 <Typography>
                   Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối đa!
                 </Typography>

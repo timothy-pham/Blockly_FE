@@ -152,14 +152,15 @@ export const HistoryPlay = () => {
                 <p>Tổng số điểm: {statistics?.total_points}</p>
               </div>
               <div>
-                <p>Điểm trung bình mỗi trận: {statistics?.avg_scores}</p>
+                {/* làm tròn 2 phẩy */}
+                <p>Điểm trung bình mỗi trận: {statistics?.avg_scores.toFixed(2)}</p>
                 <p>
                   Tổng thời gian đã thi đấu:{" "}
                   {formatTime(statistics?.total_time, true)}
                 </p>
               </div>
               <div>
-                <p>Thứ hạng trung bình: {Math.round(statistics?.avg_rank)}</p>
+                <p>Thứ hạng trung bình: {statistics?.avg_rank.toFixed(2)}</p>
                 <p>
                   Thời gian trung bình mỗi trận:{" "}
                   {formatTime(statistics?.avg_time, true)}
