@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { apiPost } from "../utils/dataProvider";
 import { toastOptions } from "../constant/toast";
+import { Button } from "@mui/material";
 
 const RequestAdmin = () => {
 
@@ -26,11 +27,20 @@ const RequestAdmin = () => {
     }
     // form to input key and submit
     return (
-        <div className="flex flex-start items-center">
-            <div className="w-96 p-4 bg-white rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold mb-4">Request Admin</h1>
-
-                <div className="mb-4">
+        <div className="container-body">
+            <div className="p-4 bg-white rounded-lg shadow-lg"
+                style={{
+                    width: "400px", margin: "0 auto",
+                    height: "fit-content", marginTop: "100px"
+                }}
+            >
+                <h1 className="text-2xl font-bold mb-4 text-black text-center">Yêu cầu quyền admin</h1>
+                <p className="text-black">
+                    Nếu bạn muốn trở thành admin, vui lòng liên hệ Email: <a href="mailto:phamtiendat.dev@gmail.com">
+                        phamtiendat.dev@gmail.com
+                    </a>
+                </p>
+                <div className="my-5">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="key">Key</label>
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -39,9 +49,10 @@ const RequestAdmin = () => {
                         placeholder="Key"
                     />
                 </div>
-                <div className="flex items-center justify-between">
-                    <button
+                <div className="flex items-center justify-center">
+                    <Button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        variant="contained"
                         type="button"
                         onClick={() => {
                             requestAdmin({
@@ -49,8 +60,8 @@ const RequestAdmin = () => {
                             })
                         }}
                     >
-                        Submit
-                    </button>
+                        Xác nhận
+                    </Button>
                 </div>
 
             </div>
