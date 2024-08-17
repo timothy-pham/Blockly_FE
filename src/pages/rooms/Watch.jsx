@@ -283,157 +283,182 @@ export const Watch = () => {
   };
 
   return (
-    <Paper
-      sx={{
-        padding: 3,
-        height: "100%",
-        borderRadius: "20px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      {/* cursor view */}
+    <div className="container-body">
+      <div
+        style={{
+          width: "95%",
+          height: "fit-content",
+        }}
+        className="border-animation"
+      >
+        {/* cursor view */}
 
-      {cursorPosition && (
-        <div
-          style={{
-            position: "fixed",
-            zIndex: 9999,
-            top: cursorPosition.y,
-            left: cursorPosition.x,
-            width: "50px",
-            height: "50px",
-          }}
-        >
-          <img
-            src={"/cursor.png"}
-            // style hình tròn
-            className="w-10 h-10"
-          />
-          <img
-            src={
-              user?.meta_data?.avatar
-                ? user?.meta_data?.avatar
-                : "/default_avatar.png"
-            }
-            // style hình tròn
-            className="w-10 h-10 rounded-full  object-cover"
-          />
-        </div>
-      )}
-
-      <div className="flex justify-between">
-        <Typography variant="h4">Phòng: {roomDetail?.name}</Typography>
-        {!isNaN(timeLeft) && (
-          <Typography variant="h4">
-            Còn lại: {milisecondToSecondMinute(timeLeft)}
-          </Typography>
-        )}
-      </div>
-      <div className="flex items-center gap-2">
-        <Typography variant="h6">Đang theo dõi: </Typography>
-        <div className="flex items-center gap-2">
-          <img
-            src={
-              user?.meta_data?.avatar
-                ? user?.meta_data?.avatar
-                : "/default_avatar.png"
-            }
-            className="w-10 h-10 rounded-full  object-cover mr-1"
-          />
-          <Typography variant="h6">{user?.name}</Typography>
-        </div>
-      </div>
-
-      <div className="border-b border-solid border-gray-300 pb-10 my-5">
-        <Typography variant="subtitle1" className="text-lg mb-4">
-          Câu hỏi
-        </Typography>
-
-        <div className="flex gap-3 flex-wrap">
-          {rows.map((val, index) => (
-            <Button
-              variant="contained"
-              className={`shadow-md rounded-md py-2 px-4 transition-all duration-300`}
-              key={index}
-              color={
-                checkWrongAnswer(val.block_id)
-                  ? "error"
-                  : checkTrueAnswer(val.block_id)
-                    ? "success"
-                    : "primary"
+        {cursorPosition && (
+          <div
+            style={{
+              position: "fixed",
+              zIndex: 9999,
+              top: cursorPosition.y,
+              left: cursorPosition.x,
+              width: "50px",
+              height: "50px",
+            }}
+          >
+            <img
+              src={"/cursor.png"}
+              // style hình tròn
+              className="w-10 h-10"
+            />
+            <img
+              src={
+                user?.meta_data?.avatar
+                  ? user?.meta_data?.avatar
+                  : "/default_avatar.png"
               }
-            >
-              {index + 1}
-            </Button>
-          ))}
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex-1">
-          {blockDetail && !checkFinished && (
-            <Box>
-              <div>
-                <Typography component="span">Đề bài: </Typography>
-                <span className="font-semibold">{blockDetail.question}</span>
-              </div>
-              <div>
-                <Typography component="span">Mức độ: </Typography>
-                <Chip
-                  style={{
-                    backgroundColor: getColor(blockDetail?.level),
-                  }}
-                  label={getLabel(blockDetail?.level)}
-                  sx={{ width: "fit-content" }}
-                />
-              </div>
-              <BlocklyLayout
-                setDataBlocks={setDataBlocks}
-                data={blockDetail.data}
-                isEdit={false}
-              />
+              // style hình tròn
+              className="w-10 h-10 rounded-full  object-cover"
+            />
+          </div>
+        )}
 
-            </Box>
-          )}
-          <div className="my-2">
-            {checkFinished && (
-              <div>
-                <Typography>
-                  Người chơi đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
-                  đa!
-                </Typography>
-                <Typography>
-                  Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
-                </Typography>
-                <Typography>
-                  Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
-                </Typography>
-                <Typography>Số điểm của người chơi: {getScore()}</Typography>
-              </div>
+        <div className="flex justify-between">
+          <div>
+            <Typography variant="h4">Phòng: {roomDetail?.name}</Typography>
+            {!isNaN(timeLeft) && (
+              <Typography variant="h5">
+                Còn lại: {milisecondToSecondMinute(timeLeft)}
+              </Typography>
             )}
           </div>
-        </div>
-        <div className="flex-1 mt-6">
-          {blockDetail?.meta_data?.image && !checkFinished && (
-            <div>
-              <Typography variant="subtitle1" sx={{ marginBottom: "10px" }}>
-                Hình ảnh
-              </Typography>
-              <div className=" max-h-[400px] p-3 bg-white rounded-lg shadow-inner flex items-center justify-center">
+          <div className="flex flex-col text-right">
+            <Typography variant="h5">
+              Bấm vào người chơi trên bảng xếp hạng để theo dõi!
+            </Typography>
+            <div className="flex items-center justify-end gap-2 mt-1">
+              <Typography variant="h6">Đang theo dõi: </Typography>
+              <div className="flex items-center gap-2">
                 <img
-                  src={blockDetail?.meta_data?.image}
-                  alt="block detail"
-                  className="play-img w-full max-h-[400px] rounded-lg "
+                  src={
+                    user?.meta_data?.avatar
+                      ? user?.meta_data?.avatar
+                      : "/default_avatar.png"
+                  }
+                  className="w-10 h-10 rounded-full object-cover mr-1"
                 />
+                <Typography variant="h6">{user?.name}</Typography>
               </div>
             </div>
-          )}
+          </div>
         </div>
-        <div className="flex-1 mt-6">
-          <div className="flex-col">
-            <Ranking ranks={ranks} rows={rows} onChangeUser={onChangeUser} />
+        <div className="pb-3 my-5">
+          <div className="flex gap-3 flex-wrap">
+            {rows.map((val, index) => (
+              <Button
+                variant="contained"
+                className={`shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+                key={index}
+                color={
+                  checkWrongAnswer(val.block_id)
+                    ? "error"
+                    : checkTrueAnswer(val.block_id)
+                      ? "success"
+                      : "primary"
+                }
+              >
+                {index + 1}
+              </Button>
+            ))}
+          </div>
+        </div>
+        {blockDetail && !checkFinished && (
+          <>
+            <div>
+              <Typography component="span">Đề bài: </Typography>
+              <span className="font-semibold">{blockDetail?.question}</span>
+            </div>
+            <div>
+              <Typography component="span">Mức độ: </Typography>
+              <Chip
+                style={{
+                  backgroundColor: getColor(blockDetail?.level),
+                }}
+                label={getLabel(blockDetail?.level)}
+                sx={{ width: "fit-content" }}
+              />
+            </div>
+          </>
+        )}
+        <div className="flex mt-3">
+          <div className="flex-1">
+            {blockDetail && !checkFinished
+              ? (
+                <Box>
+                  <BlocklyLayout
+                    setDataBlocks={setDataBlocks}
+                    data={blockDetail?.data}
+                    isEdit={false}
+                  />
+
+                </Box>
+              )
+              : (
+                <div className="my-2">
+
+                  <div>
+                    <Typography>
+                      Người chơi đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
+                      đa!
+                    </Typography>
+                    <Typography>
+                      Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
+                    </Typography>
+                    <Typography>
+                      Kết quả sẽ được hiển thị sau khi kết thúc bài thi!
+                    </Typography>
+                    <Typography>Số điểm của người chơi: {getScore()}</Typography>
+                  </div>
+
+                </div>
+              )
+            }
+          </div>
+          <div className="flex-1 ms-3">
+            <div
+              style={{
+                height: "50vh",
+                position: "relative",
+                borderRadius: "10px",
+              }}
+              className="bg-white rounded-lg shadow-inner flex items-center justify-center">
+              <img
+                src={blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"}
+                alt="block detail"
+                class={blockDetail?.meta_data?.image ? "play-img" : "play-img cover"}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  backgroundColor: "rgba(0,0,0,0.8)",
+                  color: "white",
+                  padding: "5px",
+                  borderTopLeftRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                  border: "1px solid var(--red)",
+                }}
+              >
+                Hình minh họa
+              </div>
+            </div>
+          </div>
+          <div className="flex-1">
+            <div className="flex-col">
+              <Ranking ranks={ranks} rows={rows} onChangeUser={onChangeUser} />
+            </div>
           </div>
         </div>
       </div>
-    </Paper>
+    </div>
   );
 };

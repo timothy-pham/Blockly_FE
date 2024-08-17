@@ -39,7 +39,7 @@ const Ranking = ({ ranks, rows, onChangeUser }) => {
           boxShadow: '0 0 10px 0 var(--red)',
         }}
       >
-        <Typography variant="h4">Bảng xếp hạng</Typography>
+        <Typography variant="h5" className="py-2">Bảng xếp hạng</Typography>
         <div className={styles.list} style={{ height: sortedData.length * 75 }}>
           {transitions((style, item, t, index) => (
             <animated.div
