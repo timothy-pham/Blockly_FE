@@ -109,7 +109,7 @@ export const History = () => {
                 </p>
               </div>
               <div>
-                <p>Điểm trung bình mỗi bài: {statistics?.avg_score}</p>
+                <p>Điểm trung bình mỗi bài: {statistics?.avg_score.toFixed(2)}</p>
                 <p>
                   Thời gian trung bình mỗi bài:{" "}
                   {formatTime(statistics?.avg_time, true)}

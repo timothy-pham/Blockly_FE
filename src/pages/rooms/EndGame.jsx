@@ -106,7 +106,7 @@ export const EndGame = () => {
                 {`${ranks[1]?.score} / ${allQuestions}`}
               </div>
               <div variant="body2" color="text.secondary">
-                +75 điểm
+                {`${ranks[1]?.score > 0 ? "+75 điểm" : ""}`}
               </div>
             </CardContent>
           </Card>
@@ -145,7 +145,7 @@ export const EndGame = () => {
                 {`${ranks[0]?.score} / ${allQuestions}`}
               </div>
               <div variant="body2" color="text.secondary">
-                +100 điểm
+                {`${ranks[0]?.score > 0 ? "+100 điểm" : ""}`}
               </div>
             </CardContent>
           </Card>
@@ -184,7 +184,7 @@ export const EndGame = () => {
                 {ranks[2] && `${ranks[2]?.score} / ${allQuestions}`}
               </div>
               <div variant="body2" color="text.secondary">
-                {ranks[2] && "+50 điểm"}
+                {`${ranks[2]?.score > 0 ? "+75 điểm" : ""}`}
               </div>
             </CardContent>
           </Card>
