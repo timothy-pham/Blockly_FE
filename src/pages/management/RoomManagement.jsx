@@ -248,7 +248,7 @@ export const RoomManagement = () => {
             </Paper>
             <TableContainer sx={{ padding: 3 }} component={Paper}>
                 <div className="flex justify-between">
-                    <Typography variant="h6">Quản lí phòng</Typography>
+                    <Typography variant="h6">Quản lý phòng</Typography>
                     <div className="flex">
                         {selected?.length > 0 && <Button
                             color="primary"

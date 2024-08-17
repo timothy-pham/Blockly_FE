@@ -135,8 +135,7 @@ export const CollectionManagement = () => {
       }
       if (res) {
         toast.success(
-          ` ${
-            !data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
+          ` ${!data?.collection_id ? "Thêm mới" : "Chỉnh sửa"
           } danh mục thành công.`,
           toastOptions
         );
@@ -144,8 +143,7 @@ export const CollectionManagement = () => {
       setData({});
     } catch (err) {
       toast.error(
-        `Có lỗi trong lúc ${
-          !data?.collection_id ? "thêm mới" : "chỉnh sửa"
+        `Có lỗi trong lúc ${!data?.collection_id ? "thêm mới" : "chỉnh sửa"
         } danh mục. Vui lòng kiểm tra lại.`,
         toastOptions
       );
@@ -339,7 +337,7 @@ export const CollectionManagement = () => {
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
-          <Typography variant="h6">Quản lí danh mục</Typography>
+          <Typography variant="h6">Quản lý danh mục</Typography>
 
           <div className="flex">
             <ExportExcelMenuButton items={downloadMenuItems} />

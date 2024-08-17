@@ -136,7 +136,7 @@ export const TicketManagement = () => {
     <>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
-          <Typography variant="h6">Quản lí phiếu hỗ trợ</Typography>
+          <Typography variant="h6">Quản lý phiếu hỗ trợ</Typography>
         </div>
         <Table aria-label="simple table">
           <TableHead>

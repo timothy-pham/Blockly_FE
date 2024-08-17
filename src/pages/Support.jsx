@@ -103,6 +103,13 @@ export const Support = () => {
   const handleOpenMesage = (row) => {
     setOpenPopup(true);
     setData(row);
+    // scroll to bottom of list-tickets smoothly
+    setTimeout(() => {
+      const listTickets = document.querySelector(".list-tickets");
+      if (listTickets) {
+        listTickets.scrollTop = listTickets.scrollHeight;
+      }
+    }, 500);
   };
 
   const handleSubmitTicket = async (e) => {
@@ -301,7 +308,7 @@ export const Support = () => {
                 id="messages"
                 className="bg-[var(--black)] border border-[var(--red)] text-gray-900 sm:text-sm rounded-lg block w-full p-2.5  dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Tin nhắn"
-                rows={20}
+                rows={5}
               />
             </div>
 
@@ -313,6 +320,41 @@ export const Support = () => {
               Gửi
             </Button>
           </form>
+
+          <div className="mt-5 text-center">
+            HOẶC
+          </div>
+          <div>
+            Email:{" "}
+            <a href="mailto:phamtiendat.dev@gmail.com">
+              phamtiendat.dev@gmail.com
+            </a>
+          </div>
+          <div>
+            Phone:{" "}
+            <a href="tel:+84903684049">
+              +84 903.684.049 Mr. Dat Pham
+            </a>
+          </div>
+          <div className="mt-3">
+            Email:{" "}
+            <a href="mailto:thanhsonnguyen.dev@gmail.com">
+              thanhsonnguyen.dev@gmail.com
+            </a>
+          </div>
+          <div>
+            Phone:{" "}
+            <a href="tel:+84967970238">
+              +84 967.970.238 Mr. Son Nguyen
+            </a>
+          </div>
+
+          <div className="mt-3">
+            Facebook:{" "}
+            <a href="https://www.facebook.com/datons.blockly" className="underline">
+              Datons  (Website thi đấu toán)
+            </a>
+          </div>
         </div>
       </div>
 
@@ -336,6 +378,7 @@ export const Support = () => {
             height: 400,
             overflowY: "auto",
           }}
+          className="list-tickets"
         >
           {data?.messages?.map((item, index) => (
             <Box

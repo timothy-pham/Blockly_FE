@@ -75,7 +75,7 @@ export const items = [
   //   ),
   // },
   {
-    title: "Quản lí phòng thi đấu",
+    title: "Quản lý phòng thi đấu",
     path: "/admin/roomManagement",
     permission: [Role.ADMIN],
     icon: (
@@ -85,7 +85,7 @@ export const items = [
     ),
   },
   {
-    title: "Quản lí danh mục",
+    title: "Quản lý danh mục",
     path: "/admin/collectionManagement",
     permission: [Role.ADMIN],
     icon: (
@@ -95,7 +95,7 @@ export const items = [
     ),
   },
   {
-    title: "Quản lí bài tập",
+    title: "Quản lý bài tập",
     path: "/admin/groupManagement",
     permission: [Role.ADMIN],
     icon: (
@@ -105,7 +105,7 @@ export const items = [
     ),
   },
   {
-    title: "Quản lí câu hỏi",
+    title: "Quản lý câu hỏi",
     path: "/admin/blockManagement",
     permission: [Role.ADMIN],
     icon: (
@@ -115,7 +115,7 @@ export const items = [
     ),
   },
   {
-    title: "Quản lí người dùng",
+    title: "Quản lý người dùng",
     path: "/admin/userManagement",
     permission: [Role.ADMIN],
     icon: (
@@ -125,7 +125,7 @@ export const items = [
     ),
   },
   {
-    title: "Quản lí phiếu hỗ trợ",
+    title: "Quản lý phiếu hỗ trợ",
     path: "/admin/ticket",
     permission: [Role.ADMIN],
     icon: (

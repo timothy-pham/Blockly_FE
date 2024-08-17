@@ -291,7 +291,7 @@ export const UserManagement = () => {
     <>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
-          <Typography variant="h6">Quản lí người dùng</Typography>
+          <Typography variant="h6">Quản lý người dùng</Typography>
           <Autocomplete
             value={roleFilter}
             onChange={handleRoleFilterChange}

@@ -374,7 +374,7 @@ export const BlockManagement = () => {
       </Paper>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
         <div className="flex justify-between">
-          <Typography variant="h6">Quản lí câu hỏi</Typography>
+          <Typography variant="h6">Quản lý câu hỏi</Typography>
           <div className="flex">
             <ExportExcelMenuButton items={downloadMenuItems} />
             <>

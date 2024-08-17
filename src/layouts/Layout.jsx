@@ -91,7 +91,7 @@ export const Layout = () => {
     socket.on("invite_user", (data) => {
       setInviteData((prev) => {
         let isExist = false;
-        for (let i = 0; i < prev.length; i++) {
+        for (let i = 0;i < prev.length;i++) {
           if (prev[i].room.room_id === data.room.room_id) {
             isExist = true;
             break;
@@ -454,9 +454,8 @@ export const Header = ({
           )}
           <div
             ref={dropdownRef} // Attach ref to the dropdown
-            className={`z-50 ${
-              isUserDropdownOpen ? "" : "hidden"
-            } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
+            className={`z-50 ${isUserDropdownOpen ? "" : "hidden"
+              } my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600 fixed top-[30px] right-[23px]`}
             id="user-dropdown"
           >
             <div className="px-4 py-3">
@@ -530,7 +529,7 @@ const menuHeader = [
     path: "/support",
   },
   {
-    title: "Admin",
+    title: "Quản lý",
     path: "/admin/collectionManagement",
     role: "admin",
   },
