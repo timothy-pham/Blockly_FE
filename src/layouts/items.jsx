@@ -10,7 +10,7 @@ import QueueListIcon from "@heroicons/react/24/solid/QueueListIcon";
 import ComputerDesktop from "@heroicons/react/24/solid/ComputerDesktopIcon";
 import { SvgIcon } from "@mui/material";
 import { Role } from "../constant/role";
-
+import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 export const items = [
   // {
   //   title: "Trang chủ",
@@ -121,6 +121,16 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
+      </SvgIcon>
+    ),
+  },
+  {
+    title: "Quản lí phiếu hỗ trợ",
+    path: "/admin/ticket",
+    permission: [Role.ADMIN],
+    icon: (
+      <SvgIcon fontSize="small">
+        <ConfirmationNumberIcon />
       </SvgIcon>
     ),
   },

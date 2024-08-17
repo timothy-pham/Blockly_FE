@@ -526,6 +526,10 @@ const menuHeader = [
     path: "/messages",
   },
   {
+    title: "Hỗ trợ",
+    path: "/support",
+  },
+  {
     title: "Admin",
     path: "/admin/collectionManagement",
     role: "admin",

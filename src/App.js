@@ -38,6 +38,8 @@ import { LayoutAdmin } from "./layouts/LayoutAdmin";
 import "./pages/styles/main.scss";
 import theme from "./themes/theme";
 import { ThemeProvider } from "@mui/material";
+import { Support } from "./pages/Support";
+import { TicketManagement } from "./pages/management/TicketManagement";
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const navigate = useNavigate();
@@ -126,6 +128,11 @@ function App() {
                     path="/ranking"
                     element={<PrivateRoute element={RankingPage} />}
                   />
+
+                  <Route
+                    path="/support"
+                    element={<PrivateRoute element={Support} />}
+                  />
                 </Route>
 
                 <Route path="/admin" element={<LayoutAdmin />}>
@@ -192,7 +199,10 @@ function App() {
                       />
                     }
                   />
-
+                  <Route
+                    path="/admin/ticket"
+                    element={<PrivateRoute element={TicketManagement} />}
+                  />
                   <Route
                     path="/admin/request-admin"
                     element={<PrivateRoute element={RequestAdmin} />}
