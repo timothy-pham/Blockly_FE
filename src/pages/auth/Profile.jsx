@@ -146,10 +146,10 @@ export const Profile = () => {
 
   return (
     <div className="container-body p-5">
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ height: "50vh" }}>
         {/* Avatar and User Info Card */}
         <Grid item xs={12} md={4}>
-          <Card style={{ height: "100%" }}>
+          <Card sx={{ height: "100%" }}>
             <>
               <input
                 accept="image/*"
@@ -227,7 +227,7 @@ export const Profile = () => {
 
         {/* User Details */}
         <Grid item xs={12} md={8}>
-          <Card style={{ height: "100%" }}>
+          <Card sx={{ height: "100%" }}>
             <CardContent>
               <TextField
                 InputLabelProps={{ shrink: true }}

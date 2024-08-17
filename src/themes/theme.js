@@ -24,6 +24,10 @@ const theme = createTheme({
           },
           borderRadius: "8px", // Custom button border radius
           textTransform: "none", // Prevent uppercase text by default
+          "&.Mui-disabled": {
+            color: "#BBBBBB", // Disabled text color
+            backgroundColor: "#E0E0E0", // Disabled background color
+          },
         },
       },
     },

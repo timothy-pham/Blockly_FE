@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   Table,
@@ -48,6 +54,7 @@ export const Play = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState();
 
@@ -71,11 +78,9 @@ export const Play = () => {
     return haveData;
   };
 
-
-
   const setQuestions = async (res) => {
     try {
-      const blocks = res?.meta_data?.blocks
+      const blocks = res?.meta_data?.blocks;
       if (blocks) {
         const data = blocks.map((item) => ({
           ...item,
@@ -84,7 +89,8 @@ export const Play = () => {
         setRows(data);
         if (data.length > 0) {
           // checkCurrentQuestion(room.users, initialBlockDetail?.block_id);
-          const count = res?.users?.filter((v) => v.user_id === user.user_id)[0]?.blocks?.length;
+          const count = res?.users?.filter((v) => v.user_id === user.user_id)[0]
+            ?.blocks?.length;
           setCurrentQuestionIndex(count - 1);
           setBlockDetail(rows[count - 1]);
         }
@@ -109,10 +115,11 @@ export const Play = () => {
           }
         }
         // check user in room and status = playing
-        const userInRoom = res.users.find(
-          (u) => u.user_id === user.user_id
-        );
-        if (!userInRoom || (userInRoom.status !== "playing" && userInRoom.status !== "finished")) {
+        const userInRoom = res.users.find((u) => u.user_id === user.user_id);
+        if (
+          !userInRoom ||
+          (userInRoom.status !== "playing" && userInRoom.status !== "finished")
+        ) {
           navigate(`/rooms/${id}/watch`);
         }
         setRoomDetail(res);
@@ -141,13 +148,13 @@ export const Play = () => {
     const handleMouseMove = (event) => {
       const position = { x: event.clientX, y: event.clientY };
       setCursorPosition(position);
-      socket.emit('cursorPosition', { position, userId: user.user_id });
+      socket.emit("cursorPosition", { position, userId: user.user_id });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
@@ -164,7 +171,7 @@ export const Play = () => {
     if (rows.length === 0 || ranks.length === 0) return;
     const is_done = checkFinished;
     if (is_done) {
-      socket.emit("user_finish")
+      socket.emit("user_finish");
     }
     const sortedRanks = [...data.users.filter((v) => v.is_connected)].sort(
       (a, b) => {
@@ -178,7 +185,8 @@ export const Play = () => {
     setRanks(sortedRanks);
 
     // check user.blocks.length
-    const count = data?.users?.filter((v) => v.user_id === user.user_id)[0]?.blocks?.length;
+    const count = data?.users?.filter((v) => v.user_id === user.user_id)[0]
+      ?.blocks?.length;
 
     if (count > currentQuestionIndex && count < rows.length) {
       setCurrentQuestionIndex(count);
@@ -255,6 +263,7 @@ export const Play = () => {
   };
 
   const handleSubmitAnswer = async () => {
+    setIsSubmitting(true); // Disable button
     const res = await apiPost("blocks/check-answer", {
       id: blockDetail?.block_id,
       answers: transformCodeBlockly(dataBlock.code),
@@ -280,7 +289,7 @@ export const Play = () => {
       socket.emit("ranking_update", {
         block_id: blockDetail?.block_id,
         answered: true,
-        wrong: true
+        wrong: true,
       });
       toast("Tiếc quá! Câu trả lời chưa đúng rồi :<", {
         position: "top-left",
@@ -294,6 +303,10 @@ export const Play = () => {
         type: "error",
       });
     }
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 500);
   };
 
   const handleSkipAnswer = () => {
@@ -301,7 +314,7 @@ export const Play = () => {
       block_id: blockDetail?.block_id,
       answered: true,
       wrong: true,
-      skip: true
+      skip: true,
     });
     handleNextQuestion();
     setShowDeleteDialog(false);
@@ -341,7 +354,9 @@ export const Play = () => {
 
   const checkFinished = useMemo(() => {
     if (currentQuestionIndex === rows.length - 1) {
-      const is_done = ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length === rows.length;
+      const is_done =
+        ranks.filter((r) => r.user_id === user.user_id)[0]?.blocks?.length ===
+        rows.length;
       return is_done;
     } else {
       return false;
@@ -367,7 +382,7 @@ export const Play = () => {
       }
     }
     return false;
-  }
+  };
 
   const checkTrueAnswer = (block_id) => {
     const userIndex = ranks.findIndex((v) => v.user_id === user.user_id);
@@ -378,9 +393,9 @@ export const Play = () => {
       }
     }
     return false;
-  }
+  };
 
-  const renderProgress = useMemo(() => { }, [checkFinished]);
+  const renderProgress = useMemo(() => {}, [checkFinished]);
 
   return (
     <div class="container-body">
@@ -389,7 +404,6 @@ export const Play = () => {
           width: "95%",
           height: "fit-content",
         }}
-
         class="border-animation"
       >
         <div className="flex justify-between py-3">
@@ -405,23 +419,23 @@ export const Play = () => {
                 return (
                   <Button
                     variant="contained"
-
                     key={index}
                     color={
                       checkWrongAnswer(val.block_id)
                         ? "error"
                         : checkTrueAnswer(val.block_id)
-                          ? "success"
-                          : "primary"
+                        ? "success"
+                        : "primary"
                     }
-                    className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${index === currentQuestionIndex
-                      ? "opacity-100"
-                      : "opacity-50"
-                      }`}
+                    className={`shadow-md rounded-md py-2 px-4 transition-all duration-300 ${
+                      index === currentQuestionIndex
+                        ? "opacity-100"
+                        : "opacity-50"
+                    }`}
                   >
                     {index + 1}
                   </Button>
-                )
+                );
               })}
             </div>
           </div>
@@ -457,20 +471,21 @@ export const Play = () => {
                       rows.findIndex(
                         (row) => row.block_id === blockDetail?.block_id
                       ) && (
-                        <Button
-                          onClick={handleSubmitAnswer}
-                          variant="contained"
-                          disabled={blockDetail?.answered}
-                          sx={{ mt: 3, mb: 2 }}
-                        >
-                          Kiểm tra
-                        </Button>
-                      )}
+                      <Button
+                        onClick={handleSubmitAnswer}
+                        variant="contained"
+                        disabled={blockDetail?.answered || isSubmitting}
+                        sx={{ mt: 3, mb: 2 }}
+                      >
+                        Kiểm tra
+                      </Button>
+                    )}
                     <Button
                       onClick={() => setShowDeleteDialog(true)}
                       variant="contained"
                       disabled={
-                        blockDetail?.answered || checkWrongAnswer(blockDetail?.block_id)
+                        blockDetail?.answered ||
+                        checkWrongAnswer(blockDetail?.block_id)
                       }
                       sx={{ ml: 3, mt: 3, mb: 2 }}
                       color="error"
@@ -498,8 +513,7 @@ export const Play = () => {
                   />
                 </div>
                 <Typography>
-                  Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối
-                  đa!
+                  Bạn đã hoàn thành bài thi của mình nhưng chưa đạt điểm tối đa!
                 </Typography>
                 <Typography>
                   Hãy chờ người chơi khác hoàn thành hoặc hết thời gian!
@@ -518,11 +532,14 @@ export const Play = () => {
                 position: "relative",
                 borderRadius: "10px",
               }}
-              className="bg-white rounded-lg shadow-inner flex items-center justify-center">
+              className="bg-white rounded-lg shadow-inner flex items-center justify-center"
+            >
               <img
                 src={blockDetail?.meta_data?.image || "/backgroundAuth.jpeg"}
                 alt="block detail"
-                class={blockDetail?.meta_data?.image ? "play-img" : "play-img cover"}
+                class={
+                  blockDetail?.meta_data?.image ? "play-img" : "play-img cover"
+                }
               />
               <div
                 style={{
@@ -561,13 +578,18 @@ export const Play = () => {
             </Typography>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleSkipAnswer} color="primary">
+            <Button
+              onClick={handleSkipAnswer}
+              color="primary"
+              variant="contained"
+            >
               Đồng ý
             </Button>
             <Button
               onClick={() => setShowDeleteDialog(false)}
               color="primary"
               autoFocus
+              variant="contained"
             >
               Hủy
             </Button>
