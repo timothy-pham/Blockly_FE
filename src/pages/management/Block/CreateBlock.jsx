@@ -182,7 +182,7 @@ export const CreateBlock = () => {
               <Button
                 disabled={!dataBlock?.code}
                 onClick={handlePreviewClick}
-                variant="outlined"
+                variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Kiểm tra câu trả lời

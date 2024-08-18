@@ -87,7 +87,7 @@ export const TicketManagement = () => {
 
   const status = {
     open: {
-      name: "Mở",
+      name: "Đang mở",
       color: "#83ec09",
     },
     responded: {
@@ -95,7 +95,7 @@ export const TicketManagement = () => {
       color: "#fc650d",
     },
     closed: {
-      name: "Đóng",
+      name: "Đã đóng",
       color: "#f70202",
     },
   };
@@ -274,9 +274,8 @@ export const TicketManagement = () => {
                   borderColor: "divider",
                   backgroundColor:
                     item?.type === "request" ? "#FEFAE0" : "#FAEDCE",
-                  wordWrap: "break-word",
                   minHeight: 48,
-                  textAlign: item?.type === "request" ? "left" : "right",
+                  whiteSpace: "pre-wrap",
                 }}
               >
                 {item?.message}

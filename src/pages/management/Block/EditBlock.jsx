@@ -7,7 +7,7 @@ import {
   apiGetDetail,
   apiPatch,
 } from "../../../utils/dataProvider";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { transformCodeBlockly } from "../../../utils/transform";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../../constant/toast";
@@ -15,8 +15,7 @@ import { ImageInput } from "../../../components/input/ImageInput";
 import { uploadImage } from "../../../utils/firebase";
 
 export const EditBlock = () => {
-  const location = useLocation();
-  const id = location?.pathname?.split("/")[2];
+  const { id } = useParams();
   const [category, setCategory] = useState([]);
   const [categoryValue, setCategoryValue] = useState();
   const [dataBlock, setDataBlocks] = useState();
@@ -227,7 +226,7 @@ export const EditBlock = () => {
               <>
                 <Button
                   onClick={handlePreviewClick}
-                  variant="outlined"
+                  variant="contained"
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Kiểm tra câu trả lời

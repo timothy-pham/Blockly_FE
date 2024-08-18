@@ -80,7 +80,7 @@ export const Support = () => {
 
   const status = {
     open: {
-      name: "Mở",
+      name: "Đang mở",
       color: "#83ec09",
     },
     responded: {
@@ -88,10 +88,11 @@ export const Support = () => {
       color: "#fc650d",
     },
     closed: {
-      name: "Đóng",
+      name: "Đã đóng",
       color: "#f70202",
     },
   };
+
   const getColor = (level) => {
     return status[`${level}`]?.color || "black";
   };
@@ -321,9 +322,7 @@ export const Support = () => {
             </Button>
           </form>
 
-          <div className="mt-5 text-center">
-            HOẶC
-          </div>
+          <div className="mt-5 text-center">HOẶC</div>
           <div>
             Email:{" "}
             <a href="mailto:phamtiendat.dev@gmail.com">
@@ -331,10 +330,7 @@ export const Support = () => {
             </a>
           </div>
           <div>
-            Phone:{" "}
-            <a href="tel:+84903684049">
-              +84 903.684.049 Mr. Dat Pham
-            </a>
+            Phone: <a href="tel:+84903684049">+84 903.684.049 Mr. Dat Pham</a>
           </div>
           <div className="mt-3">
             Email:{" "}
@@ -343,16 +339,16 @@ export const Support = () => {
             </a>
           </div>
           <div>
-            Phone:{" "}
-            <a href="tel:+84967970238">
-              +84 967.970.238 Mr. Son Nguyen
-            </a>
+            Phone: <a href="tel:+84967970238">+84 967.970.238 Mr. Son Nguyen</a>
           </div>
 
           <div className="mt-3">
             Facebook:{" "}
-            <a href="https://www.facebook.com/datons.blockly" className="underline">
-              Datons  (Website thi đấu toán)
+            <a
+              href="https://www.facebook.com/datons.blockly"
+              className="underline"
+            >
+              Datons (Website thi đấu toán)
             </a>
           </div>
         </div>
@@ -402,9 +398,8 @@ export const Support = () => {
                   borderColor: "divider",
                   backgroundColor:
                     item?.type === "request" ? "#FAEDCE" : "#FEFAE0",
-                  wordWrap: "break-word",
+                  whiteSpace: "pre-wrap",
                   minHeight: 48,
-                  textAlign: item?.type === "request" ? "right" : "left",
                 }}
               >
                 {item?.message}
