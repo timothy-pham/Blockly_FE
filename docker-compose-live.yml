@@ -1,0 +1,17 @@
+version: "2.19.1"
+
+services:
+  blockly-fe:
+    build: .
+    container_name: blockly-fe
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - blockly-network
+    restart: always
+
+networks:
+  blockly-network:
+    external: true
