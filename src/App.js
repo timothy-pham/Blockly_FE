@@ -40,6 +40,7 @@ import theme from "./themes/theme";
 import { ThemeProvider } from "@mui/material";
 import { Support } from "./pages/Support";
 import { TicketManagement } from "./pages/management/TicketManagement";
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const PrivateRoute = ({ element: Component, permission, ...rest }) => {
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <GoogleOAuthProvider clientId="905650264931-n27bauh1b85f7kefe7kh8l7uis0mrabg.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={googleClientId}>
         <AlertProvider>
           <LoaderProvider>
             <Loader />
