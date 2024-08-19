@@ -13,4 +13,4 @@ cp docker-compose-live.yml docker-compose.yml
 
 # Chạy lệnh build Docker
 echo "Run Docker build command"
-docker-compose up --build -d
+docker compose up --build -d
