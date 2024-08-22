@@ -14,8 +14,10 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import React, { useEffect, useState } from "react";
 import { apiGet } from "../utils/dataProvider";
 import { formatDateTime, formatTime } from "../utils/transform";
+import { useParams, useNavigate } from "react-router-dom";
 
 export const HistoryPlay = () => {
+  const navigate = useNavigate();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState([]);
@@ -185,7 +187,18 @@ export const HistoryPlay = () => {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <TableRow key={index}>
+              <TableRow key={index}
+                sx={{
+                  // hover
+                  "&:hover": {
+                    backgroundColor: "var(--gray)",
+                    color: "var(--black)",
+                  },
+                }}
+                onClick={() => {
+                  navigate(`/rooms/${row?.room_id}/end-game`);
+                }}
+              >
                 <TableCell component="th" scope="row">
                   {row?.name}
                 </TableCell>
