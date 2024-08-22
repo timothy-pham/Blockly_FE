@@ -40,6 +40,7 @@ import theme from "./themes/theme";
 import { ThemeProvider } from "@mui/material";
 import { Support } from "./pages/Support";
 import { TicketManagement } from "./pages/management/TicketManagement";
+import { LessonResult } from "./pages/lessons/LessonResult";
 const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 const PrivateRoute = ({ element: Component, permission, ...rest }) => {
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -103,6 +104,10 @@ function App() {
                   <Route
                     path="/collections/:collection_id/groups/:group_id"
                     element={<PrivateRoute element={LessonsDetail} />}
+                  />
+                  <Route
+                    path="/review/:history_id"
+                    element={<PrivateRoute element={LessonResult} />}
                   />
                   <Route
                     path="/rooms"

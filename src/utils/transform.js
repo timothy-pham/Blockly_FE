@@ -78,3 +78,40 @@ export const formatTime = (seconds, isString) => {
 export const formatNumber = (number) => {
   return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+
+
+export function getReview(percentage) {
+  const review = {
+    0: "Rất tiếc, bạn chưa làm đúng câu nào. Đừng nản lòng, hãy thử lại nhé!",
+    "1-10": "Có công mài sắt có ngày nên kim. Hãy cố gắng hơn nữa nhé!",
+    "11-20": "Bạn đang trên đường đi đúng hướng. Cố lên nào!",
+    "21-30": "Khá hơn rồi! Tiếp tục cố gắng bạn nhé!",
+    "31-40": "Bạn đã có tiến bộ, nhưng vẫn còn có thể làm tốt hơn!",
+    "41-50": "Bạn đang ở mức trung bình. Hãy cố gắng hơn để đạt kết quả tốt hơn!",
+    "51-60": "Bạn đã làm khá tốt! Tiếp tục phát huy nhé!",
+    "61-70": "Kết quả tốt! Chỉ cần một chút nữa là bạn sẽ đạt kết quả xuất sắc!",
+    "71-80": "Rất tốt! Bạn đã nắm được phần lớn kiến thức!",
+    "81-90": "Xuất sắc! Bạn chỉ còn một chút nữa là hoàn toàn chính xác!",
+    "91-99": "Gần như hoàn hảo! Bạn đã nắm vững kiến thức!",
+    100: "Tuyệt vời! Bạn đã làm đúng toàn bộ! Tiếp tục phát huy nhé!"
+  };
+
+  // Làm tròn số percentage thành số nguyên
+  const roundedPercentage = Math.round(percentage);
+
+  if (roundedPercentage === 0) {
+    return review[0];
+  } else if (roundedPercentage === 100) {
+    return review[100];
+  } else {
+    for (let range in review) {
+      if (range.includes('-')) {
+        const [min, max] = range.split('-').map(Number);
+        if (roundedPercentage >= min && roundedPercentage <= max) {
+          return review[range];
+        }
+      }
+    }
+  }
+  return "Không tìm thấy lời đánh giá phù hợp."; // Trường hợp không nằm trong khoảng nào
+}

@@ -33,7 +33,7 @@ export const Lessons = () => {
       if (res) {
         setRows(res.sort((a, b) => a.created_at - b.created_at));
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   const fetchHistories = async () => {
@@ -42,7 +42,7 @@ export const Lessons = () => {
       if (res) {
         setHistories(res);
       }
-    } catch (e) {}
+    } catch (e) { }
   };
   useEffect(() => {
     fetchCollection();
@@ -86,7 +86,7 @@ export const Lessons = () => {
               className="ag-courses_item"
               key={val.group_id}
               onClick={() => {
-                navigate(`/collections/${id}/groups/${val.group_id}`);
+                navigate(`/collections/${id}/groups/${val?.group_id}`);
               }}
             >
               <a href="#" className="ag-courses-item_link">

@@ -110,10 +110,22 @@ export const LessonsDetail = () => {
           correct: true,
         }
       );
+      if (res) {
+        setHistory(res);
+      }
     } catch (e) {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (history) {
+      console.log(history?.meta_data?.score, history?.meta_data?.total)
+      if (history?.meta_data?.score === history?.meta_data?.total) {
+        navigate(`/review/${history?.histories_id}`);
+      }
+    }
+  }, [history]);
 
   const handleSubmitAnswer = async () => {
     const res = await apiPost("blocks/check-answer", {
@@ -130,9 +142,6 @@ export const LessonsDetail = () => {
       });
       setRows(answeredQuestion);
       toast.success(`Chúc mừng bạn đã làm đúng`, toastOptions);
-      if (currentQuestionIndex === rows.length - 1) {
-        navigate(`/collections/${collection_id}`);
-      }
       handleNextQuestion();
     } else if (!res.correct) {
       toast.error(`Tiếc quá! :<, bạn đã sai gòyyyy`, toastOptions);
@@ -142,7 +151,7 @@ export const LessonsDetail = () => {
   const handleKeyDown = (event) => {
     if (
       event.key === "Enter" &&
-      rows[currentQuestionIndex].answered === false
+      rows[currentQuestionIndex]?.answered === false
     ) {
       handleSubmitAnswer();
     }
@@ -179,19 +188,18 @@ export const LessonsDetail = () => {
               {rows.map((val, index) => (
                 <Button
                   variant="contained"
-                  style={{
-                    backgroundColor: val.answered && "#4caf50",
-                  }}
-                  // disabled={index > 0 && !rows[index - 1].answered}
-                  className={`${
-                    index === currentQuestionIndex
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-blue-500"
-                  } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
+                  className={`${index === currentQuestionIndex
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-blue-500"
+                    } shadow-md rounded-md py-2 px-4 transition-all duration-300`}
                   key={index}
                   onClick={() => {
                     setCurrentQuestionIndex(index);
                     setBlockDetail(val);
+                  }}
+                  style={{
+                    backgroundColor: val?.answered && "#4caf50",
+                    border: index === currentQuestionIndex && "4px solid var(--white)",
                   }}
                 >
                   <span>{val.name}</span>
@@ -208,35 +216,47 @@ export const LessonsDetail = () => {
           }}
         >
           <Box
-            className="p-5"
+            className="p-5 border-animation"
             sx={{
               borderRadius: "10px",
               border: "1px solid var(--red)",
               padding: "20px",
             }}
-            className="border-animation"
           >
-            <div className="mb-4">
-              <Typography component="span" className="font-semibold text-lg">
-                Đề bài:{" "}
-              </Typography>
-              <span>{blockDetail?.question}</span>
-            </div>
-            <div className="mb-4">
-              <Typography component="span" className="font-semibold text-lg">
-                Mức độ:{" "}
-              </Typography>
-              <Chip
-                style={{
-                  backgroundColor: getColor(blockDetail?.level),
+            <div className="flex justify-between">
+              <div>
+                <div className="mb-4">
+                  <Typography component="span" className="font-semibold text-lg">
+                    Đề bài:{" "}
+                  </Typography>
+                  <span>{blockDetail?.question}</span>
+                </div>
+                <div className="mb-4">
+                  <Typography component="span" className="font-semibold text-lg">
+                    Mức độ:{" "}
+                  </Typography>
+                  <Chip
+                    style={{
+                      backgroundColor: getColor(blockDetail?.level),
+                    }}
+                    label={getLabel(blockDetail?.level)}
+                    sx={{
+                      width: "fit-content",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  />
+                </div>
+              </div>
+              <Button
+                onClick={() => {
+                  navigate(`/review/${history?.histories_id}`);
                 }}
-                label={getLabel(blockDetail?.level)}
-                sx={{
-                  width: "fit-content",
-                  fontSize: "14px",
-                  fontWeight: "bold",
-                }}
-              />
+                variant="contained"
+                sx={{ height: "fit-content", alignSelf: "center", fontSize: "1.5rem", fontWeight: "bold" }}
+              >
+                NỘP BÀI
+              </Button>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-6">
@@ -291,15 +311,15 @@ export const LessonsDetail = () => {
               rows.findIndex(
                 (row) => row.block_id === blockDetail?.block_id
               ) && (
-              <Button
-                onClick={handleSubmitAnswer}
-                disabled={rows[currentQuestionIndex].answered}
-                variant="contained"
-                sx={{ mt: 1 }}
-              >
-                Kiểm tra
-              </Button>
-            )}
+                <Button
+                  onClick={handleSubmitAnswer}
+                  disabled={rows[currentQuestionIndex]?.answered}
+                  variant="contained"
+                  sx={{ mt: 1 }}
+                >
+                  Kiểm tra
+                </Button>
+              )}
           </Box>
         </div>
       </div>
