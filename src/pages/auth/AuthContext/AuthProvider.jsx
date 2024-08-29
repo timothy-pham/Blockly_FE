@@ -1,9 +1,10 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
 import AuthContext from "./AuthContext";
 import { apiPost, apiGetDetail } from "../../../utils/dataProvider";
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isGuestView, setIsGuestView] = useState(false);
 
   const login = async (credentials) => {
     try {
@@ -46,7 +47,6 @@ const AuthProvider = ({ children }) => {
     try {
       const res = await apiPost("auth/login-google", credentialResponse);
       if (res) {
-        setIsAuthenticated(true);
         localStorage.setItem(
           "authToken",
           JSON.stringify({
@@ -55,6 +55,7 @@ const AuthProvider = ({ children }) => {
             user: res.user,
           })
         );
+        setIsAuthenticated(true);
         return res;
       }
     } catch (error) {
@@ -63,24 +64,61 @@ const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
     localStorage.removeItem("authToken");
+    localStorage.removeItem("adminToken");
+    setIsAuthenticated(false);
   };
 
+  const startGuestView = async (res) => {
+    try {
+      const oldToken = localStorage.getItem("authToken");
+      localStorage.setItem('adminToken', oldToken);
+      localStorage.setItem(
+        "authToken",
+        JSON.stringify({
+          token: res.token,
+          refreshToken: res.refreshToken,
+          user: res.user,
+        })
+      );
+      setIsGuestView(true);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const cancelGuestView = () => {
+    const oldToken = localStorage.getItem("adminToken");
+    localStorage.removeItem("adminToken");
+    localStorage.setItem(
+      "authToken",
+      oldToken
+    );
+    setIsGuestView(false);
+  }
+  const hasFetched = useRef(false);
+
   useEffect(() => {
-    const authToken = JSON.parse(localStorage.getItem("authToken"));
-    if (authToken) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
+    if (!hasFetched.current) {
+      console.log("Khởi tạo")
+      const authToken = JSON.parse(localStorage.getItem("authToken"));
+      if (authToken) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
+      hasFetched.current = true; // Ensure it only runs once
     }
   }, []);
+
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        // currentUser: JSON.parse(localStorage.getItem("authToken")),
+        isGuestView,
+        startGuestView,
+        cancelGuestView,
         login,
         logout,
         loginWithGoogle,

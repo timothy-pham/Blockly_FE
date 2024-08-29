@@ -5,22 +5,33 @@ export const getToken = () => {
     : "";
 };
 
+export const getHeaders = (headers) => {
+  const adminData = localStorage.getItem("adminToken");
+  const adminToken = JSON.parse(adminData)?.token
+    ? "Bearer " + JSON.parse(adminData).token
+    : "";
+  const data = {
+    Authorization: getToken(),
+    "Content-Type": "application/json",
+    ...headers,
+  };
+  if (adminToken) {
+    data["admin-authorization"] = adminToken;
+  }
+  return data;
+}
 export async function apiGet(resource, headers) {
   try {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}`,
       {
-        headers: !headers
-          ? {
-            Authorization: getToken(),
-            "Content-Type": "application/json",
-          }
-          : headers,
+        headers: getHeaders(headers),
       }
     );
 
     if (response.status === 401) {
       localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
       window.location.href = "/login";
     }
     if (!response.ok) {
@@ -39,12 +50,14 @@ export async function apiGetDetail(resource, id) {
     const response = await fetch(
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
       {
-        headers: {
-          Authorization: getToken(),
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
       }
     );
+    if (response.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
+      window.location.href = "/login";
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -62,12 +75,14 @@ export async function apiDelete(resource, id) {
       `${process.env.REACT_APP_API_URL}/${resource}/${id}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: getToken(),
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
       }
     );
+    if (response.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
+      window.location.href = "/login";
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -86,12 +101,14 @@ export async function apiPatch(resource, id, data) {
       {
         method: "PATCH",
         body: JSON.stringify(data),
-        headers: {
-          Authorization: getToken(),
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
       }
     );
+    if (response.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
+      window.location.href = "/login";
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -112,12 +129,14 @@ export async function apiPost(resource, data) {
       {
         method: "POST",
         body: JSON.stringify(data),
-        headers: {
-          Authorization: getToken(),
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
       }
     );
+    if (response.status === 401) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("adminToken");
+      window.location.href = "/login";
+    }
     const result = await response.json();
     if (response.status >= 400) {
       throw new Error(result.message);

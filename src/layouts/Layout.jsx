@@ -29,6 +29,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "./layout.css";
+import { GuestView } from "../components/GuestView";
 
 const appBarHeight = 0;
 
@@ -159,6 +160,7 @@ export const Layout = () => {
         closeUserDropdown={closeUserDropdown}
         isDashboard={isDashboard}
       />
+      <GuestView />
       <div
         style={{
           display: "flex",
@@ -319,30 +321,32 @@ export const Header = ({
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {menuHeader.map(
-            (item) =>
-              (item.role === "admin" && !isAdmin) || (
-                <Button
-                  key={item.title}
-                  component={Link}
-                  to={item.path}
-                  sx={{
-                    mx: 1,
-                    color: "white",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    fontSize: "1rem",
-                    "&:hover": {
-                      backgroundColor: "hsl(12, 90%, 63%)",
+          <div>
+            {menuHeader.map(
+              (item) =>
+                (item.role === "admin" && !isAdmin) || (
+                  <Button
+                    key={item.title}
+                    component={Link}
+                    to={item.path}
+                    sx={{
+                      mx: 1,
+                      color: "white",
+                      fontWeight: "bold",
                       color: "#fff",
-                    },
-                  }} // margin giữa các nút
-                  startIcon={item.icon}
-                >
-                  {item.title}
-                </Button>
-              )
-          )}
+                      fontSize: "1rem",
+                      "&:hover": {
+                        backgroundColor: "hsl(12, 90%, 63%)",
+                        color: "#fff",
+                      },
+                    }} // margin giữa các nút
+                    startIcon={item.icon}
+                  >
+                    {item.title}
+                  </Button>
+                )
+            )}
+          </div>
         </Box>
         {inviteData.length > 0 && (
           <Menu

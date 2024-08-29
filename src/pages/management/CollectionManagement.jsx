@@ -525,8 +525,8 @@ export const CollectionManagement = () => {
             }}
             defaultValue={data.type || "normal"}
           >
-            {types.map((row) => (
-              <MenuItem value={row.value}>{row.label}</MenuItem>
+            {types.map((row, index) => (
+              <MenuItem key={index} value={row.value}>{row.label}</MenuItem>
             ))}
           </TextField>
 

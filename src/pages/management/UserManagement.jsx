@@ -17,14 +17,16 @@ import {
   Select,
   Chip,
   Autocomplete,
-  SvgIcon
+  SvgIcon,
+  Tooltip
 } from "@mui/material";
 import TablePaginationActions from "@mui/material/TablePagination/TablePaginationActions";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import EyeIcon from "@mui/icons-material/Visibility";
 import {
   apiGet,
   apiPost,
@@ -39,6 +41,7 @@ import { toastOptions } from "../../constant/toast";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import LockOpenIcon from "@heroicons/react/24/solid/LockOpenIcon";
 import { validatePassword } from "../../utils/validate";
+import AuthContext from "../auth/AuthContext/AuthContext";
 
 const userRole = {
   teacher: "Giáo viên",
@@ -54,6 +57,8 @@ const roles = [
   { value: "student", name: "Học sinh" },
 ];
 export const UserManagement = () => {
+  const navigate = useNavigate();
+  const { startGuestView } = useContext(AuthContext);
   const info = localStorage.getItem("authToken");
   const { user } = JSON.parse(info);
   const [page, setPage] = React.useState(0);
@@ -287,6 +292,22 @@ export const UserManagement = () => {
     ? rows.filter((row) => row.role === roleFilter.value)
     : rows;
 
+
+  const handleGuestView = async (user) => {
+    try {
+      const res = await apiPost("auth/guest-token", { user_id: user.user_id });
+      if (res) {
+        startGuestView(res);
+        navigate("/")
+      }
+    } catch (error) {
+      console.log("error", error);
+      toast.error(
+        `Có lỗi trong lúc xem trang với tư cách là "${user.name}". Vui lòng kiểm tra lại!`,
+        toastOptions
+      );
+    }
+  }
   return (
     <>
       <TableContainer sx={{ padding: 3 }} component={Paper}>
@@ -330,7 +351,18 @@ export const UserManagement = () => {
               : filteredRows
             ).map((row, index) => (
               <TableRow key={index}>
-                <TableCell component="th" scope="row">{row?.name}</TableCell>
+                <TableCell component="th" scope="row">
+                  <Tooltip title={`Xem trang với tư cách là ${row?.name}`}>
+                    <IconButton
+                      onClick={() => {
+                        handleGuestView(row)
+                      }}
+                    >
+                      <EyeIcon />
+                    </IconButton>
+                  </Tooltip>
+                  {row?.name}
+                </TableCell>
                 <TableCell>{row?.username}</TableCell>
                 <TableCell>{userRole[row?.role]}</TableCell>
                 <TableCell>
@@ -565,9 +597,9 @@ export const UserManagement = () => {
           >
             <option value="">Chọn quyền</option>
             {roles.map(
-              (row) =>
+              (row, index) =>
                 row.value !== data.role && (
-                  <option value={row.value}>{row.name}</option>
+                  <option key={index} value={row.value}>{row.name}</option>
                 )
             )}
           </Select>
